@@ -70,68 +70,80 @@
     </div>
     <br>
     <!-- Section for Pending Adviser Requests -->
-    <h2>Pending Adviser Requests</h2>
-    
-    @if($requests->isEmpty())
-        <p>No pending requests at the moment.</p>
-    @else
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Student Name</th>
-                    <th>Appointment Type</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($requests as $request)
-                <tr>
-                    <td>{{ $request->student->name }}</td>
-                    <td>{{ $request->appointment_type }}</td>
-                    <td>{{ $request->status }}</td>
-                    <td>
-                        <form action="{{ route('professor.request.update', $request->id) }}" method="POST">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit" name="action" value="approve" class="btn btn-success">Approve</button>
-                            <button type="submit" name="action" value="disapprove" class="btn btn-danger">Disapprove</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @endif
+    <div class="card">
+    <div class="card-body">
+        <h2>Pending Adviser Requests</h2>
+
+        @if($requests->isEmpty())
+            <p>No pending requests at the moment.</p>
+        @else
+            <table class="table table-hover table-striped custom-table">
+                <thead>
+                    <tr>
+                        <th style="text-align:center;">Student Name</th>
+                        <th style="text-align:center;">Appointment Type</th>
+                        <th style="text-align:center;">Status</th>
+                        <th style="text-align:center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($requests as $request)
+                    <tr>
+                        <td class="text-center">{{ $request->student->name }}</td>
+                        <td class="text-center">{{ $request->appointment_type }}</td>
+                        <td class="text-center">{{ $request->status }}</td>
+                        <td class="text-center">
+                            <form action="{{ route('professor.request.update', $request->id) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" name="action" value="disapprove" class="btn btn-affix" style="color:white;">Disapprove</button>
+                                <button type="submit" name="action" value="approve" class="btn btn-primary">Approve</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+    </div>
+</div>
+
+<br>
 
     <!-- Section for Approved Students (Advisees) -->
-    <h2 class="mt-5">Your Advisees</h2>
-    
-    @if($advisees->isEmpty())
-        <p>You have no advisees at the moment.</p>
-    @else
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Student Name</th>
-                    <th>Appointment Type</th>
-                    <th>Status</th>
-                    <th>Progress</th> <!-- New Column for Progress and View Button -->
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($advisees as $advisee)
-                <tr>
-                    <td>{{ $advisee->student->name }}</td>
-                    <td>{{ $advisee->appointment_type }}</td>
-                    <td>{{ ucfirst($advisee->status) }}</td>
-                    <td>
-                        <a href="{{ route('professor.showRoutingForm', $advisee->student->id) }}" class="btn btn-info">View Routing Form 1</a>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @endif
+    <div class="card">
+    <div class="card-body">
+        <!-- Section for Approved Students (Advisees) -->
+        <h2>Your Advisees</h2>
+        
+        @if($advisees->isEmpty())
+            <p>You have no advisees at the moment.</p>
+        @else
+            <table class="table table-hover table-striped custom-table">
+                <thead>
+                    <tr>
+                        <th style="text-align:center;">Student Name</th>
+                        <th style="text-align:center;">Appointment Type</th>
+                        <th style="text-align:center;">Status</th>
+                        <th style="text-align:center;">Progress</th> <!-- New Column for Progress and View Button -->
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($advisees as $advisee)
+                    <tr>
+                        <td class="text-center">{{ $advisee->student->name }}</td>
+                        <td class="text-center">{{ $advisee->appointment_type }}</td>
+                        <td class="text-center">{{ ucfirst($advisee->status) }}</td>
+                        <td class="text-center">
+                            <a href="{{ route('professor.showRoutingForm', $advisee->student->id) }}" class="btn btn-primary">View Routing Form 1</a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+    </div>
+</div>
+
 </div>
 @endsection

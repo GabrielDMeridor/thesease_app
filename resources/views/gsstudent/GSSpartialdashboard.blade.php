@@ -21,8 +21,8 @@
         @foreach (auth()->user()->notifications as $notification)
             <a class="dropdown-item d-flex align-items-center {{ $notification->read_at ? 'text-muted' : 'font-weight-bold' }}" href="#" onclick="markAsRead('{{ $notification->id }}')">
                 <div class="mr-3">
-                    <div class="icon-circle bg-primary">
-                        <i class="fas fa-file-alt text-white"></i>
+                    <div class="icon-circle">
+                        <i class="fa-solid fa-bell"></i>
                     </div>
                 </div>
                 <div>

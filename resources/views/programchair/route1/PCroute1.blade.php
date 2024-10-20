@@ -60,114 +60,130 @@
         <div class="sagreet">{{ $title }}</div>
     <br>
 
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <h4>Select a Student and Assign an Adviser</h4>
-
-            <!-- Success & Error Messages -->
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+    <div class="container">
+    <div class="row">
+        <!-- Select a Student and Assign an Adviser Section -->
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    Choose a Student and Designate an Adviser
                 </div>
-            @endif
+                <div class="card-body">
 
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <!-- Success & Error Messages -->
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+
+                    <!-- Form to assign adviser -->
+                    <form method="POST" action="{{ route('programchair.assignAdviserToStudent') }}">
+                        @csrf
+
+                        <!-- Student Selection Dropdown -->
+                        <div class="form-group">
+                            <label for="student_id">Select Student:</label>
+                            <select name="student_id" id="student_id" class="form-control" required onchange="showStudentProgram()">
+                                <option value="" disabled selected>Select Student</option>
+                                @foreach ($students as $student)
+                                    <option value="{{ $student->id }}" data-program="{{ $student->program }}">{{ $student->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Program Display -->
+                        <div class="form-group">
+                            <label for="program">Student's Program:</label>
+                            <input type="text" id="program" class="form-control" readonly>
+                        </div>
+
+                        <!-- Adviser Selection Dropdown -->
+                        <div class="form-group">
+                            <label for="adviser_id">Select Adviser:</label>
+                            <select name="adviser_id" id="adviser_id" class="form-control" required>
+                                <option value="" disabled selected>Select Adviser</option>
+                                @foreach ($advisers as $adviser)
+                                    <option value="{{ $adviser->id }}">{{ $adviser->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Adviser Type -->
+                        <div class="form-group">
+                            <label for="appointment_type">Adviser Type:</label>
+                            <input type="text" name="appointment_type" id="appointment_type" class="form-control" readonly>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-success btn-affix">Request Adviser</button>
+                    </form>
                 </div>
-            @endif
-
-            <!-- Form to assign adviser -->
-            <form method="POST" action="{{ route('programchair.assignAdviserToStudent') }}">
-                @csrf
-
-                <!-- Student Selection Dropdown -->
-                <div class="form-group">
-                    <label for="student_id">Select Student:</label>
-                    <select name="student_id" id="student_id" class="form-control" required onchange="showStudentProgram()">
-                        <option value="" disabled selected>Select Student</option>
-                        @foreach ($students as $student)
-                            <option value="{{ $student->id }}" data-program="{{ $student->program }}">{{ $student->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <!-- Program Display -->
-                <div class="form-group">
-                    <label for="program">Student's Program:</label>
-                    <input type="text" id="program" class="form-control" readonly>
-                </div>
-
-                <!-- Adviser Selection Dropdown -->
-                <div class="form-group">
-                    <label for="adviser_id">Select Adviser:</label>
-                    <select name="adviser_id" id="adviser_id" class="form-control" required>
-                        <option value="" disabled selected>Select Adviser</option>
-                        @foreach ($advisers as $adviser)
-                            <option value="{{ $adviser->id }}">{{ $adviser->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <!-- Adviser Type -->
-                <div class="form-group">
-                    <label for="appointment_type">Adviser Type:</label>
-                    <input type="text" name="appointment_type" id="appointment_type" class="form-control" readonly>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-success">Request Adviser</button>
-            </form>
-
-            <!-- Divider -->
-            <hr>
-
-            <!-- Approved Students Section -->
-            <h4>Manage Approved Students</h4>
-
-            <!-- Approved Student Selection Dropdown -->
-            <div class="form-group">
-                <label for="approved_student_id">Select Approved Student:</label>
-                <select name="approved_student_id" id="approved_student_id" class="form-control" onchange="getApprovedStudentDetails()">
-                    <option value="" disabled selected>Select Approved Student</option>
-                    @foreach ($approvedStudents as $student)
-                        <option value="{{ $student->id }}">{{ $student->name }}</option>
-                    @endforeach
-                </select>
             </div>
+        </div>
 
-            <!-- Signature Display -->
-            <div id="signatureDisplay" style="display:none;">
-                <h5>Signatures</h5>
-                <div class="form-group">
-                    <label for="adviser_signature">Adviser Signature:</label>
-                    <input type="text" id="adviser_signature" class="form-control" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="chair_signature">Program Chair Signature:</label>
-                    <input type="text" id="chair_signature" class="form-control" readonly placeholder="Pending">
-                </div>
-                <div class="form-group">
-                    <label for="dean_signature">Dean Signature:</label>
-                    <input type="text" id="dean_signature" class="form-control" readonly>
+        <!-- Manage Approved Students Section -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Manage Approved Students
                 </div>
 
-                <!-- Button to Affix Program Chair's Signature -->
-                <form method="POST" action="{{ route('programchair.affixSignature') }}">
-                    @csrf
-                    <input type="hidden" name="approved_student_id" id="approved_student_input">
-                    <button type="submit" class="btn btn-success" id="affixChairButton">Affix Program Chair's Signature</button>
-                </form>
+                <div class="card-body">
+                    <!-- Approved Students Section -->
+
+                    <!-- Approved Student Selection Dropdown -->
+                    <div class="form-group">
+                        <label for="approved_student_id">Select Approved Student:</label>
+                        <select name="approved_student_id" id="approved_student_id" class="form-control" onchange="getApprovedStudentDetails()">
+                            <option value="" disabled selected>Select Approved Student</option>
+                            @foreach ($approvedStudents as $student)
+                                <option value="{{ $student->id }}">{{ $student->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Signature Display -->
+                    <div id="signatureDisplay" style="display:none;">
+                        <h5>Signatures</h5>
+                        <div class="form-group">
+                            <label for="adviser_signature">Adviser Signature:</label>
+                            <input type="text" id="adviser_signature" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="chair_signature">Program Chair Signature:</label>
+                            <input type="text" id="chair_signature" class="form-control" readonly placeholder="Pending">
+                        </div>
+                        <div class="form-group">
+                            <label for="dean_signature">Dean Signature:</label>
+                            <input type="text" id="dean_signature" class="form-control" readonly>
+                        </div>
+
+                        <!-- Button to Affix Program Chair's Signature -->
+                        <form method="POST" action="{{ route('programchair.affixSignature') }}">
+                            @csrf
+                            <input type="hidden" name="approved_student_id" id="approved_student_input">
+                            <button type="submit" class="btn btn-success btn-affix" id="affixChairButton">Affix Program Chair's Signature</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 
 <script>
     // Show the program and adviser type when a student is selected

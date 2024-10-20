@@ -82,6 +82,47 @@
     </div>
     <br>
 
+    <div class="card">
+        <div class="card-body pb-5 pt-4">
+            <div class="row">   
+                <!-- Profile Image and Basic Info -->
+                <div class="col-md-4 col-sm-12 border-right">
+                    <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                        <h4 class="profile-name text-gray-600"> {{ $user->name }}
+                    @if (strtolower($user->nationality) !== 'filipino')
+                        <i class="fas fa-globe"></i> <!-- Globe icon for foreign nationals -->
+                    @endif</h4>
+                    <p>{{ $user->email }}</p>
+                    <p><strong>Degree:</strong> {{ $user->degree ?? 'N/A' }}</p>
+                    <p><strong>Program:</strong> {{ $user->program ?? 'N/A' }}</p>
+                    <p><strong>Academic Year:</strong> 2026 - 2027</p>
+                    <button type="button" class="btn btn-affix update-profile-btn" style="color:white;" data-toggle="modal" data-target="#changePasswordModal">Change Password</button>
+                        
+                        
+                    </div>
+                    
+                </div>
+
+                <!-- Thesis Details Section -->
+                    <div class="col-md-8 col-sm-12">
+                        <div class="p-3 py-5">
+                            <div class="">
+                                <h5 class="header-style">Your Thesis Details</h5>
+                                <p><strong>Thesis Topic:</strong> The Stress-Relieving Effects of Reading: A Comparative Analysis of Physical Books Versus Screen Reading</p>
+                                <h6>Thesis Progress:</h6>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 30%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">Routing Form 1</div>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-secondary" role="progressbar" style="width: 10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">Routing Form 2</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
     <h1 class="text-center mb-5">Manage your account</h1>
 

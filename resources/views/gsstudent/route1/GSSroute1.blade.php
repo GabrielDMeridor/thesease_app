@@ -14,8 +14,8 @@
                 @foreach (auth()->user()->notifications as $notification)
                     <a class="dropdown-item d-flex align-items-center {{ $notification->read_at ? 'text-muted' : 'font-weight-bold' }}" href="#">
                         <div class="mr-3">
-                            <div class="icon-circle bg-primary">
-                                <i class="fas fa-file-alt text-white"></i>
+                            <div class="icon-circle">
+                                <i class="fa-solid fa-bell text-white"></i>
                             </div>
                         </div>
                         <div>
@@ -82,84 +82,97 @@
         {{ $title }}
     </div>
     <br>
-    <!-- Multi-Step Navigation -->
-    <div class="steps">
-        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-            @for ($step = 1; $step <= 12; $step++)
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab" 
-                       data-toggle="pill" href="#pills-step-{{ $step }}" role="tab" aria-controls="pills-step-{{ $step }}" 
-                       aria-selected="{{ $step === 1 ? 'true' : 'false' }}">
-                        Step {{ $step }}
-                    </a>
-                </li>
-            @endfor
-        </ul>
-    </div>
 
-    <!-- Step Content (Step 1 Form with Card) -->
-    <div class="tab-content" id="pills-tabContent">
-        @for ($step = 1; $step <= 12; $step++)
-            <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}" role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
-                @if ($step === 1)
-                    <!-- Step 1 Form: Adviser Appointment Form in a Card -->
-                    <div class="card shadow mb-4">
-                        <div class="card-body">
-                            <form method="POST" action="{{ route('gsstudent.route1.submit') }}">
-                                @csrf
+    <div class="card shadow mb-4">
+        <div class="card-header">
+        </div>
+        <div class="card-body">
+            <!-- Multi-Step Navigation -->
+            <div class="steps">
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    @for ($step = 1; $step <= 12; $step++)
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab" 
+                            data-toggle="pill" href="#pills-step-{{ $step }}" role="tab" aria-controls="pills-step-{{ $step }}" 
+                            aria-selected="{{ $step === 1 ? 'true' : 'false' }}">
+                                Step {{ $step }}
+                            </a>
+                        </li>
+                    @endfor
+                </ul>
+            </div>
 
-                                <!-- Date -->
-                                <div class="form-group">
-                                    <label for="date">Date:</label>
-                                    <input type="text" name="date" value="{{ now()->toDateString() }}" class="form-control" readonly>
+            <!-- Step Content (Step 1 Form with Card) -->
+            <div class="tab-content" id="pills-tabContent">
+                @for ($step = 1; $step <= 12; $step++)
+                    <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}" role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
+                        @if ($step === 1)
+                            <!-- Step 1 Form: Adviser Appointment Form in a Card -->
+                            <div class="card shadow mb-4">
+                            <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <form method="POST" action="{{ route('gsstudent.route1.submit') }}">
+                                            @csrf
+
+                                            <h4>Appointment Details</h4>
+
+                                            <!-- Date -->
+                                            <div class="form-group">
+                                                <label for="date">Date:</label>
+                                                <input type="text" name="date" value="{{ now()->toDateString() }}" class="form-control" readonly>
+                                            </div>
+
+                                            <!-- Program -->
+                                            <div class="form-group">
+                                                <label for="program">Program:</label>
+                                                <input type="text" name="program" value="{{ $user->program }}" class="form-control" readonly>
+                                            </div>
+
+                                            <!-- Adviser Display (Read-only for students) -->
+                                            <div class="form-group">
+                                                <label for="adviser">Adviser:</label>
+                                                @if ($appointment && $appointment->status === 'approved')
+                                                    <input type="text" class="form-control" value="{{ $appointment->adviser->name }}" readonly>
+                                                @elseif ($appointment && $appointment->status === 'pending')
+                                                    <input type="text" class="form-control" value="Waiting for your adviser to approve." readonly>
+                                                @elseif ($appointment && $appointment->status === 'disapproved')
+                                                    <input type="text" class="form-control" value="Your adviser denied the request. The Program Chair is still looking for a new adviser for you." readonly>
+                                                @else
+                                                    <input type="text" class="form-control" value="Adviser will be assigned by the Program Chair." readonly>
+                                                @endif
+                                            </div>
+
+                                        </form>
+                                    </div>
                                 </div>
+                            </div>
 
-                                <!-- Program -->
-                                <div class="form-group">
-                                    <label for="program">Program:</label>
-                                    <input type="text" name="program" value="{{ $user->program }}" class="form-control" readonly>
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h4>Signatures</h4>
+
+                                        <!-- Adviser Signature -->
+                                        <div class="form-group">
+                                            <label for="adviser_signature">Adviser Signature:</label>
+                                            <input type="text" name="adviser_signature" class="form-control" value="{{ $appointment->adviser_signature ?? 'Pending' }}" readonly>
+                                        </div>
+
+                                        <!-- Program Chair Signature -->
+                                        <div class="form-group">
+                                            <label for="program_chair_signature">Program Chair Signature:</label>
+                                            <input type="text" name="program_chair_signature" class="form-control" value="{{ $appointment->chair_signature ?? 'Pending' }}" readonly>
+                                        </div>
+
+                                        <!-- Dean Signature -->
+                                        <div class="form-group">
+                                            <label for="dean_signature">Dean Signature:</label>
+                                            <input type="text" name="dean_signature" class="form-control" value="{{ $appointment->dean_signature ?? 'Pending' }}" readonly>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <!-- Adviser Display (Read-only for students) -->
-                                <div class="form-group">
-                                <label for="adviser">Adviser:</label>
-                                @if ($appointment && $appointment->status === 'approved')
-                                    <!-- Show adviser name only when status is 'approved' -->
-                                    <input type="text" class="form-control" value="{{ $appointment->adviser->name }}" readonly>
-                                @elseif ($appointment && $appointment->status === 'pending')
-                                    <!-- Message when status is 'pending' -->
-                                    <input type="text" class="form-control" value="Waiting for your adviser to approve." readonly>
-                                @elseif ($appointment && $appointment->status === 'disapproved')
-                                    <!-- Message when status is 'disapproved' -->
-                                    <input type="text" class="form-control" value="Your adviser denied the request. The Program Chair is still looking for a new adviser for you." readonly>
-                                @else
-                                    <!-- Default message when no adviser is assigned or no appointment -->
-                                    <input type="text" class="form-control" value="Adviser will be assigned by the Program Chair." readonly>
-                                @endif
-                            </div>
-
-                            </form>
-
-                            <!-- Signature Fields -->
-                            <hr>
-                            <h5>Signatures</h5>
-
-                            <!-- Adviser Signature -->
-                            <div class="form-group">
-                                <label for="adviser_signature">Adviser Signature:</label>
-                                <input type="text" name="adviser_signature" class="form-control" value="{{ $appointment->adviser_signature ?? 'Pending' }}" readonly>
-                            </div>
-
-                            <!-- Program Chair Signature -->
-                            <div class="form-group">
-                                <label for="program_chair_signature">Program Chair Signature:</label>
-                                <input type="text" name="program_chair_signature" class="form-control" value="{{ $appointment->chair_signature ?? 'Pending' }}" readonly>
-                            </div>
-
-                            <!-- Dean Signature -->
-                            <div class="form-group">
-                                <label for="dean_signature">Dean Signature:</label>
-                                <input type="text" name="dean_signature" class="form-control" value="{{ $appointment->dean_signature ?? 'Pending' }}" readonly>
                             </div>
                         </div>
                     </div>
@@ -169,33 +182,10 @@
             </div>
         @endfor
     </div>
+    </div>
+            <div class="card-footer footersaroute1">
+            </div>
 </div>
 @endsection
 
 <!-- Custom Styling for Multi-Step Navigation and Card -->
-<style>
-    .steps ul {
-        display: flex;
-        justify-content: space-between;
-    }
-    .steps ul .nav-item {
-        flex: 1;
-        text-align: center;
-    }
-    .steps ul .nav-link {
-        padding: 10px;
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 0;
-        color: #495057;
-    }
-    .steps ul .nav-link.active {
-        background-color: #007bff;
-        color: #fff;
-    }
-
-    .card-body {
-        padding: 20px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    }
-</style>

@@ -19,7 +19,7 @@
                 @foreach (auth()->user()->unreadNotifications as $notification)
                     <a class="dropdown-item d-flex align-items-center" href="#">
                         <div class="mr-3">
-                            <div class="icon-circle bg-danger">
+                            <div class="icon-circle">
                                 <i class="fas fa-exclamation-triangle text-white"></i>
                             </div>
                         </div>
@@ -56,102 +56,89 @@
     <div class="sagreet">{{ $title }}</div>
     <br>
 
-    <!-- Multi-Step Navigation -->
-    <div class="steps">
-        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-            @for ($step = 1; $step <= 12; $step++) <!-- Adjust step numbers as needed -->
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab" 
-                       data-toggle="pill" href="#pills-step-{{ $step }}" role="tab" aria-controls="pills-step-{{ $step }}" 
-                       aria-selected="{{ $step === 1 ? 'true' : 'false' }}">
-                        Step {{ $step }}
-                    </a>
-                </li>
-            @endfor
-        </ul>
-    </div>
-
-    <!-- Step Content -->
-    <div class="tab-content" id="pills-tabContent">
-        @for ($step = 1; $step <= 5; $step++) <!-- Adjust step numbers as needed -->
-            <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}" role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
-                @if ($step === 1)
-                    <!-- Step 1: Routing Form -->
-                    <div class="card shadow mb-4">
-                        <div class="card-body">
-                            <form method="POST" action="{{ route('superadmin.sign', $student->id) }}">
-                                @csrf
-                                
-                                <!-- Date -->
-                                <div class="form-group">
-                                    <label for="date">Date:</label>
-                                    <input type="text" name="date" value="{{ now()->toDateString() }}" class="form-control" readonly>
-                                </div>
-
-                                <!-- Program -->
-                                <div class="form-group">
-                                    <label for="program">Program:</label>
-                                    <input type="text" name="program" value="{{ $student->program }}" class="form-control" readonly>
-                                </div>
-
-                                <!-- Adviser Signature -->
-                                <div class="form-group">
-                                    <label for="adviser_signature">Adviser Signature:</label>
-                                    <input type="text" name="adviser_signature" class="form-control" value="{{ $appointment->adviser_signature ?? 'Pending' }}" readonly>
-                                </div>
-
-                                <!-- Program Chair Signature -->
-                                <div class="form-group">
-                                    <label for="program_chair_signature">Program Chair Signature:</label>
-                                    <input type="text" name="program_chair_signature" class="form-control" value="{{ $appointment->chair_signature ?? 'Pending' }}" readonly>
-                                </div>
-
-                                <!-- Dean Signature (SuperAdmin) -->
-                                <div class="form-group">
-                                    <label for="dean_signature">Dean Signature:</label>
-                                    <input type="text" name="dean_signature" class="form-control" value="{{ $appointment->dean_signature ?? 'Pending' }}" readonly>
-                                </div>
-
-                                <!-- Signature Affix Button -->
-                                @if (is_null($appointment->dean_signature))
-                                    <button type="submit" class="btn btn-success">Affix Dean's Signature</button>
-                                @endif
-                            </form>
-                        </div>
-                    </div>
-                @else
-                    <p>Step {{ $step }} content goes here.</p>
-                @endif
+    <div class="card shadow mb-4">
+        <div class="card-header">
+        </div>
+        <div class="card-body">
+            <!-- Multi-Step Navigation -->
+            <div class="steps">
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    @for ($step = 1; $step <= 12; $step++) <!-- Adjust step numbers as needed -->
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab" 
+                            data-toggle="pill" href="#pills-step-{{ $step }}" role="tab" aria-controls="pills-step-{{ $step }}" 
+                            aria-selected="{{ $step === 1 ? 'true' : 'false' }}">
+                                Step {{ $step }}
+                            </a>
+                        </li>
+                    @endfor
+                </ul>
             </div>
-        @endfor
+
+            <!-- Step Content -->
+            <div class="tab-content contentsaroute" id="pills-tabContent">
+                @for ($step = 1; $step <= 5; $step++) <!-- Adjust step numbers as needed -->
+                    <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}" role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
+                        @if ($step === 1)
+                            <!-- Step 1: Routing Form -->
+                            <div class="card shadow mb-4">
+                                <div class="card-body">
+                                    <form method="POST" action="{{ route('superadmin.sign', $student->id) }}">
+                                        @csrf
+
+                                        <h4>Appointment Details</h4>
+                                        
+                                        <!-- Date -->
+                                        <div class="form-group">
+                                            <label for="date">Date:</label>
+                                            <input type="text" name="date" value="{{ now()->toDateString() }}" class="form-control" readonly>
+                                        </div>
+
+
+                                        <!-- Program -->
+                                        <div class="form-group">
+                                            <label for="program">Program:</label>
+                                            <input type="text" name="program" value="{{ $student->program }}" class="form-control" readonly>
+                                        </div>
+
+                                        <hr>
+
+                                        <h4>Signatures</h4>
+
+                                        <!-- Adviser Signature -->
+                                        <div class="form-group">
+                                            <label for="adviser_signature">Adviser Signature:</label>
+                                            <input type="text" name="adviser_signature" class="form-control" value="{{ $appointment->adviser_signature ?? 'Pending' }}" readonly>
+                                        </div>
+
+                                        <!-- Program Chair Signature -->
+                                        <div class="form-group">
+                                            <label for="program_chair_signature">Program Chair Signature:</label>
+                                            <input type="text" name="program_chair_signature" class="form-control" value="{{ $appointment->chair_signature ?? 'Pending' }}" readonly>
+                                        </div>
+
+                                        <!-- Dean Signature (SuperAdmin) -->
+                                        <div class="form-group">
+                                            <label for="dean_signature">Dean Signature:</label>
+                                            <input type="text" name="dean_signature" class="form-control" value="{{ $appointment->dean_signature ?? 'Pending' }}" readonly>
+                                        </div>
+
+                                        <!-- Signature Affix Button -->
+                                        @if (is_null($appointment->dean_signature))
+                                            <button type="submit" class="btn btn-success btn-affix">Affix Dean's Signature</button>
+                                        @endif
+                                    </form>
+                                </div>
+                            </div>
+                        @else
+                            <p>Step {{ $step }} content goes here.</p>
+                        @endif
+                    </div>
+                @endfor
+            </div>
+        </div>
+            <div class="card-footer footersaroute1">
+            </div>
     </div>
 </div>
 @endsection
-
-<!-- Custom Styling for Multi-Step Navigation and Card -->
-<style>
-    .steps ul {
-        display: flex;
-        justify-content: space-between;
-    }
-    .steps ul .nav-item {
-        flex: 1;
-        text-align: center;
-    }
-    .steps ul .nav-link {
-        padding: 10px;
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 0;
-        color: #495057;
-    }
-    .steps ul .nav-link.active {
-        background-color: #007bff;
-        color: #fff;
-    }
-
-    .card-body {
-        padding: 20px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    }
-</style>

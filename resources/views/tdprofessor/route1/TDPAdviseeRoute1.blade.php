@@ -62,6 +62,11 @@
     <br>
 </div>
 
+<div class="card shadow mb-4">
+        <div class="card-header">
+        </div>
+
+        <br>
 <!-- Multi-Step Navigation -->
 <div class="container-fluid">
     <div class="steps">
@@ -92,6 +97,8 @@
                                 @csrf
                                 @method('PUT')
 
+                                <h4>Appointment Details</h4>
+
                                 <!-- Date -->
                                 <div class="form-group">
                                     <label for="date">Date:</label>
@@ -113,7 +120,7 @@
                                 <hr>
 
                                 <!-- Signatures -->
-                                <h5>Signatures</h5>
+                                <h4>Signatures</h4>
 
                                 <!-- Adviser Signature -->
                                 <div class="form-group">
@@ -139,7 +146,7 @@
 
                                 <!-- Submit Button for Signature -->
                                 @if (is_null($appointment->adviser_signature))
-                                    <button type="submit" class="btn btn-success">Affix Adviser's Signature</button>
+                                    <button type="submit" class="btn btn-affix" style="color:white;">Affix Adviser's Signature</button>
                                 @endif
                             </form>
                         </div>
@@ -150,6 +157,9 @@
             @endif
         </div>
     @endfor
+    </div>
+            <div class="card-footer footersaroute1">
+            </div>
 </div>
 
 @endsection

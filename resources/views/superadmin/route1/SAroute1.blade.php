@@ -60,31 +60,44 @@
 
 
     <!-- Search form -->
-    <form action="{{ route('superadmin.route1') }}" method="GET">
-        <div class="input-group mb-3">
-            <input type="text" name="search" class="form-control" placeholder="Search students by name" value="{{ request('search') }}">
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="submit">Search</button>
+    <div class="card">
+        <div class="card-body">
+        <form action="{{ route('superadmin.route1') }}" method="GET">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm">
+                        <!-- Keyword search input -->
+                        <div class="input-group mb-3">
+                            <input type="text" name="search" class="form-control" placeholder="Search students by name" value="{{ request('search') }}">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
+</div>
+
+<br>
 
     <!-- Students Table -->
-    <table class="table table-bordered">
-        <thead>
+    <table class="table table-bordered table-hover table-striped custom-table">
+        <thead class="table-dark">
             <tr>
-                <th>Name</th>
-                <th>Program</th>
-                <th>Action</th>
+                <th style="text-align:center;">Name</th>
+                <th style="text-align:center;">Program</th>
+                <th style="text-align:center;">Action</th>
             </tr>
         </thead>
         <tbody>
             @forelse($students as $student)
                 <tr>
-                    <td>{{ $student->name }}</td>
-                    <td>{{ $student->program }}</td>
-                    <td>
-                        <a href="{{ route('superadmin.showRoutingForm', $student->id) }}" class="btn btn-info">View Routing Form 1</a>
+                    <td class="text-center">{{ $student->name }}</td>
+                    <td class="text-center">{{ $student->program }}</td>
+                    <td class="text-center">
+                        <a href="{{ route('superadmin.showRoutingForm', $student->id) }}" class="btn btn-primary"><i class="fa-solid fa-file"></i> View Routing Form 1</a>
                     </td>
                 </tr>
             @empty

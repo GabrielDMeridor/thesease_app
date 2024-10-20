@@ -1551,7 +1551,7 @@ pre code{
     opacity:1
 }
 .form-control:disabled,.form-control[readonly]{
-    background-color:#eaecf4;
+    background-color:#E7E7E7;
     opacity:1
 }
 input[type=date].form-control,input[type=datetime-local].form-control,input[type=month].form-control,input[type=time].form-control{
@@ -1932,8 +1932,9 @@ a.btn.disabled,fieldset:disabled a.btn{
 }
 .btn-primary:hover{
     color:#fff;
-    background-color:#5E6797;
-    border-color:#5E6797
+    background-color:#4E5A7D;
+    border-color:#4E5A7D;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 .btn-primary.focus,.btn-primary:focus{
     color:#fff;
@@ -3664,11 +3665,11 @@ input[type=button].btn-block,input[type=reset].btn-block,input[type=submit].btn-
 }
 .card-footer{
     padding:.75rem 1.25rem;
-    background-color:#f8f9fc;
-    border-top:1px solid #e3e6f0
+    background-color: #495464;
+    border-radius: 0;
 }
 .card-footer:last-child{
-    border-radius:0 0 calc(.35rem - 1px) calc(.35rem - 1px)
+    border-radius:0
 }
 .card-header-tabs{
     margin-right:-.625rem;
@@ -8095,6 +8096,7 @@ a:focus{
 .icon-circle{
     height:2.5rem;
     width:2.5rem;
+    background: #CA6D38;
     border-radius:100%;
     display:flex;
     align-items:center;
@@ -8161,7 +8163,6 @@ a:focus{
     font-size:.85rem
 }
 .dropdown .dropdown-menu .dropdown-header{
-    font-weight:800;
     font-size:.65rem;
     color:#b7b9cc
 }
@@ -8246,11 +8247,12 @@ a:focus{
     overflow:hidden
 }
 .topbar .dropdown-list .dropdown-header{
-    background-color:#4e73df;
-    border:1px solid #4e73df;
+    background-color:#495464;
+    border:1px solid #495464;
     padding-top:.75rem;
     padding-bottom:.75rem;
-    color:#fff
+    color:#fff;
+    border-radius: 0;
 }
 .topbar .dropdown-list .dropdown-item{
     white-space:normal;
@@ -8339,9 +8341,6 @@ a:focus{
 .sidebar .nav-item .nav-link span{
     font-size:.65rem;
     display:block
-}
-.sidebar .nav-item.active .nav-link{
-    font-weight:700
 }
 .sidebar .nav-item .collapse{
     position:absolute;
@@ -9820,13 +9819,116 @@ span::after {
     gap: 20px;
 }
 /* NOTIFICATION*/
+
+/* Routing Form 1 in SA*/
 .text-muted {
-    color: #6c757d;
+    color: white;
 }
 
 .font-weight-bold {
     font-weight: bold;
 }
+
+.steps ul {
+    display: flex;
+    justify-content: space-between;
+    padding: 0; /* Reset default padding */
+    list-style-type: none; /* Remove bullet points */
+    border: 1px solid transparent; /* Initial border */
+    transition: border 0.3s ease; /* Smooth transition for border */
+    
+}
+
+
+.steps ul .nav-item {
+    flex: 1;
+    text-align: center;
+    position: relative; /* Needed for the pseudo-element positioning */
+    padding-bottom: 5px; /* Space for the line */
+}
+
+.steps ul .nav-link {
+    padding: 10px;
+    background-color: #495464;
+    border: none; /* No border */
+    border-radius: 0;
+    color: white;
+    text-decoration: none; /* Remove underline */
+    position: relative; /* Needed for the pseudo-element positioning */
+    z-index: 1; /* Ensure the link appears above the line */
+}
+
+.steps ul .nav-link.active {
+    background-color: #3B4A54;
+    color: white;
+}
+
+.steps ul .nav-link:hover {
+    background-color: #3B4A54;
+    color: white;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.steps ul .nav-link::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 2px; /* Thickness of the line */
+    background-color: yellow; /* Line color */
+    position: absolute;
+    bottom: 0; /* Position it at the bottom of the link */
+    left: 0;
+    transform: scaleX(0); /* Initially hide the line */
+    transition: transform 0.3s ease; /* Smooth transition */
+    z-index: 0; /* Place the line below the link */
+}
+
+.steps ul .nav-link:hover::after {
+    transform: scaleX(1); /* Show the line on hover */
+}
+
+
+.card-body {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-affix{
+    background-color: #CA6D38;
+    border-color: #CA6D38;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-affix:hover{
+    background-color: #B45A2A;
+    border-color: #B45A2A;
+}
+
+.btn-success.focus,.btn-success:focus{
+    color:#fff;
+    background-color:#B45A2A;
+    border-color:#B45A2A;
+    box-shadow:0 0 0 .2rem #CA6D38
+}
+.btn-success.disabled,.btn-success:disabled{
+    color:#fff;
+    background-color:#B45A2A;
+    border-color:#B45A2A
+}
+.btn-success:not(:disabled):not(.disabled).active,.btn-success:not(:disabled):not(.disabled):active,.show>.btn-success.dropdown-toggle{
+    color:#fff;
+    background-color:#B45A2A;
+    border-color:#B45A2A
+}
+.btn-success:not(:disabled):not(.disabled).active:focus,.btn-success:not(:disabled):not(.disabled):active:focus,.show>.btn-success.dropdown-toggle:focus{
+    box-shadow:0 0 0 .2rem #CA6D38
+}
+
+.fa-globe{
+    color:#CA6D38;
+}
+
+
+
 
         
         
