@@ -90,6 +90,7 @@ class PCRoute1Controller extends Controller
                 'appointment_type' => $appointmentType,
                 'status' => 'pending', // Set status to pending
                 'disapproval_count' => $disapprovalCount, // Keep the current disapproval count
+                'program_chair_id' => $programChair->id,  // Store the Program Chair's ID
             ]
         );
     

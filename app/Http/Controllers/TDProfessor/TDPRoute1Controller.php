@@ -7,6 +7,7 @@ use App\Models\AdviserAppointment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Notifications\AdviserResponseNotification; // Add this import to use your notification
+use App\Notifications\AdviserResponseNotificationToPCandD;
 
 class TDPRoute1Controller extends Controller
 {
@@ -36,46 +37,6 @@ class TDPRoute1Controller extends Controller
         ]);
     }
 
-    public function approveRequest($id)
-    {
-        $appointment = AdviserAppointment::find($id);
-    
-        // Ensure the logged-in professor is the adviser
-        if (auth()->user()->id !== $appointment->adviser_id) {
-            return redirect()->back()->with('error', 'Unauthorized action.');
-        }
-
-        // Approve the request by updating the status
-        $appointment->status = 'approved';
-        $appointment->adviser_signature = auth()->user()->name;  // Adviser can now sign
-        $appointment->save();
-
-        // Notify the student about the approval
-        $student = User::find($appointment->student_id);
-        $student->notify(new AdviserResponseNotification('approved', auth()->user(), $appointment->appointment_type));
-
-        return redirect()->back()->with('success', 'Appointment request approved and the student has been notified.');
-    }
-
-    public function disapproveRequest($id)
-    {
-        $appointment = AdviserAppointment::find($id);
-    
-        // Ensure the logged-in professor is the adviser
-        if (auth()->user()->id !== $appointment->adviser_id) {
-            return redirect()->back()->with('error', 'Unauthorized action.');
-        }
-
-        // Disapprove the request by updating the status
-        $appointment->status = 'disapproved';
-        $appointment->save();
-
-        // Notify the student about the disapproval
-        $student = User::find($appointment->student_id);
-        $student->notify(new AdviserResponseNotification('disapproved', auth()->user(), $appointment->appointment_type));
-
-        return redirect()->back()->with('success', 'Appointment request disapproved and the student has been notified.');
-    }
 
     public function updateRequestStatus(Request $request, $id)
     {
@@ -96,6 +57,17 @@ class TDPRoute1Controller extends Controller
             $student = User::find($appointment->student_id);
             $student->notify(new AdviserResponseNotification('approved', auth()->user(), $appointment->appointment_type));
 
+            // Notify the program chair who requested the request about the approval
+            $programChair = User::find($appointment->program_chair_id);
+            $programChair->notify(new AdviserResponseNotificationToPCandD('approved', auth()->user(), $appointment->appointment_type, $student));
+
+            $superadmin = User::where('account_type', 1)->get();
+
+            foreach ($superadmin as $admin) {
+                $admin->notify(new AdviserResponseNotificationToPCandD('approved', auth()->user(), $appointment->appointment_type, $student));
+            }
+
+
         } elseif ($request->input('action') === 'disapprove') {
             // Increment the disapproval count
             $appointment->disapproval_count += 1;
@@ -105,6 +77,17 @@ class TDPRoute1Controller extends Controller
             // Notify the student about the disapproval
             $student = User::find($appointment->student_id);
             $student->notify(new AdviserResponseNotification('disapproved', auth()->user(), $appointment->appointment_type));
+
+                        // Notify the program chair who requested the request about the disapproval
+            $programChair = User::find($appointment->program_chair_id);
+            $programChair->notify(new AdviserResponseNotificationToPCandD('disapproved', auth()->user(), $appointment->appointment_type,$student));
+            
+            $superadmin = User::where('account_type', 1)->get();
+            
+            foreach ($superadmin as $admin) {
+                $admin->notify(new AdviserResponseNotificationToPCandD('disapproved', auth()->user(), $appointment->appointment_type,$student));
+                        }
+            
         }
 
         // Save the changes to the database
@@ -114,31 +97,22 @@ class TDPRoute1Controller extends Controller
     }
 
     public function affixSignature(Request $request, $appointmentId)
-    {
-        // Find the appointment
-        $appointment = AdviserAppointment::findOrFail($appointmentId);
-    
-        // Ensure the logged-in user is the assigned adviser
-        if ($appointment->adviser_id !== auth()->user()->id) {
-            return redirect()->back()->with('error', 'You are not authorized to sign this form.');
-        }
-    
-        // Affix the adviser's signature
-        if (is_null($appointment->adviser_signature)) {
-            $appointment->adviser_signature = auth()->user()->name;
-            $appointment->save();
-        }
-    
-        // Check if all signatures are affixed (Adviser, Program Chair, and Dean)
-        if ($appointment->adviser_signature && $appointment->chair_signature && $appointment->dean_signature) {
-            // Set the completed_at date if all signatures are present
-            $appointment->completed_at = now();
-            $appointment->save();
-        }
-    
-        return redirect()->back()->with('success', 'You have successfully signed the form.');
+{
+    // Find the appointment
+    $appointment = AdviserAppointment::findOrFail($appointmentId);
+
+    // Ensure the logged-in user is the assigned adviser
+    if ($appointment->adviser_id !== auth()->user()->id) {
+        return redirect()->back()->with('error', 'You are not authorized to sign this form.');
     }
-    
+
+    // Affix the adviser's signature
+    $appointment->adviser_signature = auth()->user()->name;
+    $appointment->save();
+
+    // Redirect back with success message
+    return redirect()->back()->with('success', 'You have successfully signed the form.');
+}
 public function showAdviseeForm($studentId)
 {
     $appointment = AdviserAppointment::where('student_id', $studentId)

@@ -15,18 +15,19 @@ class AdviserAppointment extends Model
     protected $fillable = [
         'student_id',
         'adviser_id',
+        'program_chair_id',  // Add this
         'appointment_type',
         'status',
         'adviser_signature',
         'chair_signature',
         'dean_signature',
         'disapproval_count',
-        'completed_at',  // Make sure to include 'completed_at' in the fillable array if you want to mass assign it.
+        'completed_at'
     ];
 
-    // Casts for specific fields
+    // Cast completed_at as a datetime
     protected $casts = [
-        'completed_at' => 'datetime', // Cast the 'completed_at' field to a datetime
+        'completed_at' => 'datetime',
     ];
 
     // Relationship: The appointment belongs to a student
@@ -40,4 +41,11 @@ class AdviserAppointment extends Model
     {
         return $this->belongsTo(User::class, 'adviser_id');
     }
+
+    // Relationship: The appointment belongs to a program chair
+    public function programChair()
+    {
+        return $this->belongsTo(User::class, 'program_chair_id');
+    }
 }
+
