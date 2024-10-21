@@ -22,12 +22,16 @@ class AdviserAppointment extends Model
         'chair_signature',
         'dean_signature',
         'disapproval_count',
-        'completed_at'
+        'completed_at',
+        'consultation_dates', // Add this if you're mass assigning it
+
     ];
 
     // Cast completed_at as a datetime
     protected $casts = [
         'completed_at' => 'datetime',
+        'consultation_dates' => 'array',
+
     ];
 
     // Relationship: The appointment belongs to a student
@@ -46,6 +50,10 @@ class AdviserAppointment extends Model
     public function programChair()
     {
         return $this->belongsTo(User::class, 'program_chair_id');
+    }
+    public function getConsultationDatesAttribute($value)
+    {
+        return $value ? json_decode($value) : [];
     }
 }
 

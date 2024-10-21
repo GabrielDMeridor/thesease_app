@@ -26,21 +26,21 @@ class GSSRoute1Controller extends Controller
         // Fetch the existing appointment for the student if it exists
         $appointment = AdviserAppointment::where('student_id', $user->id)->first();
     
-        // Pass the user data, advisers, and appointment to the view
+        // Determine if all signatures are filled to allow unlocking the next step
+        $allSignaturesFilled = $appointment && $appointment->adviser_signature && $appointment->chair_signature && $appointment->dean_signature;
+    
+        // Pass the user data, advisers, and appointment to the view, along with the signature flag
         $data = [
             'title' => 'Routing Form 1',
             'user' => $user,
             'advisers' => $advisers,
-            'appointment' => $appointment // Add this line to pass appointment
+            'appointment' => $appointment,
+            'allSignaturesFilled' => $allSignaturesFilled  // Pass the signature completion status to the view
         ];
     
         // Return the view with the data
         return view('gsstudent.route1.GSSroute1', $data);
     }
-    
-    
-    
-    
     
     public function sign(Request $request)
     {

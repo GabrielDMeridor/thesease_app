@@ -251,8 +251,12 @@
 
 
 
+// In your routes file
+Route::post('/professor/route1/{appointmentId}/consultation-and-sign', [TDPRoute1Controller::class, 'addConsultationDatesAndSign'])->name('professor.addConsultationDatesAndSign');
 
 
+Route::post('/professor/save-consultation-date', [TDPRoute1Controller::class, 'saveConsultationDate'])->name('professor.saveConsultationDate');
+Route::post('/professor/remove-consultation-date', [TDPRoute1Controller::class, 'removeConsultationDate'])->name('professor.removeConsultationDate');
 
 
 

@@ -34,6 +34,7 @@ class TDPRoute1Controller extends Controller
             'advisees' => $advisees,
             'title' => 'Professor Dashboard',
             'user' => auth()->user(),
+            
         ]);
     }
 
@@ -144,6 +145,95 @@ public function signRoutingForm(Request $request, $id)
 
     return redirect()->back()->with('success', 'Your signature has been affixed to the form.');
 }
+
+public function addConsultationDatesAndSign(Request $request, $appointmentId)
+{
+    // Find the appointment
+    $appointment = AdviserAppointment::findOrFail($appointmentId);
+
+    // Ensure the logged-in user is the assigned adviser
+    if ($appointment->adviser_id !== auth()->user()->id) {
+        return redirect()->back()->with('error', 'You are not authorized to sign this form.');
+    }
+
+    // Save consultation dates (convert to JSON format)
+    if ($request->has('consultation_dates')) {
+        $appointment->consultation_dates = json_encode($request->input('consultation_dates')); // Saving the dates as JSON
+    }
+
+    
+    // Affix the endorsement signature
+    if (is_null($appointment->adviser_endorsement_signature)) {
+        $appointment->adviser_endorsement_signature = auth()->user()->name;
+    }
+
+    // Save the changes
+    $appointment->save();
+
+    // Redirect back with success message
+    return redirect()->back()->with('success', 'Consultation dates saved and endorsement signature affixed.');
+}
+
+public function saveConsultationDate(Request $request)
+{
+    // Validate incoming data
+    $request->validate([
+        'consultation_date' => 'required|date',
+        'appointment_id' => 'required|exists:adviser_appointments,id'
+    ]);
+
+    // Find the appointment
+    $appointment = AdviserAppointment::findOrFail($request->appointment_id);
+
+    // Ensure the logged-in user is the assigned adviser
+    if ($appointment->adviser_id !== auth()->user()->id) {
+        return response()->json(['success' => false, 'message' => 'Unauthorized action.'], 403);
+    }
+
+    // Append the new date to the existing consultation dates
+    $existingDates = $appointment->consultation_dates ? json_decode($appointment->consultation_dates) : [];
+    $existingDates[] = $request->consultation_date;
+
+    // Save the updated dates back to the database
+    $appointment->consultation_dates = json_encode($existingDates);
+    $appointment->save();
+
+    return response()->json(['success' => true]);
+}
+
+public function removeConsultationDate(Request $request)
+{
+    // Validate the request data
+    $request->validate([
+        'consultation_date' => 'required|date',
+        'appointment_id' => 'required|exists:adviser_appointments,id'
+    ]);
+
+    // Find the appointment
+    $appointment = AdviserAppointment::findOrFail($request->appointment_id);
+
+    // Ensure the logged-in user is the assigned adviser
+    if ($appointment->adviser_id !== auth()->user()->id) {
+        return response()->json(['success' => false, 'message' => 'Unauthorized action.'], 403);
+    }
+
+    // Get the existing consultation dates from the database
+    $existingDates = $appointment->consultation_dates ? json_decode($appointment->consultation_dates) : [];
+
+    // Remove the date from the array
+    $newDates = array_filter($existingDates, function ($date) use ($request) {
+        return $date !== $request->consultation_date;
+    });
+
+    // Update the consultation_dates field with the new array
+    $appointment->consultation_dates = json_encode(array_values($newDates)); // reindex the array
+    $appointment->save();
+
+    return response()->json(['success' => true]);
+}
+
+
+
 
 
 

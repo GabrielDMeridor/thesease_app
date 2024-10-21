@@ -22,7 +22,7 @@ class UserAuthController extends Controller
             'password' => 'required'
         ]);
     
-        // Attempt to authenticate the user
+        // Attempt to authenticate the user for different account types
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'account_type' => 4])) {
             $user = Auth::user();
             if ($user->verification_status === 'verified') {
@@ -32,6 +32,7 @@ class UserAuthController extends Controller
                 return redirect()->back()->with('error', 'Your account is not verified');
             }
         }
+    
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'account_type' => 5])) {
             $user = Auth::user();
             if ($user->verification_status === 'verified') {
@@ -41,7 +42,7 @@ class UserAuthController extends Controller
                 return redirect()->back()->with('error', 'Your account is not verified');
             }
         }
-
+    
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'account_type' => 6])) {
             $user = Auth::user();
             if ($user->verification_status === 'verified') {
@@ -51,6 +52,7 @@ class UserAuthController extends Controller
                 return redirect()->back()->with('error', 'Your account is not verified');
             }
         }
+    
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'account_type' => 7])) {
             $user = Auth::user();
             if ($user->verification_status === 'verified') {
@@ -60,6 +62,7 @@ class UserAuthController extends Controller
                 return redirect()->back()->with('error', 'Your account is not verified');
             }
         }
+    
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'account_type' => 8])) {
             $user = Auth::user();
             if ($user->verification_status === 'verified') {
@@ -69,6 +72,7 @@ class UserAuthController extends Controller
                 return redirect()->back()->with('error', 'Your account is not verified');
             }
         }
+    
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'account_type' => 9])) {
             $user = Auth::user();
             if ($user->verification_status === 'verified') {
@@ -78,6 +82,7 @@ class UserAuthController extends Controller
                 return redirect()->back()->with('error', 'Your account is not verified');
             }
         }
+    
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'account_type' => 10])) {
             $user = Auth::user();
             if ($user->verification_status === 'verified') {
@@ -87,12 +92,17 @@ class UserAuthController extends Controller
                 return redirect()->back()->with('error', 'Your account is not verified');
             }
         }
+    
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'account_type' => 11])) {
             $user = Auth::user();
             // Allow login regardless of verification status
             return redirect()->route('GSSdashboard')->with('success', 'Login Successful');
         }
+    
+        // If none of the login attempts were successful
+        return redirect()->back()->with('error', 'Invalid credentials');
     }
+    
 
     public function logout()
     {

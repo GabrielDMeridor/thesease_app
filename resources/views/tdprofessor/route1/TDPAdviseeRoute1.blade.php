@@ -74,6 +74,8 @@
 
 @section('body')
 
+@section('body')
+
 <!-- Title Section -->
 <div class="container-fluid">
     <div class="sagreet">{{ $title }}</div> <!-- Title like "Routing Form 1 for student_name" -->
@@ -81,107 +83,157 @@
 </div>
 
 <div class="card shadow mb-4">
-        <div class="card-header">
-        </div>
+    <div class="card-header">
+    </div>
 
-        <br>
-<!-- Multi-Step Navigation -->
+    <br>
+    <!-- Multi-Step Navigation -->
+    <div class="container-fluid">
+        <div class="steps">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                @for ($step = 1; $step <= 12; $step++)  <!-- Adjust the number of steps as needed -->
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab" 
+                           data-toggle="pill" href="#pills-step-{{ $step }}" role="tab" aria-controls="pills-step-{{ $step }}" 
+                           aria-selected="{{ $step === 1 ? 'true' : 'false' }}">
+                            Step {{ $step }}
+                        </a>
+                    </li>
+                @endfor
+            </ul>
+        </div>
+    </div>
+
+    <!-- Step Content -->
+    <div class="tab-content" id="pills-tabContent">
+        @for ($step = 1; $step <= 12; $step++)  <!-- Adjust the number of steps as needed -->
+            <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}" role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
+                @if ($step === 1)
+                    <!-- Step 1: Adviser Form Content -->
+                    <div class="container-fluid">
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <form method="POST" action="{{ route('professor.signRoutingForm', $appointment->id) }}">
+                                    @csrf
+                                    @method('PUT')
+
+                                    <h4>Appointment Details</h4>
+
+                                    <!-- Date Display -->
+                                    <div class="form-group">
+                                        <label for="date">Date:</label>
+                                        @if ($appointment && $appointment->completed_at)
+                                            <input type="text" name="date" value="{{ $appointment->completed_at->toDateString() }}" class="form-control" readonly>
+                                        @else
+                                            <input type="text" name="date" value="{{ now()->toDateString() }}" class="form-control" readonly>
+                                        @endif
+                                    </div>
+
+                                    <!-- Program -->
+                                    <div class="form-group">
+                                        <label for="program">Program:</label>
+                                        <input type="text" name="program" value="{{ $advisee->program }}" class="form-control" readonly>
+                                    </div>
+
+                                    <!-- Adviser Type -->
+                                    <div class="form-group">
+                                        <label for="appointment_type">Adviser Type:</label>
+                                        <input type="text" name="appointment_type" value="{{ $appointment->appointment_type }}" class="form-control" readonly>
+                                    </div>
+
+                                    <hr>
+
+                                    <!-- Signatures -->
+                                    <h4>Signatures</h4>
+
+                                    <!-- Adviser Signature -->
+                                    <div class="form-group">
+                                        <label for="adviser_signature">Adviser Signature:</label>
+                                        @if (is_null($appointment->adviser_signature))
+                                            <input type="text" name="adviser_signature" class="form-control" placeholder="Sign here">
+                                        @else
+                                            <input type="text" name="adviser_signature" class="form-control" value="{{ $appointment->adviser_signature }}" readonly>
+                                        @endif
+                                    </div>
+
+                                    <!-- Program Chair Signature -->
+                                    <div class="form-group">
+                                        <label for="chair_signature">Program Chair Signature:</label>
+                                        <input type="text" name="chair_signature" class="form-control" value="{{ $appointment->chair_signature ?? 'Pending' }}" readonly>
+                                    </div>
+
+                                    <!-- Dean Signature -->
+                                    <div class="form-group">
+                                        <label for="dean_signature">Dean Signature:</label>
+                                        <input type="text" name="dean_signature" class="form-control" value="{{ $appointment->dean_signature ?? 'Pending' }}" readonly>
+                                    </div>
+
+                                    <!-- Submit Button for Signature -->
+                                    @if (is_null($appointment->adviser_signature))
+                                        <button type="submit" class="btn btn-affix" style="color:white;">Affix Adviser's Signature</button>
+                                    @endif
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                @elseif ($step === 2)
+<!-- Step 2: Consultation with Adviser and Endorsement Signature -->
 <div class="container-fluid">
-    <div class="steps">
-        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-            @for ($step = 1; $step <= 12; $step++)  <!-- Adjust the number of steps as needed -->
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab" 
-                       data-toggle="pill" href="#pills-step-{{ $step }}" role="tab" aria-controls="pills-step-{{ $step }}" 
-                       aria-selected="{{ $step === 1 ? 'true' : 'false' }}">
-                        Step {{ $step }}
-                    </a>
-                </li>
-            @endfor
-        </ul>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h4>Consultation with Adviser and Endorsement Signature</h4>
+
+            <form method="POST" action="{{ route('professor.addConsultationDatesAndSign', $appointment->id) }}">
+                @csrf
+
+                <!-- Dynamic Consultation Dates Section -->
+                <div class="form-group">
+                    <label for="consultation_dates">Consultation Dates:</label>
+                    <div id="consultation_dates_container">
+                        @if ($appointment->consultation_dates)
+                            @foreach (json_decode($appointment->consultation_dates) as $date)
+                                <div class="input-group mb-2">
+                                    <input type="date" name="consultation_dates[]" class="form-control" value="{{ $date }}" readonly>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-danger" type="button" onclick="removeConsultationDate(this)">Remove</button>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
+
+                    <!-- Button to add more consultation dates -->
+                    <button type="button" class="btn btn-primary" onclick="addConsultationDate()">Add Date</button>
+                </div>
+
+                <!-- Endorsement Signature -->
+                <div class="form-group">
+                    <label for="adviser_endorsement_signature">Adviser Endorsement Signature:</label>
+                    @if (is_null($appointment->adviser_endorsement_signature))
+                        <button type="submit" class="btn btn-success">Affix Endorsement Signature</button>
+                    @else
+                        <p class="text-success">Endorsement signature affixed on {{ $appointment->updated_at->toDateString() }}. Step 3 is now unlocked.</p>
+                    @endif
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<!-- Step Content -->
-<div class="tab-content" id="pills-tabContent">
-    @for ($step = 1; $step <= 12; $step++)  <!-- Adjust the number of steps as needed -->
-        <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}" role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
-            @if ($step === 1)
-                <!-- Step 1: Adviser Form Content -->
-                <div class="container-fluid">
-                    <div class="card shadow mb-4">
-                        <div class="card-body">
-                            <form method="POST" action="{{ route('professor.signRoutingForm', $appointment->id) }}">
-                                @csrf
-                                @method('PUT')
 
-                                <h4>Appointment Details</h4>
 
-                                <!-- Date Display -->
-                                <div class="form-group">
-                                    <label for="date">Date:</label>
-                                    @if ($appointment && $appointment->completed_at)
-                                        <input type="text" name="date" value="{{ $appointment->completed_at->toDateString() }}" class="form-control" readonly>
-                                    @else
-                                        <input type="text" name="date" value="{{ now()->toDateString() }}" class="form-control" readonly>
-                                    @endif
-                                </div>
-
-                                <!-- Program -->
-                                <div class="form-group">
-                                    <label for="program">Program:</label>
-                                    <input type="text" name="program" value="{{ $advisee->program }}" class="form-control" readonly>
-                                </div>
-
-                                <!-- Adviser Type -->
-                                <div class="form-group">
-                                    <label for="appointment_type">Adviser Type:</label>
-                                    <input type="text" name="appointment_type" value="{{ $appointment->appointment_type }}" class="form-control" readonly>
-                                </div>
-
-                                <hr>
-
-                                <!-- Signatures -->
-                                <h4>Signatures</h4>
-
-                                <!-- Adviser Signature -->
-                                <div class="form-group">
-                                    <label for="adviser_signature">Adviser Signature:</label>
-                                    @if (is_null($appointment->adviser_signature))
-                                        <input type="text" name="adviser_signature" class="form-control" placeholder="Sign here">
-                                    @else
-                                        <input type="text" name="adviser_signature" class="form-control" value="{{ $appointment->adviser_signature }}" readonly>
-                                    @endif
-                                </div>
-
-                                <!-- Program Chair Signature -->
-                                <div class="form-group">
-                                    <label for="chair_signature">Program Chair Signature:</label>
-                                    <input type="text" name="chair_signature" class="form-control" value="{{ $appointment->chair_signature ?? 'Pending' }}" readonly>
-                                </div>
-
-                                <!-- Dean Signature -->
-                                <div class="form-group">
-                                    <label for="dean_signature">Dean Signature:</label>
-                                    <input type="text" name="dean_signature" class="form-control" value="{{ $appointment->dean_signature ?? 'Pending' }}" readonly>
-                                </div>
-
-                                <!-- Submit Button for Signature -->
-                                @if (is_null($appointment->adviser_signature))
-                                    <button type="submit" class="btn btn-affix" style="color:white;">Affix Adviser's Signature</button>
-                                @endif
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            @else
-                <p>Step {{ $step }} content goes here.</p>
-            @endif
-        </div>
-    @endfor
-    </div>
-            <div class="card-footer footersaroute1">
+                @else
+                    <!-- Lock the content if adviser's signature is not affixed -->
+                    @if ($step > 2 && is_null($appointment->adviser_endorsement_signature))
+                        <p class="text-muted">Step {{ $step }} is locked. Please affix the adviser's endorsement signature in Step 2 to proceed.</p>
+                    @else
+                        <p>Step {{ $step }} content goes here.</p>
+                    @endif
+                @endif
             </div>
+        @endfor
+    </div>
 </div>
 
 @endsection
@@ -213,3 +265,81 @@
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     }
 </style>
+
+<!-- JavaScript for adding/removing consultation dates -->
+<script>
+    function addConsultationDate() {
+        const container = document.getElementById('consultation_dates_container');
+        const inputGroup = document.createElement('div');
+        inputGroup.classList.add('input-group', 'mb-2');
+        inputGroup.innerHTML = `
+            <input type="date" name="consultation_dates[]" class="form-control" required onchange="saveDateToDatabase(this)">
+            <div class="input-group-append">
+                <button class="btn btn-danger" type="button" onclick="removeConsultationDate(this)">Remove</button>
+            </div>
+        `;
+        container.appendChild(inputGroup);
+    }
+
+    function removeConsultationDate(button) {
+        const inputGroup = button.closest('.input-group');
+        const dateValue = inputGroup.querySelector('input').value;
+        const appointmentId = {{ $appointment->id }};
+        
+        // Send AJAX request to remove the date from the database
+        if (dateValue) {
+            fetch('{{ route('professor.removeConsultationDate') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({
+                    consultation_date: dateValue,
+                    appointment_id: appointmentId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Date removed successfully');
+                    inputGroup.remove(); // Remove the input group from the DOM
+                } else {
+                    alert('Error removing date');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+
+    // AJAX function to save date to database
+    function saveDateToDatabase(input) {
+        const dateValue = input.value;
+        const appointmentId = {{ $appointment->id }};
+
+        // Only proceed if the user has selected a date
+        if (dateValue) {
+            // Send AJAX request to server to save the date
+            fetch('{{ route('professor.saveConsultationDate') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({
+                    consultation_date: dateValue,
+                    appointment_id: appointmentId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Date saved successfully');
+                } else {
+                    alert('Error saving date');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+</script>
