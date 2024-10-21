@@ -9,8 +9,8 @@ class AProfileController extends Controller
 {
     public function Adashboard()
     {
-        if (!auth()->check() || auth()->user()->account_type !== 2) {
-            return redirect()->route('getLogin')->with('error', 'You must be logged in as a superadmin to access this page');
+        if (!auth()->check() || auth()->user()->account_type !== 3) {
+            return redirect()->route('getLogin')->with('error', 'You must be logged in as an admin to access this page');
         }
         
         $data = [

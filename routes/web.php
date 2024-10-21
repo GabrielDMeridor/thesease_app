@@ -18,6 +18,14 @@
 
 
     use App\Http\Controllers\GraduateSchool\GSProfileController;
+    use App\Http\Controllers\GraduateSchool\GSAccountController;
+    use App\Http\Controllers\GraduateSchool\GSVerifyUserController;
+    use App\Http\Controllers\GraduateSchool\GSRoute1Controller;
+    use App\Http\Controllers\GraduateSchool\GSArchiveController;
+
+
+
+
 
     use App\Http\Controllers\ProgramChair\PCProfileController;
     use App\Http\Controllers\ProgramChair\PCRoute1Controller;
@@ -126,6 +134,31 @@
 
     //GraduateSchool Routes Dashboard and Sidebar
     Route::get('/graduateschool/dashboard', [GSProfileController::class, 'GSdashboard'])->name('GSdashboard');
+    // GraduateSchool Account
+    Route::get('/graduateschool/account', action: [GSAccountController::class, 'GSaccount'])->name('graduateschool.account');
+    Route::put('/graduateschool/update-profile', [GSAccountController::class, 'updateProfile'])->name('graduateschool.updateProfile');
+    Route::put('/graduateschool/change-password', [GSAccountController::class, 'changePassword'])->name('graduateschool.changePassword');
+    //Graduate School Verify Users
+    Route::get('/graduateschool/verifyusers', [GSVerifyUserController::class, 'index'])->name('graduateschool.verify-users.index');
+    Route::post('/graduateschool/verifyusers', [GSVerifyUserController::class, 'verifyUsers'])->name('graduateschool.verify-users.verify');
+    Route::patch('/graduateschool/verifyusers/{user}', [GSVerifyUserController::class, 'updateVerificationStatus']);
+    Route::delete('/graduateschool/verifyusers/{id}', [GSVerifyUserController::class, 'destroy'])->name(name: 'graduateschool.verify-users.destroy');
+    Route::post('/graduateschool/verifyusers/disapprove', [GSVerifyUserController::class, 'disapprove'])->name('graduateschool.verify-users.disapprove');
+    //Gradute School Route 1
+    Route::get('/graduateschoolgraduateschool/route1', action: [GSRoute1Controller::class, 'show'])->name('graduateschool.route1');
+    //Route for showiing routing form for admin for a specific student
+    Route::get('/graduateschool/route1/student/{studentId}', [GSRoute1Controller::class, 'showRoutingForm'])->name('graduateschool.showRoutingForm');
+    Route::post('/graduateschool/route1/student/{studentId}/sign', [GSRoute1Controller::class, 'sign'])->name('graduateschool.sign');
+    //Graduate School Archive
+    Route::get('/graduateschool/archive', action: [GSArchiveController::class, 'index'])->name('graduateschool.archive');
+
+
+
+
+
+
+
+
 
     //Programchair Routes Dashboard and Sidebar
     Route::get('/programchair/dashboard', [PCProfileController::class, 'PCdashboard'])->name('PCdashboard');

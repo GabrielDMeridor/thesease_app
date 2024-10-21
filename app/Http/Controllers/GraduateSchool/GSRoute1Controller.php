@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\GraduateSchool;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\AdviserAppointment;
 use App\Models\User;
 
-class ARoute1Controller extends Controller
+class GSRoute1Controller extends Controller
 {
     public function show(Request $request)
     {
-        // Ensure the user is logged in as Admin or Dean (assuming Admin type is User::Admin)
-        if (!auth()->check() || auth()->user()->account_type !== User::Admin) {
-            return redirect()->route('getLogin')->with('error', 'You must be logged in as an admin to access this page');
+        // Ensure the user is logged in as GraduateSchool or Dean (assuming GraduateSchool type is User::GraduateSchool)
+        if (!auth()->check() || auth()->user()->account_type !== User::GraduateSchool) {
+            return redirect()->route('getLogin')->with('error', 'You must be logged in as an graduate school to access this page');
         }
 
         // Query to fetch students with an approved adviser appointment
@@ -34,7 +34,7 @@ class ARoute1Controller extends Controller
         $title = "Routing Form 1 Checking";
 
         // Pass $title and $students to the view
-        return view('admin.route1.Aroute1', compact('students', 'title'));
+        return view('graduateschool.route1.GSroute1', compact('students', 'title'));
     }
 
     public function showRoutingForm($studentId)
@@ -47,7 +47,7 @@ class ARoute1Controller extends Controller
         $title = 'Routing Form 1 for ' . $student->name;
     
         // Pass the title along with the other data to the view
-        return view('admin.route1.AStudentRoute1', compact('student', 'appointment', 'title'));
+        return view('graduateschool.route1.GSStudentRoute1', compact('student', 'appointment', 'title'));
     }
     
     public function sign(Request $request, $studentId)
@@ -56,14 +56,14 @@ class ARoute1Controller extends Controller
         $appointment = AdviserAppointment::where('student_id', $studentId)->first();
 
         // Ensure the logged-in user is the Admin or Dean
-        if ($appointment && auth()->user()->account_type === User::Admin) {
+        if ($appointment && auth()->user()->account_type === User::GraduateSchool) {
             // Affix the Admin's signature (or Dean's signature)
             $appointment->dean_signature = auth()->user()->name;
             $appointment->save();
 
-            return redirect()->route('admin.showRoutingForm', $studentId)->with('success', 'You have successfully signed the form.');
+            return redirect()->route('graduateschool.showRoutingForm', $studentId)->with('success', 'You have successfully signed the form.');
         }
 
-        return redirect()->route('admin.showRoutingForm', $studentId)->with('error', 'Unable to sign the form.');
+        return redirect()->route('graduateschool.showRoutingForm', $studentId)->with('error', 'Unable to sign the form.');
     }
 }

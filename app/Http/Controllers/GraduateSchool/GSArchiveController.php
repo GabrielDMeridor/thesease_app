@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\GraduateSchool;
 
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class AArchiveController extends Controller
+class GSArchiveController extends Controller
 {
     public function index(Request $request)
     {
-        // Ensure the user is authenticated and is an admin
-        if (!auth()->check() || auth()->user()->account_type !== User::Admin) {
-            return redirect()->route('getLogin')->with('error', 'You must be logged in as an admin to access this page.');
+        // Ensure the user is authenticated and is an graduateschool
+        if (!auth()->check() || auth()->user()->account_type !== User::GraduateSchool) {
+            return redirect()->route('getLogin')->with('error', 'You must be logged in as an graduate school to access this page.');
         }
     
         // Get the keyword from the request for filtering
@@ -31,7 +31,7 @@ class AArchiveController extends Controller
         ->orderBy('created_at', 'desc') // Order users by latest created
         ->paginate(10); // Paginate 10 users per page
     
-        return view('admin.archive.Aarchive', [
+        return view('graduateschool.archive.GSarchive', [
             'title' => 'Archive',
             'users' => $users, // Pass users and their file info to the view
         ]);
