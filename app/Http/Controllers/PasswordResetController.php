@@ -51,10 +51,22 @@ class PasswordResetController extends Controller
     // Show the form to reset the password (after clicking the email link)
     public function showNewPasswordForm($token)
     {
+        // Check if the token exists in the password_reset_tokens table
+        $resetToken = DB::table('password_reset_tokens')
+                        ->where('token', $token)
+                        ->first();
+    
+        // If the token is invalid or does not exist, redirect to the login page or an error page
+        if (!$resetToken) {
+            return redirect('/login')->with('error', 'Invalid or already used password reset link.');
+        }
+    
+        // If the token is valid, display the password reset form
         return view('newpassword', ['token' => $token]);
     }
-
+    
     // Handle the password reset form submission
+// Handle the password reset form submission
     public function resetPassword(Request $request)
     {
         $request->validate([
@@ -81,6 +93,8 @@ class PasswordResetController extends Controller
         // Delete the token from password_reset_tokens table after successful reset
         DB::table('password_reset_tokens')->where('email', $request->email)->delete();
 
+        // Redirect to the login page after password reset
         return redirect('/login')->with('success', 'Password has been reset successfully.');
     }
+
 }

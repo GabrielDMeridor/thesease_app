@@ -26,20 +26,22 @@
                         @csrf
                         <input type="hidden" name="token" value="{{ $token }}">
 
+                        <!-- Email Field -->
                         <div class="form-floating mb-3">
                             <label for="email" class="entries">Email</label>
-                            <input class="form-control @error('email') is-invalid @enderror" id="email" type="email" name="email" required placeholder="Enter your email">
+                            <input class="form-control @error('email') is-invalid @enderror" id="email" type="email" name="email" value="{{ old('email') }}" required placeholder="Enter your email">
                             @error('email')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
                         </div>
 
+                        <!-- New Password Field with Eye Icon -->
                         <div class="form-floating mb-3">
-                            <label for="password" class="entries">New Password</label>
+                            <label for="passwordReset" class="entries">New Password</label>
                             <div class="input-group">
-                                <input class="form-control @error('password') is-invalid @enderror" id="password" type="password" name="password" required placeholder="New password">
+                                <input class="form-control @error('password') is-invalid @enderror" id="passwordReset" type="password" name="password" required placeholder="New password">
                                 <span class="input-group-text" style="cursor: pointer;">
-                                    <i class="fas fa-eye" id="togglePassword"></i>
+                                    <i class="fa fa-eye" id="togglePasswordReset"></i>
                                 </span>
                             </div>
                             @error('password')
@@ -47,12 +49,13 @@
                             @enderror
                         </div>
 
+                        <!-- Confirm Password Field with Eye Icon -->
                         <div class="form-floating mb-3">
-                            <label for="password_confirmation" class="entries">Confirm Password</label>
+                            <label for="passwordConfirmationReset" class="entries">Confirm Password</label>
                             <div class="input-group">
-                                <input class="form-control @error('password_confirmation') is-invalid @enderror" id="password_confirmation" type="password" name="password_confirmation" required placeholder="Confirm password">
+                                <input class="form-control @error('password_confirmation') is-invalid @enderror" id="passwordConfirmationReset" type="password" name="password_confirmation" required placeholder="Confirm password">
                                 <span class="input-group-text" style="cursor: pointer;">
-                                    <i class="fas fa-eye" id="toggleConfirmPassword"></i>
+                                    <i class="fa fa-eye" id="toggleConfirmPasswordReset"></i>
                                 </span>
                             </div>
                             @error('password_confirmation')
@@ -70,3 +73,35 @@
         </div>
     </div>
 @endsection
+
+<!-- Load FontAwesome -->
+@push('head')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+@endpush
+
+<!-- Script for toggling password visibility -->
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Toggle for New Password field
+        const togglePasswordReset = document.querySelector('#togglePasswordReset');
+        const passwordReset = document.querySelector('#passwordReset');
+
+        togglePasswordReset.addEventListener('click', function () {
+            const type = passwordReset.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordReset.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash'); // Toggle the eye icon
+        });
+
+        // Toggle for Confirm Password field
+        const toggleConfirmPasswordReset = document.querySelector('#toggleConfirmPasswordReset');
+        const confirmPasswordReset = document.querySelector('#passwordConfirmationReset');
+
+        toggleConfirmPasswordReset.addEventListener('click', function () {
+            const type = confirmPasswordReset.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordReset.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash'); // Toggle the eye icon
+        });
+    });
+</script>
+@endpush

@@ -149,7 +149,7 @@
     //Route for showiing routing form for admin for a specific student
     Route::get('/graduateschool/route1/student/{studentId}', [GSRoute1Controller::class, 'showRoutingForm'])->name('graduateschool.showRoutingForm');
     Route::post('/graduateschool/route1/student/{studentId}/sign', [GSRoute1Controller::class, 'sign'])->name('graduateschool.sign');
-    //Graduate School Archive
+    //Graduate School ArchiveF
     Route::get('/graduateschool/archive', action: [GSArchiveController::class, 'index'])->name('graduateschool.archive');
 
 

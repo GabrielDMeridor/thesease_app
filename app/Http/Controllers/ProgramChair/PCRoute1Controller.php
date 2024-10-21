@@ -18,11 +18,10 @@ class PCRoute1Controller extends Controller
             return redirect()->route('getLogin')->with('error', 'You must be logged in as a Program Chair to access this page.');
         }
     
-        // Fetch students who are in the Program Chair's program and either:
-        // 1. Don't have an adviser, OR
-        // 2. Have a disapproved appointment
+        // Fetch students who are in the Program Chair's program and have verification_status = 'approved'
         $students = User::where('program', $programChair->program)
                         ->where('account_type', 11) // Assuming 11 is the account_type for students
+                        ->where('verification_status', 'verified') // Only approved students
                         ->where(function ($query) {
                             $query->whereDoesntHave('adviserAppointment') // No adviser yet
                                   ->orWhereHas('adviserAppointment', function ($subQuery) {
@@ -34,6 +33,7 @@ class PCRoute1Controller extends Controller
         // Fetch students with approved advisers
         $approvedStudents = User::where('program', $programChair->program)
                                 ->where('account_type', 11) // Students
+                                ->where('verification_status', 'verified') // Only approved students
                                 ->whereHas('adviserAppointment', function ($query) {
                                     $query->where('status', 'approved'); // Adviser approved
                                 })
@@ -48,6 +48,7 @@ class PCRoute1Controller extends Controller
     
         return view('programchair.route1.PCroute1', compact('students', 'approvedStudents', 'advisers', 'programChair', 'title'));
     }
+    
     
     
 
