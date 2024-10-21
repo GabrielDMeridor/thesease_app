@@ -9,6 +9,13 @@
 
 
     use App\Http\Controllers\Admin\AProfileController;
+    use App\Http\Controllers\Admin\AAccountController;
+    use App\Http\Controllers\Admin\AVerifyUserController;
+    use App\Http\Controllers\Admin\ARoute1Controller;
+    use App\Http\Controllers\Admin\AArchiveController;
+
+
+
 
     use App\Http\Controllers\GraduateSchool\GSProfileController;
 
@@ -69,7 +76,7 @@
 
     //SuperAdmin Route 1
     Route::get('/superadmin/route1', action: [SARoute1Controller::class, 'show'])->name('superadmin.route1');
-        //Route for showiing routing form for superadmin for a specific student
+    //Route for showiing routing form for superadmin for a specific student
     Route::get('/superadmin/route1/student/{studentId}', [SARoute1Controller::class, 'showRoutingForm'])->name('superadmin.showRoutingForm');
     Route::post('/superadmin/route1/student/{studentId}/sign', [SARoute1Controller::class, 'sign'])->name('superadmin.sign');
 
@@ -96,6 +103,26 @@
 
     //Admin Routes Dashboard and Sidebar
     Route::get('/admin/dashboard', [AProfileController::class, 'Adashboard'])->name('Adashboard');
+    // Admin Account
+    Route::get('/admin/account', action: [AAccountController::class, 'Aaccount'])->name('admin.account');
+    Route::put('/admin/update-profile', [AAccountController::class, 'updateProfile'])->name('admin.updateProfile');
+    Route::put('/admin/change-password', [AAccountController::class, 'changePassword'])->name('admin.changePassword');
+    // Admin Veify Uesrs
+    Route::get('/admin/verifyusers', [AVerifyUserController::class, 'index'])->name('admin.verify-users.index');
+    Route::post('/admin/verifyusers', [AVerifyUserController::class, 'verifyUsers'])->name('admin.verify-users.verify');
+    Route::patch('/admin/verifyusers/{user}', [AVerifyUserController::class, 'updateVerificationStatus']);
+    Route::delete('/admin/verifyusers/{id}', [AVerifyUserController::class, 'destroy'])->name(name: 'admin.verify-users.destroy');
+    Route::post('/admin/verifyusers/disapprove', [AVerifyUserController::class, 'disapprove'])->name('admin.verify-users.disapprove');
+    // Admin Route 1
+    Route::get('/admin/route1', action: [ARoute1Controller::class, 'show'])->name('admin.route1');
+    //Route for showiing routing form for admin for a specific student
+    Route::get('/admin/route1/student/{studentId}', [ARoute1Controller::class, 'showRoutingForm'])->name('admin.showRoutingForm');
+    Route::post('/admin/route1/student/{studentId}/sign', [ARoute1Controller::class, 'sign'])->name('admin.sign');
+    // Admin Archive
+    Route::get('/admin/archive', action: [AArchiveController::class, 'index'])->name('admin.archive');
+
+
+
 
     //GraduateSchool Routes Dashboard and Sidebar
     Route::get('/graduateschool/dashboard', [GSProfileController::class, 'GSdashboard'])->name('GSdashboard');
