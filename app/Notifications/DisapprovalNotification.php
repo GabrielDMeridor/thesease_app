@@ -26,7 +26,7 @@ class DisapprovalNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'message' => 'Your account has been disapproved.',
+            'message' => 'Your account has been disapproved',
             'reason' => $this->disapproveReason,
         ];
     }

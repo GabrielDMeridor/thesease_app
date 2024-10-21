@@ -93,7 +93,7 @@ class PCRoute1Controller extends Controller
             ]
         );
 
-        return redirect()->route('programchair.assignAdviser')->with('success', 'Adviser has been successfully assigned to the student.Please wait for the adviser decision');
+        return redirect()->route('programchair.assignAdviser')->with('success', 'Adviser has been successfully assigned to the student. Please wait for the adviser decision');
     }
 
     // Method to determine the adviser type based on the student's program

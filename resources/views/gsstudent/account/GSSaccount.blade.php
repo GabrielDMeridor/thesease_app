@@ -9,50 +9,46 @@
         <i class="fa fa-bars"></i>
     </button>
     <ul class="navbar-nav ml-auto">
-         <!-- Notification Button -->
-         <li class="nav-item dropdown no-arrow mx-1">
+        <!-- Notifications Dropdown -->
+        <li class="nav-item dropdown no-arrow mx-1">
             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
-                <!-- Counter for Notifications -->
-                <span class="badge badge-danger badge-counter">3+</span>
+                <span class="badge badge-danger badge-counter">{{ auth()->user()->unreadNotifications->count() }}</span>
             </a>
-            <!-- Dropdown - Alerts -->
             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
                 <h6 class="dropdown-header">Notifications Center</h6>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="mr-3">
-                        <div class="icon-circle bg-primary">
-                            <i class="fas fa-file-alt text-white"></i>
+
+                <!-- Loop through all notifications -->
+                @foreach (auth()->user()->notifications as $notification)
+                    <a class="dropdown-item d-flex align-items-center {{ $notification->read_at ? 'text-muted' : 'font-weight-bold' }}" href="#" onclick="markAsRead('{{ $notification->id }}')">
+                        <div class="mr-3">
+                            <div class="icon-circle">
+                                <i class="fa-solid fa-bell"></i>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <div class="small text-gray-500">December 12, 2023</div>
-                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                    </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="mr-3">
-                        <div class="icon-circle bg-success">
-                            <i class="fas fa-donate text-white"></i>
+                        <div>
+                            <div class="small text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
+                            <span>{{ $notification->data['message'] }}</span>
+                            <!-- Conditionally display the reason if it exists -->
+                            @if (!empty($notification->data['reason']))
+                                <p class="mb-0 text-gray-700">Reason: {{ $notification->data['reason'] }}</p>
+                            @endif
                         </div>
-                    </div>
-                    <div>
-                        <div class="small text-gray-500">December 7, 2023</div>
-                        $290.29 has been deposited into your account!
-                    </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="mr-3">
-                        <div class="icon-circle bg-warning">
-                            <i class="fas fa-exclamation-triangle text-white"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="small text-gray-500">December 2, 2023</div>
-                        Spending Alert: We've noticed unusually high spending for your account.
-                    </div>
-                </a>
-                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                    </a>
+                @endforeach
+
+                <!-- Mark all as read link -->
+                <div class="dropdown-item text-center small text-gray-500">
+                    <a href="{{ route('notifications.markAsRead') }}">Mark all as read</a>
+                </div>
+
+                <!-- Clear all notifications button -->
+                <div class="dropdown-item text-center small text-gray-500">
+                    <form action="{{ route('notifications.clearAll') }}" method="POST">
+                        @csrf
+                        <button class="btn btn-link" type="submit">Clear all notifications</button>
+                    </form>
+                </div>
             </div>
         </li>
         <div class="topbar-divider d-none d-sm-block"></div>
@@ -95,7 +91,6 @@
                     <p>{{ $user->email }}</p>
                     <p><strong>Degree:</strong> {{ $user->degree ?? 'N/A' }}</p>
                     <p><strong>Program:</strong> {{ $user->program ?? 'N/A' }}</p>
-                    <p><strong>Academic Year:</strong> 2026 - 2027</p>
                     <button type="button" class="btn btn-affix update-profile-btn" style="color:white;" data-toggle="modal" data-target="#changePasswordModal">Change Password</button>
                         
                         
@@ -122,48 +117,6 @@
             </div>
         </div>
     </div>
-
-    <div class="container">
-    <h1 class="text-center mb-5">Manage your account</h1>
-
-    <div class="row">
-        <!-- Account Information Section -->
-        <div class="col-md-5">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Account Information</h5>
-                    <p><strong>Name:</strong> {{ $user->name }}
-                    @if (strtolower($user->nationality) !== 'filipino')
-                        <i class="fas fa-globe"></i> <!-- Globe icon for foreign nationals -->
-                    @endif
-                    </p>
-                    <p><strong>Degree:</strong> {{ $user->degree ?? 'N/A' }}</p>
-                    <p><strong>Program:</strong> {{ $user->program ?? 'N/A' }}</p>
-                    <p><strong>Email:</strong> {{ $user->email }}</p>
-                    <p><strong>A.Y.:</strong> 2026 - 2027</p>
-                    <button type="button" class="btn btn-primary update-profile-btn" data-toggle="modal" data-target="#changePasswordModal">Change Password</button>
-                    </div>
-            </div>
-        </div>
-
-        <!-- Thesis Details Section -->
-        <div class="col-md-7">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Your Thesis Details</h5>
-                    <p><strong>Thesis Topic:</strong> The Stress-Relieving Effects of Reading: A Comparative Analysis of Physical Books Versus Screen Reading</p>
-                    <h6>Thesis Progress:</h6>
-                    <div class="progress mb-3">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 30%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">Routing Form 1</div>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar bg-secondary" role="progressbar" style="width: 10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">Routing Form 2</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
     <!-- Change Password Modal -->
     <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">

@@ -8,44 +8,49 @@
     <ul class="navbar-nav ml-auto">
 
 
-<!-- Notifications Dropdown -->
-<li class="nav-item dropdown no-arrow mx-1">
-    <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-bell fa-fw"></i>
-        <span class="badge badge-danger badge-counter">{{ auth()->user()->unreadNotifications->count() }}</span>
-    </a>
-    <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
-        <h6 class="dropdown-header">Notifications Center</h6>
-
-        <!-- Loop through all notifications -->
-        @foreach (auth()->user()->notifications as $notification)
-            <a class="dropdown-item d-flex align-items-center {{ $notification->read_at ? 'text-muted' : 'font-weight-bold' }}" href="#" onclick="markAsRead('{{ $notification->id }}')">
-                <div class="mr-3">
-                    <div class="icon-circle">
-                        <i class="fa-solid fa-bell"></i>
-                    </div>
-                </div>
-                <div>
-                    <div class="small text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
-                    <span>{{ $notification->data['message'] }}</span>
-                </div>
+        <!-- Notifications Dropdown -->
+        <li class="nav-item dropdown no-arrow mx-1">
+            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-bell fa-fw"></i>
+                <span class="badge badge-danger badge-counter">{{ auth()->user()->unreadNotifications->count() }}</span>
             </a>
-        @endforeach
+            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+                <h6 class="dropdown-header">Notifications Center</h6>
 
-        <!-- Mark all as read link -->
-        <div class="dropdown-item text-center small text-gray-500">
-            <a href="{{ route('notifications.markAsRead') }}">Mark all as read</a>
-        </div>
+                <!-- Loop through all notifications -->
+                @foreach (auth()->user()->notifications as $notification)
+                    <a class="dropdown-item d-flex align-items-center {{ $notification->read_at ? 'text-muted' : 'font-weight-bold' }}" href="#" onclick="markAsRead('{{ $notification->id }}')">
+                        <div class="mr-3">
+                            <div class="icon-circle">
+                                <i class="fa-solid fa-bell"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="small text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
+                            <span>{{ $notification->data['message'] }}</span>
+                            <!-- Conditionally display the reason if it exists -->
+                            @if (!empty($notification->data['reason']))
+                                <p class="mb-0 text-gray-700">Reason: {{ $notification->data['reason'] }}</p>
+                            @endif
+                        </div>
+                    </a>
+                @endforeach
 
-        <!-- Clear all notifications button -->
-        <div class="dropdown-item text-center small text-gray-500">
-            <form action="{{ route('notifications.clearAll') }}" method="POST">
-                @csrf
-                <button class="btn btn-link" type="submit">Clear all notifications</button>
-            </form>
-        </div>
-    </div>
-</li>
+                <!-- Mark all as read link -->
+                <div class="dropdown-item text-center small text-gray-500">
+                    <a href="{{ route('notifications.markAsRead') }}">Mark all as read</a>
+                </div>
+
+                <!-- Clear all notifications button -->
+                <div class="dropdown-item text-center small text-gray-500">
+                    <form action="{{ route('notifications.clearAll') }}" method="POST">
+                        @csrf
+                        <button class="btn btn-link" type="submit">Clear all notifications</button>
+                    </form>
+                </div>
+            </div>
+        </li>
+
 
         <div class="topbar-divider d-none d-sm-block"></div>
         <li class="nav-item dropdown no-arrow">
