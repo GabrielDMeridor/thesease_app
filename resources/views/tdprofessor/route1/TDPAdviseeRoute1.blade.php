@@ -99,10 +99,14 @@
 
                                 <h4>Appointment Details</h4>
 
-                                <!-- Date -->
+                                <!-- Date Display -->
                                 <div class="form-group">
                                     <label for="date">Date:</label>
-                                    <input type="text" name="date" value="{{ $appointment->created_at->toDateString() }}" class="form-control" readonly>
+                                    @if ($appointment && $appointment->completed_at)
+                                        <input type="text" name="date" value="{{ $appointment->completed_at->toDateString() }}" class="form-control" readonly>
+                                    @else
+                                        <input type="text" name="date" value="{{ now()->toDateString() }}" class="form-control" readonly>
+                                    @endif
                                 </div>
 
                                 <!-- Program -->

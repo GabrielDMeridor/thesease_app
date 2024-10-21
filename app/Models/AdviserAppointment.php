@@ -21,6 +21,12 @@ class AdviserAppointment extends Model
         'chair_signature',
         'dean_signature',
         'disapproval_count',
+        'completed_at',  // Make sure to include 'completed_at' in the fillable array if you want to mass assign it.
+    ];
+
+    // Casts for specific fields
+    protected $casts = [
+        'completed_at' => 'datetime', // Cast the 'completed_at' field to a datetime
     ];
 
     // Relationship: The appointment belongs to a student

@@ -56,16 +56,26 @@ public function show(Request $request)
     {
         // Fetch the appointment form
         $appointment = AdviserAppointment::where('student_id', $studentId)->first();
-
-        // Ensure the logged-in user is the SuperAdmin/Dean
+    
+        // Ensure the logged-in user is the Dean (SuperAdmin)
         if ($appointment && auth()->user()->account_type === User::SuperAdmin) {
-            // Affix the Dean's signature
-            $appointment->dean_signature = auth()->user()->name;
-            $appointment->save();
-
+            // Affix the Dean's signature if not already signed
+            if (is_null($appointment->dean_signature)) {
+                $appointment->dean_signature = auth()->user()->name;
+                $appointment->save();
+            }
+    
+            // Check if all signatures are affixed (Adviser, Program Chair, and Dean)
+            if ($appointment->adviser_signature && $appointment->chair_signature && $appointment->dean_signature) {
+                // Set the completed_at date if all signatures are present
+                $appointment->completed_at = now();
+                $appointment->save();
+            }
+    
             return redirect()->route('superadmin.showRoutingForm', $studentId)->with('success', 'You have successfully signed the form.');
         }
-
+    
         return redirect()->route('superadmin.showRoutingForm', $studentId)->with('error', 'Unable to sign the form.');
     }
+    
 }

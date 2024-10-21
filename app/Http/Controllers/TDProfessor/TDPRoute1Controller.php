@@ -114,22 +114,31 @@ class TDPRoute1Controller extends Controller
     }
 
     public function affixSignature(Request $request, $appointmentId)
-{
-    // Find the appointment
-    $appointment = AdviserAppointment::findOrFail($appointmentId);
-
-    // Ensure the logged-in user is the assigned adviser
-    if ($appointment->adviser_id !== auth()->user()->id) {
-        return redirect()->back()->with('error', 'You are not authorized to sign this form.');
+    {
+        // Find the appointment
+        $appointment = AdviserAppointment::findOrFail($appointmentId);
+    
+        // Ensure the logged-in user is the assigned adviser
+        if ($appointment->adviser_id !== auth()->user()->id) {
+            return redirect()->back()->with('error', 'You are not authorized to sign this form.');
+        }
+    
+        // Affix the adviser's signature
+        if (is_null($appointment->adviser_signature)) {
+            $appointment->adviser_signature = auth()->user()->name;
+            $appointment->save();
+        }
+    
+        // Check if all signatures are affixed (Adviser, Program Chair, and Dean)
+        if ($appointment->adviser_signature && $appointment->chair_signature && $appointment->dean_signature) {
+            // Set the completed_at date if all signatures are present
+            $appointment->completed_at = now();
+            $appointment->save();
+        }
+    
+        return redirect()->back()->with('success', 'You have successfully signed the form.');
     }
-
-    // Affix the adviser's signature
-    $appointment->adviser_signature = auth()->user()->name;
-    $appointment->save();
-
-    // Redirect back with success message
-    return redirect()->back()->with('success', 'You have successfully signed the form.');
-}
+    
 public function showAdviseeForm($studentId)
 {
     $appointment = AdviserAppointment::where('student_id', $studentId)

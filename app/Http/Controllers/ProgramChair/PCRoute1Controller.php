@@ -118,31 +118,37 @@ class PCRoute1Controller extends Controller
     }
 
     public function affixSignature(Request $request)
-{
-    // Validate the request to ensure an approved student is selected
-    $request->validate([
-        'approved_student_id' => 'required|exists:users,id',
-    ]);
-
-    // Fetch the student's appointment
-    $appointment = AdviserAppointment::where('student_id', $request->approved_student_id)
-                                     ->where('status', 'approved')
-                                     ->first();
-
-    if ($appointment) {
-        // Affix the Program Chair's signature if not already signed
-        if (is_null($appointment->chair_signature)) {
-            $appointment->chair_signature = auth()->user()->name;
-            $appointment->save();
-
+    {
+        // Validate the request to ensure an approved student is selected
+        $request->validate([
+            'approved_student_id' => 'required|exists:users,id',
+        ]);
+    
+        // Fetch the student's appointment
+        $appointment = AdviserAppointment::where('student_id', $request->approved_student_id)
+                                         ->where('status', 'approved')
+                                         ->first();
+    
+        if ($appointment) {
+            // Affix the Program Chair's signature if not already signed
+            if (is_null($appointment->chair_signature)) {
+                $appointment->chair_signature = auth()->user()->name;
+                $appointment->save();
+            }
+    
+            // Check if all signatures are affixed (Adviser, Program Chair, and Dean)
+            if ($appointment->adviser_signature && $appointment->chair_signature && $appointment->dean_signature) {
+                // Set the completed_at date if all signatures are present
+                $appointment->completed_at = now();
+                $appointment->save();
+            }
+    
             return redirect()->route('programchair.assignAdviser')->with('success', 'Program Chair signature affixed successfully.');
         } else {
-            return redirect()->route('programchair.assignAdviser')->with('error', 'Program Chair signature already affixed.');
+            return redirect()->route('programchair.assignAdviser')->with('error', 'No approved appointment found for the selected student.');
         }
-    } else {
-        return redirect()->route('programchair.assignAdviser')->with('error', 'No approved appointment found for the selected student.');
     }
-}
+    
 public function getApprovedStudentDetails(Request $request)
 {
     // Validate the selected student
