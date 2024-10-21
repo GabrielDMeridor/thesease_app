@@ -81,7 +81,7 @@
                 <thead>
                     <tr>
                         <th style="text-align:center;">Student Name</th>
-                        <th style="text-align:center;">Appointment Type</th>
+                        <th style="text-align:center;">Adviser Type for this student</th>
                         <th style="text-align:center;">Status</th>
                         <th style="text-align:center;">Actions</th>
                     </tr>

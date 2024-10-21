@@ -195,13 +195,13 @@
 
         var adviserType = '';
         if (['MN', 'MAN'].includes(program)) {
-            adviserType = 'Clinical Case Study';
+            adviserType = 'Clinical Case Study Adviser';
         } else if (['MIT', 'MPH'].includes(program)) {
-            adviserType = 'Capstone';
+            adviserType = 'Capstone Adviser';
         } else if (['PhD-CI-ELT', 'PHD-ED-EM', 'PHD-MGMT', 'DBA', 'DIT', 'DRPH-HPE'].includes(program)) {
-            adviserType = 'Dissertation Study';
+            adviserType = 'Dissertation Study Adviser';
         } else {
-            adviserType = 'Thesis Study';
+            adviserType = 'Thesis Study Adviser';
         }
         document.getElementById("appointment_type").value = adviserType;
     }

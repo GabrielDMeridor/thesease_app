@@ -106,15 +106,15 @@ class PCRoute1Controller extends Controller
         $doctoratePrograms = ['PhD-CI-ELT', 'PHD-ED-EM', 'PHD-MGMT', 'DBA', 'DIT', 'DRPH-HPE']; // Dissertation Study
 
         if (in_array($program, $mnManPrograms)) {
-            return 'Clinical Case Study';
+            return 'Clinical Case Study Adviser';
         } elseif (in_array($program, $mitMphPrograms)) {
-            return 'Capstone';
+            return 'Capstone Adviser';
         } elseif (in_array( $program, $doctoratePrograms)) {
-            return 'Dissertation Study';
+            return 'Dissertation Study Adviser';
         }
 
         // Default to Thesis Study if no specific match
-        return 'Thesis Study';
+        return 'Thesis Study Adviser';
     }
 
     public function affixSignature(Request $request)
