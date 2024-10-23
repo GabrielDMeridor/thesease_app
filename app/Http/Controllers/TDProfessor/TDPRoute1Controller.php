@@ -8,6 +8,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Notifications\AdviserResponseNotification; // Add this import to use your notification
 use App\Notifications\AdviserResponseNotificationToPCandD;
+use App\Notifications\AdviseeNotifStep2;
+use App\Notifications\SAAGSNotifyStep2;
+
+
 
 class TDPRoute1Controller extends Controller
 {
@@ -169,6 +173,19 @@ public function addConsultationDatesAndSign(Request $request, $appointmentId)
 
     // Save the changes
     $appointment->save();
+
+    $advisee = User::findOrFail($appointment->student_id);
+    $advisee->notify(new AdviseeNotifStep2(
+        auth()->user(), // The adviser (current logged-in user)
+    ));
+
+    $roles = [1, 2, 3]; // Superadmin (1), Admin (2), and Graduate School (3)
+    $usersToNotify = User::whereIn('account_type', $roles)->get();
+
+    foreach ($usersToNotify as $user) {
+        $user->notify(new SAAGSNotifyStep2(auth()->user(), $advisee)); // Notify users in the roles
+    }
+
 
     // Redirect back with success message
     return redirect()->back()->with('success', 'Consultation dates saved and endorsement signature affixed.');

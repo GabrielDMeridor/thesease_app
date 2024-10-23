@@ -93,127 +93,158 @@
 @section('body')
 
 <div class="container-fluid">
-    <div class="sagreet">
-        {{ $title }}
-    </div>
+    <div class="sagreet">{{ $title }}</div> <!-- Title like "Routing Form 1 for student_name" -->
     <br>
+</div>
 
-    <div class="card shadow mb-4">
-        <div class="card-header">
+<div class="card shadow mb-4">
+    <div class="card-header"></div>
+</br>
+    <!-- Multi-Step Navigation -->
+    <div class="container-fluid">
+        <div class="steps">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                @for ($step = 1; $step <= 10; $step++) <!-- Adjust the number of steps as needed -->
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab"
+                           data-toggle="pill" href="#pills-step-{{ $step }}" role="tab" aria-controls="pills-step-{{ $step }}"
+                           aria-selected="{{ $step === 1 ? 'true' : 'false' }}">
+                            Step {{ $step }}
+                        </a>
+                    </li>
+                @endfor
+            </ul>
         </div>
-        <div class="card-body">
-            <!-- Multi-Step Navigation -->
-            <div class="steps">
-                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                    @for ($step = 1; $step <= 12; $step++)
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link {{ $step === 1 ? 'active' : '' }} {{ $step > 1 && !$allSignaturesFilled ? 'disabled' : '' }}" 
-                               id="pills-step-{{ $step }}-tab" 
-                               data-toggle="pill" 
-                               href="#pills-step-{{ $step }}" 
-                               role="tab" 
-                               aria-controls="pills-step-{{ $step }}" 
-                               aria-selected="{{ $step === 1 ? 'true' : 'false' }}">
-                                Step {{ $step }}
-                            </a>
-                        </li>
-                    @endfor
-                </ul>
-            </div>
+    </div>
 
-            <!-- Step Content -->
-            <div class="tab-content" id="pills-tabContent">
-                @for ($step = 1; $step <= 12; $step++)
-                    <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" 
-                         id="pills-step-{{ $step }}" 
-                         role="tabpanel" 
-                         aria-labelledby="pills-step-{{ $step }}-tab">
-                         
-                        @if ($step === 1)
-                            <!-- Step 1 Form: Adviser Appointment Form -->
-                            <div class="card shadow mb-4">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="card mb-3">
-                                            <div class="card-body">
-                                                <form method="POST" action="{{ route('gsstudent.route1.submit') }}">
-                                                    @csrf
+    <!-- Step Content -->
+    <div class="tab-content" id="pills-tabContent">
+        @for ($step = 1; $step <= 10; $step++) <!-- Adjust the number of steps as needed -->
+            <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}"
+                 role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
 
-                                                    <h4>Appointment Details</h4>
+                @if ($step === 1)
+                    <!-- Step 1 Form: Adviser Appointment Form -->
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card shadow mb-4">
+                                    <div class="card-body">
+                                        <h4>Appointment Details</h4>
 
-                                                    <!-- Date Display -->
-                                                    <div class="form-group">
-                                                        <label for="date">Date:</label>
-                                                        @if ($appointment && $appointment->completed_at)
-                                                            <input type="text" name="date" value="{{ $appointment->completed_at->toDateString() }}" class="form-control" readonly>
-                                                        @else
-                                                            <input type="text" name="date" value="{{ now()->toDateString() }}" class="form-control" readonly>
-                                                        @endif
-                                                    </div>
-                                                    <!-- Program -->
-                                                    <div class="form-group">
-                                                        <label for="program">Program:</label>
-                                                        <input type="text" name="program" value="{{ $user->program }}" class="form-control" readonly>
-                                                    </div>
-
-                                                    <!-- Adviser Display -->
-                                                    <div class="form-group">
-                                                        <label for="adviser">Adviser:</label>
-                                                        <input type="text" class="form-control" 
-                                                               value="{{ $appointment->adviser->name ?? 'Adviser will be assigned by the Program Chair.' }}" 
-                                                               readonly>
-                                                    </div>
-                                                </form>
-                                            </div>
+                                        <!-- Date Display -->
+                                        <div class="form-group">
+                                            <label for="date">Date:</label>
+                                            @if ($appointment && $appointment->completed_at)
+                                                <input type="text" name="date" value="{{ $appointment->completed_at->toDateString() }}" class="form-control" readonly>
+                                            @else
+                                                <input type="text" name="date" value="{{ now()->toDateString() }}" class="form-control" readonly>
+                                            @endif
                                         </div>
-                                    </div>
 
-                                    <div class="col-md-6">
-                                        <div class="card mb-3">
-                                            <div class="card-body">
-                                                <h4>Signatures</h4>
+                                        <!-- Program -->
+                                        <div class="form-group">
+                                            <label for="program">Program:</label>
+                                            <input type="text" name="program" value="{{ $user->program }}" class="form-control" readonly>
+                                        </div>
 
-                                                <!-- Adviser Signature -->
-                                                <div class="form-group">
-                                                    <label for="adviser_signature">Adviser Signature:</label>
-                                                    <input type="text" name="adviser_signature" class="form-control" value="{{ $appointment->adviser_signature ?? 'Pending' }}" readonly>
-                                                </div>
-
-                                                <!-- Program Chair Signature -->
-                                                <div class="form-group">
-                                                    <label for="program_chair_signature">Program Chair Signature:</label>
-                                                    <input type="text" name="program_chair_signature" class="form-control" value="{{ $appointment->chair_signature ?? 'Pending' }}" readonly>
-                                                </div>
-
-                                                <!-- Dean Signature -->
-                                                <div class="form-group">
-                                                    <label for="dean_signature">Dean Signature:</label>
-                                                    <input type="text" name="dean_signature" class="form-control" value="{{ $appointment->dean_signature ?? 'Pending' }}" readonly>
-                                                </div>
-                                            </div>
+                                        <!-- Adviser Display -->
+                                        <div class="form-group">
+                                            <label for="adviser">Adviser:</label>
+                                            <input type="text" class="form-control"
+                                                   value="{{ $appointment->adviser->name ?? 'Adviser will be assigned by the Program Chair.' }}"
+                                                   readonly>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                        @else
-                            <!-- Lock the content if signatures aren't complete -->
-                            @if ($step > 1 && !$allSignaturesFilled)
-                                <p class="text-muted">Step {{ $step }} is locked. Please complete all signatures in Step 1 first.</p>
-                            @else
-                                <p>Step {{ $step }} content goes here.</p>
-                            @endif
-                        @endif
+                            <div class="col-md-6">
+                                <div class="card shadow mb-4">
+                                    <div class="card-body">
+                                        <h4>Signatures</h4>
+
+                                        <!-- Adviser Signature -->
+                                        <div class="form-group">
+                                            <label for="adviser_signature">Adviser Signature:</label>
+                                            <input type="text" name="adviser_signature" class="form-control" value="{{ $appointment->adviser_signature ?? 'Pending' }}" readonly>
+                                        </div>
+
+                                        <!-- Program Chair Signature -->
+                                        <div class="form-group">
+                                            <label for="program_chair_signature">Program Chair Signature:</label>
+                                            <input type="text" name="program_chair_signature" class="form-control" value="{{ $appointment->chair_signature ?? 'Pending' }}" readonly>
+                                        </div>
+
+                                        <!-- Dean Signature -->
+                                        <div class="form-group">
+                                            <label for="dean_signature">Dean Signature:</label>
+                                            <input type="text" name="dean_signature" class="form-control" value="{{ $appointment->dean_signature ?? 'Pending' }}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                @endfor
+
+                @elseif ($step === 2)
+                    <!-- Step 2: View Consultation Dates (no ability to add) -->
+                    @if (is_null($appointment->adviser_signature) || is_null($appointment->chair_signature) || is_null($appointment->dean_signature))
+                        <!-- Step is locked: Display the lock message -->
+                        <p class="text-muted">Step 2 is locked. The signatures for the Adviser, Program Chair, and Dean must be completed to proceed.</p>
+                    @else
+                        <!-- Step 2 is unlocked: Show the consultation dates and signatures -->
+                        <div class="container-fluid">
+                            <div class="card shadow mb-4">
+                                <div class="card-body">
+                                    <h4>Consultation Dates and Adviser Endorsement</h4>
+
+                                    <!-- Display Consultation Dates -->
+                                    <div class="form-group">
+                                        <label for="consultation_dates">Consultation Dates:</label>
+                                        <div id="consultation_dates_container">
+                                            @if ($appointment->consultation_dates)
+                                                @foreach (json_decode($appointment->consultation_dates) as $date)
+                                                    <div class="input-group mb-2">
+                                                        <input type="date" name="consultation_dates[]" class="form-control" value="{{ $date }}" readonly>
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <p>No consultation dates set yet.</p>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <!-- Display Adviser Endorsement Signature -->
+                                    <div class="form-group">
+                                        <label for="adviser_endorsement_signature">Adviser Endorsement Signature:</label>
+                                        <input type="text" name="adviser_endorsement_signature" class="form-control" value="{{ $appointment->adviser_endorsement_signature ?? 'Pending' }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @else
+                    <!-- Lock the content if adviser's signature is not affixed -->
+                    @if ($step > 2 && is_null($appointment->adviser_endorsement_signature))
+                        <p class="text-muted">Step {{ $step }} is locked. Please affix the adviser's endorsement signature in Step 2 to proceed.</p>
+                    @else
+                        <p>Step {{ $step }} content goes here.</p>
+                    @endif
+                @endif
             </div>
-        </div>
-        <div class="card-footer footersaroute1">
+        @endfor
         </div>
     </div>
+
+    <div class="card-footer footersaroute1"></div>
+</div>
+</div>
 </div>
 
+
 @endsection
+
 <style>
     .steps ul {
         display: flex;

@@ -74,24 +74,22 @@
 
 @section('body')
 
-@section('body')
 
 <!-- Title Section -->
 <div class="container-fluid">
-    <div class="sagreet">{{ $title }}</div> <!-- Title like "Routing Form 1 for student_name" -->
+    <div class="sagreet">{{ $title }}</div>
     <br>
-</div>
 
-<div class="card shadow mb-4">
-    <div class="card-header">
-    </div>
+    <div class="card shadow mb-4">
+        <div class="card-header">
+        </div>
+        <div class="card-body">
 
-    <br>
     <!-- Multi-Step Navigation -->
     <div class="container-fluid">
         <div class="steps">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                @for ($step = 1; $step <= 12; $step++)  <!-- Adjust the number of steps as needed -->
+                @for ($step = 1; $step <= 10; $step++)  <!-- Adjust the number of steps as needed -->
                     <li class="nav-item" role="presentation">
                         <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab" 
                            data-toggle="pill" href="#pills-step-{{ $step }}" role="tab" aria-controls="pills-step-{{ $step }}" 
@@ -106,7 +104,7 @@
 
     <!-- Step Content -->
     <div class="tab-content" id="pills-tabContent">
-        @for ($step = 1; $step <= 12; $step++)  <!-- Adjust the number of steps as needed -->
+        @for ($step = 1; $step <= 10; $step++)  <!-- Adjust the number of steps as needed -->
             <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}" role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
                 @if ($step === 1)
                     <!-- Step 1: Adviser Form Content -->
@@ -179,47 +177,64 @@
 
                 @elseif ($step === 2)
 <!-- Step 2: Consultation with Adviser and Endorsement Signature -->
-<div class="container-fluid">
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <h4>Consultation with Adviser and Endorsement Signature</h4>
+<div class="tab-content" id="pills-tabContent">
+    @if (is_null($appointment->adviser_signature) || is_null($appointment->chair_signature) || is_null($appointment->dean_signature))
+        <!-- Step is locked: Display the lock message -->
+        <p class="text-muted">Step 2 is locked. You must complete the signatures for the Adviser, Program Chair, and Dean to proceed.</p>
+    @else
+        <!-- Step is unlocked: Show the step content -->
+        <div class="container-fluid">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h4>Consultation with Adviser and Endorsement Signature</h4>
 
-            <form method="POST" action="{{ route('professor.addConsultationDatesAndSign', $appointment->id) }}">
-                @csrf
+                    <form method="POST" action="{{ route('professor.addConsultationDatesAndSign', $appointment->id) }}">
+                        @csrf
 
-                <!-- Dynamic Consultation Dates Section -->
-                <div class="form-group">
-                    <label for="consultation_dates">Consultation Dates:</label>
-                    <div id="consultation_dates_container">
-                        @if ($appointment->consultation_dates)
-                            @foreach (json_decode($appointment->consultation_dates) as $date)
-                                <div class="input-group mb-2">
-                                    <input type="date" name="consultation_dates[]" class="form-control" value="{{ $date }}" readonly>
-                                    <div class="input-group-append">
-                                        <button class="btn btn-danger" type="button" onclick="removeConsultationDate(this)">Remove</button>
+                        <!-- Dynamic Consultation Dates Section -->
+                        <div class="form-group">
+                            <label for="consultation_dates">Consultation Dates:</label>
+                            <div id="consultation_dates_container">
+                                @if ($appointment->consultation_dates)
+                                    @foreach (json_decode($appointment->consultation_dates) as $date)
+                                        <div class="input-group mb-2">
+                                            <input type="date" name="consultation_dates[]" class="form-control" value="{{ $date }}" readonly>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-danger" type="button" onclick="removeConsultationDate(this)">Remove</button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
+
+                            <!-- Button to add more consultation dates -->
+                            <button type="button" class="btn btn-primary" onclick="addConsultationDate()">Add Date</button>
+                        </div>
+
+                        <!-- Adviser Signature Field -->
+                                    <div class="form-group">
+                                        <label for="adviser_signature">Adviser Signature:</label>
+                                        @if (is_null($appointment->adviser_endorsement_signature))
+                                            <input type="text" name="adviser_signature" class="form-control" placeholder="Sign here">
+                                        @else
+                                            <input type="text" name="adviser_signature" class="form-control" value="{{ $appointment->adviser_endorsement_signature }}" readonly>
+                                        @endif
                                     </div>
-                                </div>
-                            @endforeach
-                        @endif
-                    </div>
 
-                    <!-- Button to add more consultation dates -->
-                    <button type="button" class="btn btn-primary" onclick="addConsultationDate()">Add Date</button>
-                </div>
+                        <!-- Endorsement Signature -->
+                        <div class="form-group">
+                            @if (is_null($appointment->adviser_endorsement_signature))
+                                <button type="submit" class="btn btn-success">Affix Endorsement Signature</button>
+                            @endif
+                        </div>
 
-                <!-- Endorsement Signature -->
-                <div class="form-group">
-                    <label for="adviser_endorsement_signature">Adviser Endorsement Signature:</label>
-                    @if (is_null($appointment->adviser_endorsement_signature))
-                        <button type="submit" class="btn btn-success">Affix Endorsement Signature</button>
-                    @else
-                        <p class="text-success">Endorsement signature affixed on {{ $appointment->updated_at->toDateString() }}. Step 3 is now unlocked.</p>
-                    @endif
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
-    </div>
+    @endif
 </div>
+
 
 
 
@@ -233,6 +248,10 @@
                 @endif
             </div>
         @endfor
+        </div>
+        </div>
+            <div class="card-footer footersaroute1">
+            </div>
     </div>
 </div>
 

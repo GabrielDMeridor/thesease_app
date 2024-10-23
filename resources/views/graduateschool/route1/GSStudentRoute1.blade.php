@@ -26,7 +26,6 @@
                         <div>
                             <div class="small text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
                             <span class="font-weight-bold">{{ $notification->data['message'] }}</span>
-                            <p>{{ $notification->data['reason'] }}</p>
                         </div>
                     </a>
                 @endforeach

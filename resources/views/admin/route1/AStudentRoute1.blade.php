@@ -26,7 +26,6 @@
                         <div>
                             <div class="small text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
                             <span class="font-weight-bold">{{ $notification->data['message'] }}</span>
-                            <p>{{ $notification->data['reason'] }}</p>
                         </div>
                     </a>
                 @endforeach
@@ -125,11 +124,53 @@
                                     </form>
                                 </div>
                             </div>
-                        @else
-                            <p>Step {{ $step }} content goes here.</p>
-                        @endif
-                    </div>
-                @endfor
+                            @elseif ($step === 2)
+                    <!-- Step 2: View Consultation Dates (no ability to add) -->
+                    @if (is_null($appointment->adviser_signature) || is_null($appointment->chair_signature) || is_null($appointment->dean_signature))
+                        <!-- Step is locked: Display the lock message -->
+                        <p class="text-muted">Step 2 is locked. The signatures for the Adviser, Program Chair, and Dean must be completed to proceed.</p>
+                    @else
+                        <!-- Step 2 is unlocked: Show the consultation dates and signatures -->
+                        <div class="container-fluid">
+                            <div class="card shadow mb-4">
+                                <div class="card-body">
+                                    <h4>Consultation Dates and Adviser Endorsement</h4>
+
+                                    <!-- Display Consultation Dates -->
+                                    <div class="form-group">
+                                        <label for="consultation_dates">Consultation Dates:</label>
+                                        <div id="consultation_dates_container">
+                                            @if ($appointment->consultation_dates)
+                                                @foreach (json_decode($appointment->consultation_dates) as $date)
+                                                    <div class="input-group mb-2">
+                                                        <input type="date" name="consultation_dates[]" class="form-control" value="{{ $date }}" readonly>
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <p>No consultation dates set yet.</p>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <!-- Display Adviser Endorsement Signature -->
+                                    <div class="form-group">
+                                        <label for="adviser_endorsement_signature">Adviser Endorsement Signature:</label>
+                                        <input type="text" name="adviser_endorsement_signature" class="form-control" value="{{ $appointment->adviser_endorsement_signature ?? 'Pending' }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @else
+                    <!-- Lock the content if adviser's signature is not affixed -->
+                    @if ($step > 2 && is_null($appointment->adviser_endorsement_signature))
+                        <p class="text-muted">Step {{ $step }} is locked. Please affix the adviser's endorsement signature in Step 2 to proceed.</p>
+                    @else
+                        <p>Step {{ $step }} content goes here.</p>
+                    @endif
+                @endif
+            </div>
+        @endfor
             </div>
         </div>
             <div class="card-footer footersaroute1">
