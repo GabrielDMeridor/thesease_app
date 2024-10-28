@@ -22,7 +22,7 @@
                 <a class="dropdown-item d-flex align-items-center {{ $notification->read_at ? 'text-muted' : 'font-weight-bold' }}" href="#" onclick="markAsRead('{{ $notification->id }}')">
                     <div class="mr-3">
                         <div class="icon-circle">
-                            <i class="fa-solid fa-bell"></i>
+                        <i class="fas fa-bell fa-fw"></i>
                         </div>
                     </div>
                     <div>
@@ -52,6 +52,8 @@
     </div>
 </li>
 
+
+
         <div class="topbar-divider d-none d-sm-block"></div>
         <li class="nav-item dropdown no-arrow">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -67,8 +69,9 @@
         </li>
     </ul>
 </nav>
-@endsection
 
+<!-- /.content-header -->
+@endsection
 @section('body')
 <div class="container-fluid">
     <div class="sagreet">{{ $title }}</div>

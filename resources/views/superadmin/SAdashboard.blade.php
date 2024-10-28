@@ -22,7 +22,7 @@
                 <a class="dropdown-item d-flex align-items-center {{ $notification->read_at ? 'text-muted' : 'font-weight-bold' }}" href="#" onclick="markAsRead('{{ $notification->id }}')">
                     <div class="mr-3">
                         <div class="icon-circle">
-                            <i class="fa-solid fa-bell"></i>
+                        <i class="fas fa-bell fa-fw"></i>
                         </div>
                     </div>
                     <div>
@@ -51,6 +51,8 @@
         </div>
     </div>
 </li>
+
+
 
         <div class="topbar-divider d-none d-sm-block"></div>
         <li class="nav-item dropdown no-arrow">

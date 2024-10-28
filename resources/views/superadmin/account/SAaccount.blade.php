@@ -1,9 +1,7 @@
 @extends('superadmin.SAmain-layout')
 
 
-
 @section('content-header')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
         <i class="fa fa-bars"></i>
@@ -25,7 +23,7 @@
                 <a class="dropdown-item d-flex align-items-center {{ $notification->read_at ? 'text-muted' : 'font-weight-bold' }}" href="#" onclick="markAsRead('{{ $notification->id }}')">
                     <div class="mr-3">
                         <div class="icon-circle">
-                            <i class="fa-solid fa-bell"></i>
+                        <i class="fas fa-bell fa-fw"></i>
                         </div>
                     </div>
                     <div>
@@ -55,6 +53,8 @@
     </div>
 </li>
 
+
+
         <div class="topbar-divider d-none d-sm-block"></div>
         <li class="nav-item dropdown no-arrow">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -71,7 +71,7 @@
     </ul>
 </nav>
 
-
+<!-- /.content-header -->
 @endsection
 
 @section('body')
