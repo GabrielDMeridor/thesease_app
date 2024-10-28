@@ -400,11 +400,11 @@
 
 function getVerificationIcon(status, userId) {
     if (status === 'verified') {
-        return `<i class="fas fa-check-circle text-success" style="cursor: pointer;" onclick="openModal(${userId})"></i>`;
+        return `<i class="fas fa-check-circle fa-fw text-success" style="font-size: 1.5rem; cursor: pointer;" onclick="openModal(${userId})"></i>`;
     } else if (status === 'disapproved') {
-        return `<i class="fas fa-times-circle text-danger" style="cursor: pointer;" onclick="openModal(${userId})"></i>`;
+        return `<i class="fas fa-times-circle fa-fw text-danger" style="font-size: 1.5rem; cursor: pointer;" onclick="openModal(${userId})"></i>`;
     } else {
-        return `<i class="fas fa-circle text-secondary" style="cursor: pointer;" onclick="openModal(${userId})"></i>`;
+        return `<i class="fas fa-circle fa-fw text-secondary" style="font-size: 1.5rem; cursor: pointer;" onclick="openModal(${userId})"></i>`;
     }
 }
 
