@@ -272,6 +272,13 @@
     // AJAX search route for Graduate School route1 page
     Route::get('/graduateschool/route1/search', [GSRoute1Controller::class, 'ajaxSearch'])->name('graduateschool.route1.search');
 
+        // AJAX search route for SuperAdmin archive page
+        Route::get('/superadmin/archive/search', [SAArchiveController::class, 'ajaxSearch'])->name('superadmin.archive.search');
+        // AJAX search route for Admin archive page
+       Route::get('/admin/archive/search', [AArchiveController::class, 'ajaxSearch'])->name('admin.archive.search');
+       // AJAX search route for Graduate School archie page
+       Route::get('/graduateschool/archive/search', [GSArchiveController::class, 'ajaxSearch'])->name('graduateschool.archive.search');
+
 
 
 

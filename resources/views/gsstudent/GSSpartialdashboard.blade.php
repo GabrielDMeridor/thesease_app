@@ -1,12 +1,5 @@
 @extends('gsstudent.GSSmain-layout')
 
-@section('content-header')
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-        <i class="fa fa-bars"></i>
-    </button>
-    <ul class="navbar-nav ml-auto">
-
 
     @section('content-header')
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -208,7 +201,6 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <form id="fileForm" action="{{ route('gssstudent.file.upload') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            @method('PUT')
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="uploadModalLabel">Upload File</h5>
@@ -220,6 +212,7 @@
                     <input type="hidden" name="file_type" id="fileType">
                     <div class="form-group">
                         <label for="file">Choose File</label>
+                        <!-- Accept attribute will be dynamically set by JavaScript -->
                         <input type="file" class="form-control-file" name="file" id="file" required>
                     </div>
                 </div>
@@ -232,6 +225,9 @@
     </div>
 </div>
 
+
+
+
 <script>
     function openFileModal(fileUrl) {
         document.getElementById('filePreview').src = fileUrl;
@@ -240,8 +236,22 @@
     $('#uploadModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var fileType = button.data('type');
+        
+        // Set the hidden file type input
         $('#fileType').val(fileType);
+
+        // Set accepted file types based on the selected file type
+        var acceptTypes = '';
+        if (fileType === 'routing_form_one' || fileType === 'manuscript' || fileType === 'adviser_appointment_form') {
+            acceptTypes = '.pdf'; // Allow only PDFs
+        } else if (fileType === 'immigration_or_studentvisa') {
+            acceptTypes = '.jpeg, .jpg, .png'; // Allow only images
+        }
+
+        // Apply the accept attribute to limit file type selection
+        $('#file').attr('accept', acceptTypes);
     });
+
 
     function markAsRead(notificationId) {
     $.ajax({

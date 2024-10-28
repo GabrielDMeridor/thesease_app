@@ -10,49 +10,43 @@ class GSSFileUploadController extends Controller
 {
     public function uploadFile(Request $request)
     {
+        // Validate the request based on the file type
         $request->validate([
-            'immigration_or_studentvisa' => 'nullable|mimes:jpeg,jpg,png|max:2048',
-            'routing_form_one' => 'nullable|mimes:pdf|max:25000',
-            'manuscript' => 'nullable|mimes:pdf|max:25000',
-            'adviser_appointment_form' => 'nullable|mimes:pdf|max:25000',
+            'file_type' => 'required|string',
+            'file' => 'required|mimes:jpeg,jpg,png,pdf|max:25000',
         ]);
 
         $user = auth()->user();
+        $fileType = $request->input('file_type');
+        $file = $request->file('file');
+        $fileName = $file->getClientOriginalName();
 
-        // Handle immigration file upload
-        if ($request->hasFile('immigration_or_studentvisa')) {
-            $file = $request->file('immigration_or_studentvisa');
-            $immigrationFileName = $file->getClientOriginalName();
-            $file->storeAs('public/immigrations', $immigrationFileName);
-            $user->immigration_or_studentvisa = $immigrationFileName;
+        // Determine the folder and attribute based on file type
+        switch ($fileType) {
+            case 'immigration_or_studentvisa':
+                $filePath = 'public/immigrations';
+                $user->immigration_or_studentvisa = $fileName;
+                break;
+            case 'routing_form_one':
+                $filePath = 'public/routing_forms';
+                $user->routing_form_one = $fileName;
+                break;
+            case 'manuscript':
+                $filePath = 'public/manuscripts';
+                $user->manuscript = $fileName;
+                break;
+            case 'adviser_appointment_form':
+                $filePath = 'public/adviser_appointments';
+                $user->adviser_appointment_form = $fileName;
+                break;
+            default:
+                return redirect()->back()->with('error', 'Invalid file type.');
         }
 
-        // Handle routing form upload
-        if ($request->hasFile('routing_form_one')) {
-            $file = $request->file('routing_form_one');
-            $routingFileName = $file->getClientOriginalName();
-            $file->storeAs('public/routing_forms', $routingFileName);
-            $user->routing_form_one = $routingFileName;
-        }
-
-        // Handle manuscript upload
-        if ($request->hasFile('manuscript')) {
-            $file = $request->file('manuscript');
-            $manuscriptFileName = $file->getClientOriginalName();
-            $file->storeAs('public/manuscripts', $manuscriptFileName);
-            $user->manuscript = $manuscriptFileName;
-        }
-
-        // Handle adviser appointment form upload
-        if ($request->hasFile('adviser_appointment_form')) {
-            $file = $request->file('adviser_appointment_form');
-            $adviserAppointmentFileName = $file->getClientOriginalName();
-            $file->storeAs('public/adviser_appointments', $adviserAppointmentFileName);
-            $user->adviser_appointment_form = $adviserAppointmentFileName;
-        }
-
+        // Store the file and update the user record
+        $file->storeAs($filePath, $fileName);
         $user->save();
 
-        return redirect()->route('gssstudent.partialdashboard')->with('success', 'Files uploaded successfully!');
+        return redirect()->route('gssstudent.partialdashboard')->with('success', 'File uploaded successfully!');
     }
 }

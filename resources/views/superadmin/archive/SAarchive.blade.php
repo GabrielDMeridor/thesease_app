@@ -108,7 +108,7 @@
                                 <th style="text-align:center;">Date Uploaded</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="user-table-body">
                         @forelse ($users as $user)
                         <tr>
                             <!-- Button to View File Names -->
@@ -190,9 +190,43 @@
         </div>
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
-    // Load file list modal
+            $(document).ready(function () {
+            $('#keyword').on('keyup', function () {
+                let keyword = $(this).val();
+
+                $.ajax({
+                    url: "{{ route('superadmin.archive.search') }}",
+                    type: 'GET',
+                    data: { keyword: keyword },
+                    success: function (response) {
+                        let tableBody = '';
+
+                        response.forEach(function (user) {
+                            tableBody += `
+                                <tr>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-primary" onclick="openFileListModal(${user.id})">
+                                            <i class="fas fa-folder-open"></i> View Files
+                                        </button>
+                                    </td>
+                                    <td class="text-center" style="font-weight:600;">${user.name}</td>
+                                    <td class="text-center">${user.created_at}</td>
+                                </tr>`;
+                        });
+
+                        $('#user-table-body').html(tableBody);
+                    },
+                    error: function () {
+                        alert('Unable to fetch results.');
+                    }
+                });
+            });
+        });
+
+        // Open file list modal and other functions remain unchanged
     let files = <?php echo json_encode($users->mapWithKeys(function($user) {
         return [
             $user->id => [
