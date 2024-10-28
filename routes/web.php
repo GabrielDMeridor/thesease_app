@@ -251,12 +251,19 @@
 
 
 
-// In your routes file
-Route::post('/professor/route1/{appointmentId}/consultation-and-sign', [TDPRoute1Controller::class, 'addConsultationDatesAndSign'])->name('professor.addConsultationDatesAndSign');
+    //AJAX for Step 2 Professor/Adviser Side
+    Route::post('/professor/route1/{appointmentId}/consultation-and-sign', [TDPRoute1Controller::class, 'addConsultationDatesAndSign'])->name('professor.addConsultationDatesAndSign');
 
+    Route::post('/professor/save-consultation-date', [TDPRoute1Controller::class, 'saveConsultationDate'])->name('professor.saveConsultationDate');
+    Route::post('/professor/remove-consultation-date', [TDPRoute1Controller::class, 'removeConsultationDate'])->name('professor.removeConsultationDate');
 
-Route::post('/professor/save-consultation-date', [TDPRoute1Controller::class, 'saveConsultationDate'])->name('professor.saveConsultationDate');
-Route::post('/professor/remove-consultation-date', [TDPRoute1Controller::class, 'removeConsultationDate'])->name('professor.removeConsultationDate');
+    // AJAX Search Superadmin
+    Route::get('/superadmin/verifyusers/search', [VerifyUserController::class, 'search'])->name('verify-users.search');
+    // AJAX Search Admin
+    Route::get('/admin/verifyusers/search', [AVerifyUserController::class, 'search'])->name('admin.verify-users.search');
+    // AJAX Search GraduateSchool
+    Route::get('/graduateschool/verifyusers/search', [GSVerifyUserController::class, 'search'])->name('graduateschool.verify-users.search');
+
 
 
 

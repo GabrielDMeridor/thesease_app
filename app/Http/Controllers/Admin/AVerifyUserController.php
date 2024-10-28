@@ -126,4 +126,26 @@ class AVerifyUserController extends Controller
         // Redirect with success message
         return redirect()->route('admin.verify-users.index')->with('success', 'User disapproved and notified successfully.');
     }
+    public function search(Request $request)
+{
+    $keyword = $request->input('keyword');
+
+    // Filter users by keyword for names starting with the input
+    $users = User::where('name', 'like', "{$keyword}%")->get()->map(function ($user) {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'account_type' => User::getAccountTypeName($user->account_type), // Get the readable account type name
+            'degree' => $user->degree ?? 'N/A',
+            'program' => $user->program ?? 'N/A',
+            'nationality' => $user->nationality ?? 'N/A',
+            'created_at' => $user->created_at->format('Y-m-d'), // Format the date
+            'verification_status' => $user->verification_status,
+        ];
+    });
+
+    // Return data as JSON for AJAX response
+    return response()->json($users);
+}
 }

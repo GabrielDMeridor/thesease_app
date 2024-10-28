@@ -348,8 +348,65 @@
             @method('DELETE')
         </form>
 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
         <!-- JavaScript -->
         <script>
+                    $(document).ready(function() {
+    // Listen for keyup events on the search input
+    $('#keyword').on('keyup', function() {
+        let keyword = $(this).val();
+
+        $.ajax({
+            url: "{{ route('admin.verify-users.search') }}",
+            type: 'GET',
+            data: { keyword: keyword },
+            success: function(response) {
+                let tableBody = '';
+
+                // Loop through the results and construct table rows
+                response.forEach(function(user) {
+                    tableBody += `
+                        <tr>
+                            <td>${user.name}</td>
+                            <td>${user.email}</td>
+                            <td>${user.account_type}</td>
+                            <td>${user.degree}</td>
+                            <td>${user.program}</td>
+                            <td>${user.nationality}</td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-sm btn-primary" onclick="openFileListModal(${user.id})">
+                                    <i class="fas fa-folder-open"></i> View Files
+                                </button>
+                            </td>
+                            <td>${user.created_at}</td>
+                            <td class="text-center">
+                                ${getVerificationIcon(user.verification_status, user.id)}
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-sm btn-danger" onclick="openDeletionModal(${user.id})">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>`;
+                });
+
+                // Replace the table body with the new data
+                $('table tbody').html(tableBody);
+            }
+        });
+    });
+});
+
+function getVerificationIcon(status, userId) {
+    if (status === 'verified') {
+        return `<i class="fas fa-check-circle text-success" style="cursor: pointer;" onclick="openModal(${userId})"></i>`;
+    } else if (status === 'disapproved') {
+        return `<i class="fas fa-times-circle text-danger" style="cursor: pointer;" onclick="openModal(${userId})"></i>`;
+    } else {
+        return `<i class="fas fa-circle text-secondary" style="cursor: pointer;" onclick="openModal(${userId})"></i>`;
+    }
+}
             let selectedUserId = null;
 
             // Function to open the modal for verification options
