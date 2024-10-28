@@ -66,4 +66,20 @@ class ARoute1Controller extends Controller
 
         return redirect()->route('admin.showRoutingForm', $studentId)->with('error', 'Unable to sign the form.');
     }
+    public function ajaxSearch(Request $request)
+    {
+        // Fetch the search term
+        $searchTerm = $request->input('search');
+
+        // Query to fetch students with an approved adviser appointment and filter by name
+        $students = User::whereHas('adviserAppointment', function ($query) {
+            $query->where('status', 'approved');  // Only show approved adviser appointments
+        })
+        ->where('account_type', 11)  // Assuming account_type 11 is for students
+        ->where('name', 'LIKE', "%{$searchTerm}%")
+        ->get();
+
+        // Return the students as JSON for AJAX
+        return response()->json($students);
+    }
 }

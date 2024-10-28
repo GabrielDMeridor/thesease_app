@@ -132,4 +132,46 @@
     {{ $students->links() }}
 
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    // Listen for keyup events on the search input
+    $('input[name="search"]').on('keyup', function() {
+        let search = $(this).val();
+
+        // AJAX request to the search route
+        $.ajax({
+            url: "{{ route('graduateschool.route1.search') }}",
+            type: 'GET',
+            data: { search: search },
+            success: function(response) {
+                let tableBody = '';
+
+                // Loop through the results and construct table rows
+                response.forEach(function(student) {
+                    tableBody += `
+                        <tr>
+                            <td class="text-center">${student.name}</td>
+                            <td class="text-center">${student.program || 'N/A'}</td>
+                            <td class="text-center">
+                                <a href="/superadmin/route1/student/${student.id}" class="btn btn-primary">
+                                    <i class="fa-solid fa-file"></i> View Routing Form 1
+                                </a>
+                            </td>
+                        </tr>`;
+                });
+
+                // Replace the table body with the new data
+                $('table tbody').html(tableBody);
+            },
+            error: function() {
+                console.error("Search failed.");
+            }
+        });
+    });
+});
+</script>
+
 @endsection

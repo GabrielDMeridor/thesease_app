@@ -263,6 +263,15 @@
     Route::get('/admin/verifyusers/search', [AVerifyUserController::class, 'search'])->name('admin.verify-users.search');
     // AJAX Search GraduateSchool
     Route::get('/graduateschool/verifyusers/search', [GSVerifyUserController::class, 'search'])->name('graduateschool.verify-users.search');
+    // routes/web.php
+
+    // AJAX search route for SuperAdmin route1 page
+    Route::get('/superadmin/route1/search', [SARoute1Controller::class, 'ajaxSearch'])->name('superadmin.route1.search');
+     // AJAX search route for Admin route1 page
+    Route::get('/admin/route1/search', [ARoute1Controller::class, 'ajaxSearch'])->name('admin.route1.search');
+    // AJAX search route for Graduate School route1 page
+    Route::get('/graduateschool/route1/search', [GSRoute1Controller::class, 'ajaxSearch'])->name('graduateschool.route1.search');
+
 
 
 
