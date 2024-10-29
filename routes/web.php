@@ -33,6 +33,7 @@
 
     use App\Http\Controllers\TDProfessor\TDPProfileController;
     use App\Http\Controllers\TDProfessor\TDPRoute1Controller;
+    use App\Http\Controllers\TDProfessor\TDPAccountController;
 
     use App\Http\Controllers\AUFCommittee\AUFCProfileController;
 
@@ -176,6 +177,9 @@
 
     //TDProfessor Routes Dashboard and Sidebar
     Route::get('/tdprofessor/dashboard', [TDPProfileController::class, 'TDPdashboard'])->name('TDPdashboard');
+    //TDProfessor Account
+    Route::get('/tdprofessor/account', action: [TDPAccountController::class, 'TDPaccount'])->name('tdprofessor.account');
+
     //TDProfessor Route1
     Route::get('/tdprofessor/route1', action: [TDPRoute1Controller::class, 'show'])->name('tdprofessor.route1');
     // TD Professor Routes
