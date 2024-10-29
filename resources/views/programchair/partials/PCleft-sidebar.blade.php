@@ -15,28 +15,21 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item {{ $current_route == 'SAdashboard' ? 'active' : '' }}">
-        <a href="{{ route('SAdashboard') }}" class="nav-link">
+    <li class="nav-item {{ $current_route == 'PCdashboard' ? 'active' : '' }}">
+        <a href="{{ route('PCdashboard') }}" class="nav-link">
             <i class="fas fa-fw fa-home"></i>
             <span>Home</span>
         </a>
     </li>
 
     <!-- Nav Item - Account -->
-    <li class="nav-item {{ $current_route == 'superadmin.account' ? 'active' : '' }}">
-        <a href="{{ route('superadmin.account') }}" class="nav-link">
+    <li class="nav-item {{ $current_route == 'programchair.account' ? 'active' : '' }}">
+        <a href="{{ route('programchair.account') }}" class="nav-link">
             <i class="fas fa-fw fa-user"></i>
             <span>Account</span>
         </a>
     </li>
 
-    <!-- Nav Item - Set Schedules -->
-    <li class="nav-item">
-        <a href="#" class="nav-link">
-            <i class="fas fa-fw fa-calendar"></i>
-            <span>Set Schedules</span>
-        </a>
-    </li>
 
     <!-- Nav Item - Thesis Checking -->
     <li class="nav-item">
@@ -51,14 +44,6 @@
             <a class="collapse-item" href="#">Routing Form 2</a>
             </div>
         </div>
-    </li>
-
-    <!-- Nav Item - Archive -->
-    <li class="nav-item {{ $current_route == 'superadmin.archive' ? 'active' : '' }}">
-        <a href="{{ route('superadmin.archive') }}" class="nav-link">
-            <i class="fas fa-fw fa-archive"></i>
-            <span>Archive</span>
-        </a>
     </li>
 
     <!-- Nav Item - Thesis Repository -->

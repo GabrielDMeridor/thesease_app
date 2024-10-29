@@ -28,6 +28,7 @@
 
 
     use App\Http\Controllers\ProgramChair\PCProfileController;
+    use App\Http\Controllers\ProgramChair\PCAccountController;
     use App\Http\Controllers\ProgramChair\PCRoute1Controller;
 
 
@@ -166,6 +167,9 @@
 
     //Programchair Routes Dashboard and Sidebar
     Route::get('/programchair/dashboard', [PCProfileController::class, 'PCdashboard'])->name('PCdashboard');
+    //ProgramChair Account
+    Route::get('/programchair/account', action: [PCAccountController::class, 'PCaccount'])->name('programchair.account');
+
     //ProgamChair Route 1
     Route::get('/programchair/route1', [PCRoute1Controller::class, 'show'])->name('programchair.route1');
     // Route for showing the assign adviser page for Program Chair
