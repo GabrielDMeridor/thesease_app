@@ -330,7 +330,7 @@
             e.preventDefault();
 
             let form = $('#changePasswordForm');
-            let actionUrl = "{{ route('graduateschool.changePassword') }}";  // Use your PUT route
+            let actionUrl = "{{ route('changePassword') }}";  // Use your PUT route
 
             // Reset any previous error messages
             form.find('.invalid-feedback').text('');
@@ -355,68 +355,70 @@
             });
         });
 
-        // Handle form submission via AJAX for Update Profile
-        $('#submitUpdateProfile').on('click', function (e) {
-            e.preventDefault();
+    let latestName = "{{ $user->name }}"; // Initialize with original values
+    let latestEmail = "{{ $user->email }}"; // Initialize with original values
 
-            let form = $('#updateProfileForm');
-            let actionUrl = "{{ route('graduateschool.updateProfile') }}";  // Use your PUT route for the profile update
-
-            // Reset any previous error messages
-            form.find('.invalid-feedback').text('');
-            form.find('.form-control').removeClass('is-invalid');
-            $('#profileSuccessMessage').hide();
-
-            $.ajax({
-                url: actionUrl,
-                type: 'POST',
-                data: form.serialize(),
-                success: function(response) {
-                    if (response.status === 'success') {
-                        $('#profileSuccessMessage').text(response.message).show();
-
-                        // Get the updated name and email values
-                        const updatedName = $('#updateProfileForm #name').val();
-                        const updatedEmail = $('#updateProfileForm #email').val();
-
-                        // Update the name and email in the Dr. B card
-                        $('.profile-name').text(updatedName);
-                        $('.profile-email').text(updatedEmail);
-
-                        // Update the name and email in the navbar near the logout button
-                        $('.navbar-username').text(updatedName);
-
-                        // Update the name and email in the Profile Information card
-                        $('.profile-info-name').text(updatedName);
-                        $('.profile-info-email').text(updatedEmail);
-
-                        // Update the name and email in the modal fields
-                        $('#updateProfileForm #name').val(updatedName);  // Update the name in the modal
-                        $('#updateProfileForm #email').val(updatedEmail);  // Update the email in the modal
-
-                        // Clear success message after a timeout (optional)
-                        setTimeout(function () {
-                            $('#profileSuccessMessage').fadeOut();
-                        }, 3000);
-                    } else {
-                        handleErrors(response.errors, form);
-                    }
-                },
-                error: function(xhr) {
-                    console.error('An error occurred', xhr);
-                }
-            });
-        });
-
-        // Function to handle form errors
-        function handleErrors(errors, form) {
-            if (errors) {
-                $.each(errors, function (key, value) {
-                    form.find(`#${key}_error`).text(value[0]);
-                    form.find(`#${key}`).addClass('is-invalid');
-                });
-            }
-        }
+    // Populate the modal with the latest values every time it opens
+    $('#updateProfileModal').on('show.bs.modal', function () {
+        $('#updateProfileForm #name').val(latestName);
+        $('#updateProfileForm #email').val(latestEmail);
     });
+
+    // Handle form submission via AJAX for Update Profile
+    $('#submitUpdateProfile').on('click', function (e) {
+        e.preventDefault();
+
+        let form = $('#updateProfileForm');
+        let actionUrl = "{{ route('updateProfile') }}";  // Use your PUT route for the profile update
+
+        // Reset any previous error messages
+        form.find('.invalid-feedback').text('');
+        form.find('.form-control').removeClass('is-invalid');
+        $('#profileSuccessMessage').hide();
+
+        $.ajax({
+            url: actionUrl,
+            type: 'POST',
+            data: form.serialize(),
+            success: function(response) {
+                if (response.status === 'success') {
+                    $('#profileSuccessMessage').text(response.message).show();
+
+                    // Update the latest values in JavaScript variables
+                    latestName = $('#updateProfileForm #name').val();
+                    latestEmail = $('#updateProfileForm #email').val();
+
+                    // Update the name and email in the main view
+                    $('.profile-name').text(latestName);
+                    $('.profile-info-name').text(latestName);
+                    $('.navbar-username').text(latestName);
+                    $('.profile-info-email').text(latestEmail);
+
+                    // Close the modal after successful update
+
+                    // Clear success message after a timeout (optional)
+                    setTimeout(function () {
+                        $('#profileSuccessMessage').fadeOut();
+                    }, 3000);
+                } else {
+                    handleErrors(response.errors, form);
+                }
+            },
+            error: function(xhr) {
+                console.error('An error occurred', xhr);
+            }
+        });
+    });
+
+    // Function to handle form errors
+    function handleErrors(errors, form) {
+        if (errors) {
+            $.each(errors, function (key, value) {
+                form.find(`#${key}_error`).text(value[0]);
+                form.find(`#${key}`).addClass('is-invalid');
+            });
+        }
+    }
+});
 </script>
 @endsection
