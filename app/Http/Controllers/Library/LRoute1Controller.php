@@ -44,7 +44,7 @@ public function search(Request $request)
     // Retrieve the search keyword
     $keyword = $request->input('query', '');
 
-    // Filter appointments by keyword if provided
+    // If keyword is empty, retrieve all appointments
     $appointments = AdviserAppointment::whereNotNull('similarity_manuscript')
                     ->when($keyword, function ($query) use ($keyword) {
                         $query->whereHas('student', function ($q) use ($keyword) {
@@ -54,12 +54,47 @@ public function search(Request $request)
                     ->with('student')
                     ->get();
 
+    // Check if request is AJAX
+    if ($request->ajax()) {
+        $html = '';
+        foreach ($appointments as $appointment) {
+            $html .= '
+                <tr>
+                    <td>' . $appointment->student->name . '</td>
+                    <td>';
+            if ($appointment->similarity_manuscript) {
+                $html .= '<a href="#" data-toggle="modal" data-target="#manuscriptModal' . $appointment->id . '">' . basename($appointment->similarity_manuscript) . '</a>';
+            } else {
+                $html .= '<span>No manuscript uploaded</span>';
+            }
+            $html .= '</td>
+                    <td>
+                        <form action="' . route('library.uploadSimilarityCertificate') . '" method="POST" enctype="multipart/form-data" id="certificateUploadForm' . $appointment->student_id . '">
+                            ' . csrf_field() . '
+                            <input type="hidden" name="student_id" value="' . $appointment->student_id . '">';
+            if ($appointment->similarity_certificate) {
+                $html .= '<a href="#" data-toggle="modal" data-target="#certificateModal' . $appointment->id . '">' . basename($appointment->similarity_certificate) . '</a>';
+            } else {
+                $html .= '<input type="file" name="similarity_certificate" class="form-control" required accept=".pdf">';
+            }
+            $html .= '</form>
+                    </td>
+                    <td>
+                        <button type="submit" form="certificateUploadForm' . $appointment->student_id . '" class="btn btn-primary save-button">Save</button>
+                    </td>
+                </tr>';
+        }
+        return response()->json(['html' => $html]);
+    }
+
     return view('library.route1.Lroute1', [
         'title' => 'Route1 Checking',
         'appointments' => $appointments,
         'keyword' => $keyword // Pass the keyword to the view
     ]);
 }
+
+
 
     
     

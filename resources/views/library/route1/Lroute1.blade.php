@@ -94,43 +94,37 @@
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach($appointments as $appointment)
-                    <tr>
-                        <td>{{ $appointment->student->name }}</td>
-
-                        <!-- Uploaded Manuscript column -->
-                        <td>
-                            @if($appointment->similarity_manuscript)
-                                <a href="#" data-toggle="modal" data-target="#manuscriptModal{{ $appointment->id }}">
-                                    {{ basename($appointment->similarity_manuscript) }}
-                                </a>
-                            @else
-                                <span>No manuscript uploaded</span>
-                            @endif
-                        </td>
-
-                        <!-- Uploaded Certificate column with Choose File input -->
-                        <td>
-                            <form action="{{ route('library.uploadSimilarityCertificate') }}" method="POST" enctype="multipart/form-data" id="certificateUploadForm{{ $appointment->student_id }}">
-                                @csrf
-                                <input type="hidden" name="student_id" value="{{ $appointment->student_id }}">
-                                
-                                @if($appointment->similarity_certificate)
-                                    <a href="#" data-toggle="modal" data-target="#certificateModal{{ $appointment->id }}">
-                                        {{ basename($appointment->similarity_certificate) }}
-                                    </a>
-                                @else
-                                    <input type="file" name="similarity_certificate" class="form-control" required accept=".pdf">
-                                @endif
-                            </form>
-                        </td>
-
-                        <!-- Action column with Save button only -->
-                        <td>
-                            <button type="submit" form="certificateUploadForm{{ $appointment->student_id }}" class="btn btn-primary">Save</button>
-                        </td>
-                    </tr>
+            <tbody id="appointments-table">
+    @foreach($appointments as $appointment)
+        <tr>
+            <td>{{ $appointment->student->name }}</td>
+            <td>
+                @if($appointment->similarity_manuscript)
+                    <a href="#" data-toggle="modal" data-target="#manuscriptModal{{ $appointment->id }}">
+                        {{ basename($appointment->similarity_manuscript) }}
+                    </a>
+                @else
+                    <span>No manuscript uploaded</span>
+                @endif
+            </td>
+            <td>
+                <form action="{{ route('library.uploadSimilarityCertificate') }}" method="POST" enctype="multipart/form-data" id="certificateUploadForm{{ $appointment->student_id }}">
+                    @csrf
+                    <input type="hidden" name="student_id" value="{{ $appointment->student_id }}">
+                    
+                    @if($appointment->similarity_certificate)
+                        <a href="#" data-toggle="modal" data-target="#certificateModal{{ $appointment->id }}">
+                            {{ basename($appointment->similarity_certificate) }}
+                        </a>
+                    @else
+                        <input type="file" name="similarity_certificate" class="form-control" required accept=".pdf">
+                    @endif
+                </form>
+            </td>
+            <td>
+                <button type="submit" form="certificateUploadForm{{ $appointment->student_id }}" class="btn btn-primary">Save</button>
+            </td>
+        </tr>
 
                     <!-- Manuscript Modal -->
                     <div class="modal fade" id="manuscriptModal{{ $appointment->id }}" tabindex="-1" aria-labelledby="manuscriptModalLabel{{ $appointment->id }}" aria-hidden="true">
@@ -179,6 +173,50 @@
     </div>
 </div>
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    let searchRequest = null; // Track the active AJAX request
+    let debounceTimer;        // Timer for debouncing
+
+    $('#searchInput').on('keyup', function() {
+        clearTimeout(debounceTimer); // Clear previous timer
+
+        let query = $(this).val().trim();
+
+        // Set a debounce timer (e.g., 300ms) to wait before sending a request
+        debounceTimer = setTimeout(function() {
+            // Abort previous request if it's still in progress
+            if (searchRequest) {
+                searchRequest.abort();
+            }
+
+            // Check if the query is empty
+            if (query === '') {
+                // Clear the table or reload all results if the search is empty
+                query = ''; // Empty search should load all results
+            }
+
+            // Send a new AJAX request
+            searchRequest = $.ajax({
+                url: "{{ route('library.search') }}",
+                type: "GET",
+                data: { query: query },
+                cache: false, // Disable cache for AJAX request
+                success: function(response) {
+                    $('#appointments-table').html(response.html);
+                },
+                error: function(xhr) {
+                    if (xhr.status !== 0) { // Ignore aborted requests
+                        console.error("An error occurred: " + xhr.status + " " + xhr.statusText);
+                    }
+                }
+            });
+        }, 300); // Adjust debounce time as needed
+    });
+});
+</script>
 
 
 
