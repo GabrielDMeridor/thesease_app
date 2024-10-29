@@ -85,7 +85,7 @@
             <!-- Multi-Step Navigation -->
             <div class="steps">
                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                    @for ($step = 1; $step <= 12; $step++) <!-- Adjust step numbers as needed -->
+                    @for ($step = 1; $step <= 10; $step++) <!-- Adjust step numbers as needed -->
                         <li class="nav-item" role="presentation">
                             <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab" 
                             data-toggle="pill" href="#pills-step-{{ $step }}" role="tab" aria-controls="pills-step-{{ $step }}" 
@@ -99,13 +99,13 @@
 
             <!-- Step Content -->
             <div class="tab-content contentsaroute" id="pills-tabContent">
-                @for ($step = 1; $step <= 5; $step++) <!-- Adjust step numbers as needed -->
+                @for ($step = 1; $step <= 10; $step++) <!-- Adjust step numbers as needed -->
                     <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}" role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
                         @if ($step === 1)
                             <!-- Step 1: Routing Form -->
                             <div class="card shadow mb-4">
                                 <div class="card-body">
-                                    <form method="POST" action="{{ route('graduateschool.sign', $student->id) }}">
+                                    <form method="POST" action="{{ route('admin.sign', $student->id) }}">
                                         @csrf
 
                                         <h4>Appointment Details</h4>
@@ -147,15 +147,136 @@
                                     </form>
                                 </div>
                             </div>
-                        @else
-                            <p>Step {{ $step }} content goes here.</p>
-                        @endif
-                    </div>
-                @endfor
+                            @elseif ($step === 2)
+                    <!-- Step 2: View Consultation Dates (no ability to add) -->
+                    @if (is_null($appointment->adviser_signature) || is_null($appointment->chair_signature) || is_null($appointment->dean_signature))
+                        <!-- Step is locked: Display the lock message -->
+                        <p class="text-muted">Step 2 is locked. The signatures for the Adviser, Program Chair, and Dean must be completed to proceed.</p>
+                    @else
+                        <!-- Step 2 is unlocked: Show the consultation dates and signatures -->
+                        <div class="container-fluid">
+                            <div class="card shadow mb-4">
+                                <div class="card-body">
+                                    <h4>Consultation Dates and Adviser Endorsement</h4>
+
+                                    <!-- Display Consultation Dates -->
+                                    <div class="form-group">
+                                        <label for="consultation_dates">Consultation Dates:</label>
+                                        <div id="consultation_dates_container">
+                                            @if ($appointment->consultation_dates)
+                                                @foreach (json_decode($appointment->consultation_dates) as $date)
+                                                    <div class="input-group mb-2">
+                                                        <input type="date" name="consultation_dates[]" class="form-control" value="{{ $date }}" readonly>
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <p>No consultation dates set yet.</p>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <!-- Display Adviser Endorsement Signature -->
+                                    <div class="form-group">
+                                        <label for="adviser_endorsement_signature">Adviser Endorsement Signature:</label>
+                                        <input type="text" name="adviser_endorsement_signature" class="form-control" value="{{ $appointment->adviser_endorsement_signature ?? 'Pending' }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    @elseif ($step === 3)
+    <!-- Step 3: View Similarity Manuscript and Certificate -->
+    @if(is_null($appointment->adviser_endorsement_signature))
+        <!-- Lock Step 3 if adviser's endorsement signature is not present -->
+        <p class="text-muted">Step 3 is locked. Please ensure the adviser's endorsement signature is completed in Step 2 to proceed.</p>
+    @else
+        <div class="container-fluid">
+            <div class="card shadow mb-4">
+                <h1>Similarity Check</h1>
+                <div class="card-body">
+                    <h4>Uploaded Similarity Manuscript</h4>
+
+                    @if($appointment->similarity_manuscript)
+                        <!-- Link to open manuscript modal -->
+                        <a href="#" data-toggle="modal" data-target="#manuscriptModal">
+                            {{ basename($appointment->similarity_manuscript) }}
+                        </a>
+                    @else
+                        <p class="text-muted">No manuscript uploaded yet.</p>
+                    @endif
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h4>Similarity Check Results</h4>
+                    
+                    @if($appointment->similarity_certificate)
+                        <!-- Link to open certificate modal -->
+                        <a href="#" data-toggle="modal" data-target="#certificateModal">
+                            {{ basename($appointment->similarity_certificate) }}
+                        </a>
+                    @else
+                        <p>Please wait for the librarian to upload the certificate.</p>
+                    @endif
+                </div>
             </div>
         </div>
-            <div class="card-footer footersaroute1">
+
+    <!-- Manuscript Modal -->
+    <div class="modal fade" id="manuscriptModal" tabindex="-1" aria-labelledby="manuscriptModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="manuscriptModalLabel">View Manuscript</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe src="{{ Storage::url($appointment->similarity_manuscript) }}" width="100%" height="600px" style="border: none;"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ Storage::url($appointment->similarity_manuscript) }}" target="_blank" class="btn btn-primary" download>Download Manuscript</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Certificate Modal -->
+    <div class="modal fade" id="certificateModal" tabindex="-1" aria-labelledby="certificateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="certificateModalLabel">View Certificate</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe src="{{ Storage::url($appointment->similarity_certificate) }}" width="100%" height="600px" style="border: none;"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ Storage::url($appointment->similarity_certificate) }}" target="_blank" class="btn btn-primary" download>Download Certificate</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
+@else
+    <!-- Step 4: Lock Step if Similarity Certificate is Null -->
+            @if(is_null($appointment->similarity_certificate))
+                <p class="text-muted">Step 4 is locked. The Similarity Certificate must be uploaded in Step 3 to proceed.</p>
+            @else
+                <p>Step 4 content goes here.</p>
+            @endif
+                @endif
+            </div>
+        @endfor
+    </div>
+    <div class="card-footer footersaroute1"></div>
     </div>
 </div>
 @endsection

@@ -24,6 +24,8 @@ class AdviserAppointment extends Model
         'disapproval_count',
         'completed_at',
         'consultation_dates', // Add this if you're mass assigning it
+        'similarity_certificate',
+        'similarity_manusccript',
 
     ];
 

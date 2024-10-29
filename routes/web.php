@@ -201,6 +201,8 @@
     Route::get('/library/dashboard', [LProfileController::class, 'Ldashboard'])->name('Ldashboard');
     //Library Route 1
     Route::get('/library/route1', [LRoute1Controller::class, 'index'])->name('library.route1');
+    Route::post('/library/upload-similarity-certificate', [LRoute1Controller::class, 'uploadSimilarityCertificate'])->name('library.uploadSimilarityCertificate');
+    Route::get('/library/search', [LRoute1Controller::class, 'search'])->name(name: 'library.search');
 
 
 
@@ -227,7 +229,10 @@
     Route::post('/gsstudent/route1/submit', [GSSRoute1Controller::class, 'submit'])->name('gsstudent.route1.submit');
     // Route to handle signatures (if applicable for the next steps)
     Route::post('/gsstudent/route1/sign', [GSSRoute1Controller::class, 'sign'])->name('gsstudent.route1.sign');
-    
+    // GS Route 1 Step 3
+    Route::post('/gsstudent/upload-similarity-manuscript', [GSSRoute1Controller::class, 'uploadSimilarityManuscript'])->name('gsstudent.uploadSimilarityManuscript');
+
+
 
     //Notificaion Event Handler
     // Mark all notifications as read

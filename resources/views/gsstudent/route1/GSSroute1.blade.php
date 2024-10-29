@@ -187,19 +187,15 @@
                         </div>
                     </div>
 
-                @elseif ($step === 2)
-                    <!-- Step 2: View Consultation Dates (no ability to add) -->
+                    @elseif ($step === 2)
+                    <!-- Step 2: View Consultation Dates -->
                     @if (is_null($appointment->adviser_signature) || is_null($appointment->chair_signature) || is_null($appointment->dean_signature))
-                        <!-- Step is locked: Display the lock message -->
                         <p class="text-muted">Step 2 is locked. The signatures for the Adviser, Program Chair, and Dean must be completed to proceed.</p>
                     @else
-                        <!-- Step 2 is unlocked: Show the consultation dates and signatures -->
                         <div class="container-fluid">
                             <div class="card shadow mb-4">
                                 <div class="card-body">
                                     <h4>Consultation Dates and Adviser Endorsement</h4>
-
-                                    <!-- Display Consultation Dates -->
                                     <div class="form-group">
                                         <label for="consultation_dates">Consultation Dates:</label>
                                         <div id="consultation_dates_container">
@@ -214,8 +210,6 @@
                                             @endif
                                         </div>
                                     </div>
-
-                                    <!-- Display Adviser Endorsement Signature -->
                                     <div class="form-group">
                                         <label for="adviser_endorsement_signature">Adviser Endorsement Signature:</label>
                                         <input type="text" name="adviser_endorsement_signature" class="form-control" value="{{ $appointment->adviser_endorsement_signature ?? 'Pending' }}" readonly>
@@ -224,26 +218,120 @@
                             </div>
                         </div>
                     @endif
-                @else
-                    <!-- Lock the content if adviser's signature is not affixed -->
-                    @if ($step > 2 && is_null($appointment->adviser_endorsement_signature))
-                        <p class="text-muted">Step {{ $step }} is locked. Please affix the adviser's endorsement signature in Step 2 to proceed.</p>
-                    @else
-                        <p>Step {{ $step }} content goes here.</p>
+
+
+                    @elseif ($step === 3)
+    <!-- Step 3: Upload and View Similarity Manuscript and Certificate -->
+    @if(is_null($appointment->adviser_endorsement_signature))
+        <!-- Lock Step 3 if adviser's endorsement signature is not present -->
+        <p class="text-muted">Step 3 is locked. Please ensure the adviser's endorsement signature is completed in Step 2 to proceed.</p>
+    @else
+        <div class="container-fluid">
+            <div class="card shadow mb-4">
+                <h1> Similarity Check</h1>
+                <div class="card-body">
+                    <h4>Upload Similarity Manuscript</h4>
+
+                    @if(auth()->user()->account_type == 11) <!-- Only visible to Graduate School Student -->
+                        @if(is_null($appointment->similarity_manuscript))
+                            <form action="{{ route('gsstudent.uploadSimilarityManuscript') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="similarity_manuscript">Upload Manuscript</label>
+                                    <input type="file" name="similarity_manuscript" class="form-control" required accept=".pdf,.doc,.docx">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Upload Manuscript</button>
+                            </form>
+                        @else
+                            <!-- Display uploaded manuscript file name -->
+                            <p>
+                                <strong>Uploaded Manuscript:</strong>
+                                <a href="#" data-toggle="modal" data-target="#manuscriptModal">
+                                    {{ basename($appointment->similarity_manuscript) }}
+                                </a>
+                            </p>
+                        @endif
                     @endif
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h4>Similarity Check Results</h4>
+                    @if($appointment->similarity_certificate)
+                        <!-- Display uploaded certificate file name -->
+                        <p>
+                            <strong>View Certificate:</strong>
+                            <a href="#" data-toggle="modal" data-target="#certificateModal">
+                                {{ basename($appointment->similarity_certificate) }}
+                            </a>
+                        </p>
+                    @else
+                        <p>Please wait for the librarian to upload the certificate.</p>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Manuscript Modal -->
+            <div class="modal fade" id="manuscriptModal" tabindex="-1" aria-labelledby="manuscriptModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="manuscriptModalLabel">View Manuscript</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <iframe src="{{ Storage::url($appointment->similarity_manuscript) }}" width="100%" height="600px"></iframe>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="{{ Storage::url($appointment->similarity_manuscript) }}" target="_blank" class="btn btn-primary" download>Download Manuscript</a>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certificate Modal -->
+            <div class="modal fade" id="certificateModal" tabindex="-1" aria-labelledby="certificateModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="certificateModalLabel">View Certificate</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <iframe src="{{ Storage::url($appointment->similarity_certificate) }}" width="100%" height="600px"></iframe>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="{{ Storage::url($appointment->similarity_certificate) }}" target="_blank" class="btn btn-primary" download>Download Certificate</a>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+                @else
+    <!-- Step 4: Lock Step if Similarity Certificate is Null -->
+            @if(is_null($appointment->similarity_certificate))
+                <p class="text-muted">Step 4 is locked. The Similarity Certificate must be uploaded in Step 3 to proceed.</p>
+            @else
+                <p>Step 4 content goes here.</p>
+            @endif
                 @endif
             </div>
         @endfor
-        </div>
     </div>
-
     <div class="card-footer footersaroute1"></div>
+    </div>
 </div>
-</div>
-</div>
-
-
 @endsection
+<!-- <div class="card-footer footersaroute1"></div> -->
 
 <style>
     .steps ul {

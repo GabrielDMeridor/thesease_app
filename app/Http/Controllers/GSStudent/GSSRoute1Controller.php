@@ -7,7 +7,12 @@ use App\Models\User;
 use App\Models\AdviserAppointment;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-use App\Notifications\AdviserRequestNotification;
+use App\Notifications\LibraryNotification;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
+
+
+
 
 
 class GSSRoute1Controller extends Controller
@@ -60,4 +65,34 @@ class GSSRoute1Controller extends Controller
 
         return redirect()->route('gsstudent.route1')->with('success', 'Form signed successfully!');
     }
+
+    public function uploadSimilarityManuscript(Request $request)
+    {
+        $user = Auth::user();
+        $appointment = AdviserAppointment::where('student_id', $user->id)->first();
+    
+        // Validate file input
+        $request->validate([
+            'similarity_manuscript' => 'required|file|mimes:pdf,doc,docx|max:2048',
+        ]);
+    
+        // Handle manuscript file upload
+        $file = $request->file('similarity_manuscript');
+        $originalFileName = $file->getClientOriginalName(); // Original file name
+        $storedFileName = $file->storeAs('public/similarity_manuscripts', $originalFileName); // Store with original name
+    
+        // Store file path and original file name in the database
+        $appointment->similarity_manuscript = $storedFileName;
+        $appointment->original_similarity_manuscript_filename = $originalFileName;
+        $appointment->save();
+    
+    // Notify Library (account type 9) with student's name in the message
+    $libraryUsers = User::where('account_type', 9)->get();
+    $message = "{$user->name} has uploaded their manuscript for similarity checking.";
+    Notification::send($libraryUsers, new LibraryNotification($user, $message));
+    
+        return redirect()->route('gsstudent.route1')->with('success', 'Similarity Manuscript uploaded successfully and Library notified!');
+    }
+    
+
 }
