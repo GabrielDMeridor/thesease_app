@@ -42,6 +42,7 @@
     use App\Http\Controllers\OVPRI\OVPRIProfileController;
 
     use App\Http\Controllers\Library\LProfileController;
+    use App\Http\Controllers\Library\LAccountController;
     use App\Http\Controllers\Library\LRoute1Controller;
 
 
@@ -203,6 +204,9 @@
 
     //Library Routes Dashboard and Sidebar
     Route::get('/library/dashboard', [LProfileController::class, 'Ldashboard'])->name('Ldashboard');
+    //Library Account
+    Route::get('/library/account', action: [LAccountController::class, 'Laccount'])->name('library.account');
+
     //Library Route 1
     Route::get('/library/route1', [LRoute1Controller::class, 'index'])->name('library.route1');
     Route::post('/library/upload-similarity-certificate', [LRoute1Controller::class, 'uploadSimilarityCertificate'])->name('library.uploadSimilarityCertificate');

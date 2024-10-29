@@ -23,8 +23,8 @@
     </li>
 
     <!-- Nav Item - Account -->
-    <li class="nav-item {{ $current_route == 'superadmin.account' ? 'active' : '' }}">
-        <a href="{{ route('superadmin.account') }}" class="nav-link">
+    <li class="nav-item {{ $current_route == 'library.account' ? 'active' : '' }}">
+        <a href="{{ route('library.account') }}" class="nav-link">
             <i class="fas fa-fw fa-user"></i>
             <span>Account</span>
         </a>
@@ -44,14 +44,6 @@
                 <a class="collapse-item" href="#">Routing Form 2</a>
             </div>
         </div>
-    </li>
-
-    <!-- Nav Item - Archive -->
-    <li class="nav-item {{ $current_route == 'superadmin.archive' ? 'active' : '' }}">
-        <a href="{{ route('superadmin.archive') }}" class="nav-link">
-            <i class="fas fa-fw fa-archive"></i>
-            <span>Archive</span>
-        </a>
     </li>
 
     <!-- Nav Item - Thesis Repository -->
