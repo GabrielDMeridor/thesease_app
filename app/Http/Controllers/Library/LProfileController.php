@@ -10,7 +10,7 @@ class LProfileController extends Controller
     public function Ldashboard()
     {
         if (!auth()->check() || auth()->user()->account_type !== 9) {
-            return redirect()->route('getLogin')->with('error', 'You must be logged in as a superadmin to access this page');
+            return redirect()->route('getLogin')->with('error', 'You must be logged in as a library to access this page');
         }
         
         $data = [

@@ -41,6 +41,8 @@
     use App\Http\Controllers\OVPRI\OVPRIProfileController;
 
     use App\Http\Controllers\Library\LProfileController;
+    use App\Http\Controllers\Library\LRoute1Controller;
+
 
     use App\Http\Controllers\LanguageEditor\LEProfileController;
 
@@ -192,8 +194,18 @@
     //OVPRI Routes Dashboard and Sidebar
     Route::get('/ovpri/dashboard', [OVPRIProfileController::class, 'OVPRIdashboard'])->name('OVPRIdashboard');
 
+
+
+
     //Library Routes Dashboard and Sidebar
     Route::get('/library/dashboard', [LProfileController::class, 'Ldashboard'])->name('Ldashboard');
+    //Library Route 1
+    Route::get('/library/route1', [LRoute1Controller::class, 'index'])->name('library.route1');
+
+
+
+
+
 
     //Language Editor Routes Dashboard and Sidebar
     Route::get('/languageeditor/dashboard', [LEProfileController::class, 'LEdashboard'])->name('LEdashboard');
