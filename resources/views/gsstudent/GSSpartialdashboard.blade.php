@@ -75,106 +75,108 @@
 
 @section('body')
 <div class="container-fluid">
-    <div class="sagreet">
-        {{ $title }}
-    </div>
+    <div class="sagreet">{{ $title }}</div>
     <br>
 
     <div class="card">
         <div class="card-header">Files</div>
         <div class="card-body">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>File</th>
-                        <th></th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Immigration File -->
-                    @if (strtolower(auth()->user()->nationality) !== 'filipino')
-                    <tr>
-                        <td>Immigration Card:</td>
-                        <td>
-                            @if ($immigrationFile)
-                                <a href="#" data-toggle="modal" data-target="#fileModal" 
-                                    onclick="openFileModal('{{ asset('storage/immigrations/' . $immigrationFile) }}')">{{ $immigrationFile }}</a>
-                            @else
-                                Not Uploaded
-                            @endif
-                        </td>
-                        <td>
-                            <button class="btn btn-primary" data-toggle="modal" data-target="#uploadModal"
-                                data-type="immigration_or_studentvisa"
-                                data-action="{{ $immigrationFile ? 'update' : 'upload' }}">
-                                {{ $immigrationFile ? 'Update' : 'Upload' }}
-                            </button>
-                        </td>
-                    </tr>
-                    @endif
+            <form action="{{ route('gssstudent.file.upload') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Status</th>
+                            <th>Choose File</th>
+                            <th>Save</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Immigration File -->
+                        @if (strtolower(auth()->user()->nationality) !== 'filipino')
+                        <tr>
+                            <td>Immigration Card:</td>
+                            <td>
+                                @if ($immigrationFile)
+                                    <a href="#" data-toggle="modal" data-target="#fileModal" 
+                                        onclick="openFileModal('{{ asset('storage/immigrations/' . $immigrationFile) }}', '{{ $immigrationFile }}')">{{ $immigrationFile }}</a>
+                                @else
+                                    Not Uploaded
+                                @endif
+                            </td>
+                            <td>
+                                <input type="file" name="file[immigration_or_studentvisa]" accept=".jpg, .jpeg, .png">
+                                <input type="hidden" name="file_type" value="immigration_or_studentvisa">
+                            </td>
+                            <td>
+                                <button type="submit" name="upload_type" value="immigration_or_studentvisa" class="btn btn-primary">Save</button>
+                            </td>
+                        </tr>
+                        @endif
 
-                    <!-- Routing Form One -->
-                    <tr>
-                        <td>Routing Form One:</td>
-                        <td>
-                            @if ($routingFormOneFile)
-                                <a href="#" data-toggle="modal" data-target="#fileModal" 
-                                    onclick="openFileModal('{{ asset('storage/routing_forms/' . $routingFormOneFile) }}')">{{ $routingFormOneFile }}</a>
-                            @else
-                                Not Uploaded
-                            @endif
-                        </td>
-                        <td>
-                            <button class="btn btn-primary" data-toggle="modal" data-target="#uploadModal"
-                                data-type="routing_form_one"
-                                data-action="{{ $routingFormOneFile ? 'update' : 'upload' }}">
-                                {{ $routingFormOneFile ? 'Update' : 'Upload' }}
-                            </button>
-                        </td>
-                    </tr>
+                        <!-- Routing Form One -->
+                        <tr>
+                            <td>Routing Form One:</td>
+                            <td>
+                                @if ($routingFormOneFile)
+                                    <a href="#" data-toggle="modal" data-target="#fileModal" 
+                                        onclick="openFileModal('{{ asset('storage/routing_forms/' . $routingFormOneFile) }}', '{{ $routingFormOneFile }}')">{{ $routingFormOneFile }}</a>
+                                @else
+                                    Not Uploaded
+                                @endif
+                            </td>
+                            <td>
+                                <input type="file" name="file[routing_form_one]" accept=".pdf">
+                                <input type="hidden" name="file_type" value="routing_form_one">
+                            </td>
+                            <td>
+                                <button type="submit" name="upload_type" value="routing_form_one" class="btn btn-primary">Save</button>
+                            </td>
+                        </tr>
 
-                    <!-- Manuscript -->
-                    <tr>
-                        <td>Manuscript:</td>
-                        <td>
-                            @if ($manuscriptFile)
-                                <a href="#" data-toggle="modal" data-target="#fileModal" 
-                                    onclick="openFileModal('{{ asset('storage/manuscripts/' . $manuscriptFile) }}')">{{ $manuscriptFile }}</a>
-                            @else
-                                Not Uploaded
-                            @endif
-                        </td>
-                        <td>
-                            <button class="btn btn-primary" data-toggle="modal" data-target="#uploadModal"
-                                data-type="manuscript"
-                                data-action="{{ $manuscriptFile ? 'update' : 'upload' }}">
-                                {{ $manuscriptFile ? 'Update' : 'Upload' }}
-                            </button>
-                        </td>
-                    </tr>
+                        <!-- Manuscript -->
+                        <tr>
+                            <td>Manuscript:</td>
+                            <td>
+                                @if ($manuscriptFile)
+                                    <a href="#" data-toggle="modal" data-target="#fileModal" 
+                                        onclick="openFileModal('{{ asset('storage/manuscripts/' . $manuscriptFile) }}', '{{ $manuscriptFile }}')">{{ $manuscriptFile }}</a>
+                                @else
+                                    Not Uploaded
+                                @endif
+                            </td>
+                            <td>
+                                <input type="file" name="file[manuscript]" accept=".pdf">
+                                <input type="hidden" name="file_type" value="manuscript">
+                            </td>
+                            <td>
+                                <button type="submit" name="upload_type" value="manuscript" class="btn btn-primary">Save</button>
+                            </td>
+                        </tr>
 
-                    <!-- Adviser Appointment Form -->
-                    <tr>
-                        <td>Adviser Appointment Form:</td>
-                        <td>
-                            @if ($adviserAppointmentFile)
-                                <a href="#" data-toggle="modal" data-target="#fileModal" 
-                                    onclick="openFileModal('{{ asset('storage/adviser_appointments/' . $adviserAppointmentFile) }}')">{{ $adviserAppointmentFile }}</a>
-                            @else
-                                Not Uploaded
-                            @endif
-                        </td>
-                        <td>
-                            <button class="btn btn-primary" data-toggle="modal" data-target="#uploadModal"
-                                data-type="adviser_appointment_form"
-                                data-action="{{ $adviserAppointmentFile ? 'update' : 'upload' }}">
-                                {{ $adviserAppointmentFile ? 'Update' : 'Upload' }}
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                        <!-- Adviser Appointment Form -->
+                        <tr>
+                            <td>Adviser Appointment Form:</td>
+                            <td>
+                                @if ($adviserAppointmentFile)
+                                    <a href="#" data-toggle="modal" data-target="#fileModal" 
+                                        onclick="openFileModal('{{ asset('storage/adviser_appointments/' . $adviserAppointmentFile) }}', '{{ $adviserAppointmentFile }}')">{{ $adviserAppointmentFile }}</a>
+                                @else
+                                    Not Uploaded
+                                @endif
+                            </td>
+                            <td>
+                                <input type="file" name="file[adviser_appointment_form]" accept=".pdf">
+                                <input type="hidden" name="file_type" value="adviser_appointment_form">
+                            </td>
+                            <td>
+                                <button type="submit" name="upload_type" value="adviser_appointment_form" class="btn btn-primary">Save</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
         </div>
     </div>
 </div>
@@ -192,65 +194,47 @@
             <div class="modal-body">
                 <iframe id="filePreview" style="width:100%; height:500px;" frameborder="0"></iframe>
             </div>
+            <div class="modal-footer">
+                <a id="downloadLink" href="#" download class="btn btn-primary">Download</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- File Upload Modal -->
-<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <form id="fileForm" action="{{ route('gssstudent.file.upload') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="uploadModalLabel">Upload File</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="file_type" id="fileType">
-                    <div class="form-group">
-                        <label for="file">Choose File</label>
-                        <!-- Accept attribute will be dynamically set by JavaScript -->
-                        <input type="file" class="form-control-file" name="file" id="file" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-
 
 
 <script>
-    function openFileModal(fileUrl) {
+        function openFileModal(fileUrl, fileName) {
         document.getElementById('filePreview').src = fileUrl;
+        document.getElementById('downloadLink').href = fileUrl;
+        document.getElementById('downloadLink').download = fileName;
+        $('#fileModal').modal('show');
     }
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInputs = document.querySelectorAll('input[type="file"]');
 
-    $('#uploadModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var fileType = button.data('type');
-        
-        // Set the hidden file type input
-        $('#fileType').val(fileType);
+    fileInputs.forEach(fileInput => {
+        fileInput.addEventListener('change', function(event) {
+            const fileType = event.target.getAttribute('name').replace('file[', '').replace(']', '');
+            let acceptTypes = '';
 
-        // Set accepted file types based on the selected file type
-        var acceptTypes = '';
-        if (fileType === 'routing_form_one' || fileType === 'manuscript' || fileType === 'adviser_appointment_form') {
-            acceptTypes = '.pdf'; // Allow only PDFs
-        } else if (fileType === 'immigration_or_studentvisa') {
-            acceptTypes = '.jpeg, .jpg, .png'; // Allow only images
-        }
+            switch (fileType) {
+                case 'immigration_or_studentvisa':
+                    acceptTypes = '.jpeg, .jpg, .png';
+                    break;
+                case 'routing_form_one':
+                case 'manuscript':
+                case 'adviser_appointment_form':
+                    acceptTypes = '.pdf';
+                    break;
+            }
 
-        // Apply the accept attribute to limit file type selection
-        $('#file').attr('accept', acceptTypes);
+            event.target.setAttribute('accept', acceptTypes);
+        });
     });
+});
+
 
 
     function markAsRead(notificationId) {

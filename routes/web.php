@@ -201,7 +201,7 @@
 
     //GS Student Partial Routes
     Route::get('/gssstudent/partialdashboard', [GSSProfileController::class, 'partialDashboard'])->name('gssstudent.partialdashboard');
-    Route::put('/gsstudent/file/upload', [GSSFileUploadController::class, 'uploadFile'])->name('gssstudent.file.upload');
+    Route::post('/gsstudent/file/upload', [GSSFileUploadController::class, 'uploadFile'])->name('gssstudent.file.upload');
     
 
     //GS Student Routes Dashboard and Sidebar

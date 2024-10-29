@@ -10,43 +10,46 @@ class GSSFileUploadController extends Controller
 {
     public function uploadFile(Request $request)
     {
-        // Validate the request based on the file type
-        $request->validate([
-            'file_type' => 'required|string',
-            'file' => 'required|mimes:jpeg,jpg,png,pdf|max:25000',
-        ]);
-
-        $user = auth()->user();
-        $fileType = $request->input('file_type');
-        $file = $request->file('file');
-        $fileName = $file->getClientOriginalName();
-
-        // Determine the folder and attribute based on file type
-        switch ($fileType) {
-            case 'immigration_or_studentvisa':
-                $filePath = 'public/immigrations';
-                $user->immigration_or_studentvisa = $fileName;
-                break;
-            case 'routing_form_one':
-                $filePath = 'public/routing_forms';
-                $user->routing_form_one = $fileName;
-                break;
-            case 'manuscript':
-                $filePath = 'public/manuscripts';
-                $user->manuscript = $fileName;
-                break;
-            case 'adviser_appointment_form':
-                $filePath = 'public/adviser_appointments';
-                $user->adviser_appointment_form = $fileName;
-                break;
-            default:
-                return redirect()->back()->with('error', 'Invalid file type.');
+        $fileType = $request->input('upload_type');
+        $file = $request->file("file.$fileType");
+    
+        if (!$file) {
+            return redirect()->back()->with('error', 'No file selected for upload.');
         }
-
-        // Store the file and update the user record
-        $file->storeAs($filePath, $fileName);
+    
+        // Define allowed MIME types based on file type
+        $allowedMimes = match ($fileType) {
+            'immigration_or_studentvisa' => ['jpeg', 'jpg', 'png'],
+            'routing_form_one', 'manuscript', 'adviser_appointment_form' => ['pdf'],
+            default => []
+        };
+    
+        // Validate the file (size, MIME type)
+        $request->validate([
+            "file.$fileType" => ['required', 'file', 'mimes:' . implode(',', $allowedMimes), 'max:10240']
+        ]);
+    
+        // Use the original file name, replacing spaces with underscores
+        $fileName = preg_replace('/\s+/', '_', $file->getClientOriginalName());
+    
+        // Determine the storage path based on the file type
+        $filePath = match ($fileType) {
+            'immigration_or_studentvisa' => 'public/immigrations',
+            'routing_form_one' => 'public/routing_forms',
+            'manuscript' => 'public/manuscripts',
+            'adviser_appointment_form' => 'public/adviser_appointments',
+        };
+    
+        // Store the file with its original name
+        $storedPath = $file->storeAs($filePath, $fileName);
+    
+        // Update the user's record with the file name
+        $user = auth()->user();
+        $user->$fileType = $fileName;
         $user->save();
-
-        return redirect()->route('gssstudent.partialdashboard')->with('success', 'File uploaded successfully!');
+    
+        return redirect()->back()->with('success', 'File uploaded successfully!');
     }
-}
+    
+    }
+    
