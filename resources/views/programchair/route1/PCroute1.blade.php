@@ -113,16 +113,17 @@
                     <form method="POST" action="{{ route('programchair.assignAdviserToStudent') }}">
                         @csrf
 
-                        <!-- Student Selection Dropdown -->
-                        <div class="form-group">
-                            <label for="student_id">Select Student:</label>
-                            <select name="student_id" id="student_id" class="form-control" required onchange="showStudentProgram()">
-                                <option value="" disabled selected>Select Student</option>
-                                @foreach ($students as $student)
-                                    <option value="{{ $student->id }}" data-program="{{ $student->program }}">{{ $student->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+<!-- Student Selection Dropdown with Select2 -->
+<div class="form-group">
+    <label for="student_id">Select Student:</label>
+    <select name="student_id" id="student_id" class="form-control" onchange="showStudentProgram()">
+        <option value="" disabled selected>Select a student</option>
+        @foreach ($students as $student)
+            <option value="{{ $student->id }}" data-program="{{ $student->program }}">{{ $student->name }}</option>
+        @endforeach
+    </select>
+</div>
+
 
                         <!-- Program Display -->
                         <div class="form-group">
@@ -164,16 +165,17 @@
                 <div class="card-body">
                     <!-- Approved Students Section -->
 
-                    <!-- Approved Student Selection Dropdown -->
-                    <div class="form-group">
-                        <label for="approved_student_id">Select Approved Student:</label>
-                        <select name="approved_student_id" id="approved_student_id" class="form-control" onchange="getApprovedStudentDetails()">
-                            <option value="" disabled selected>Select Approved Student</option>
-                            @foreach ($approvedStudents as $student)
-                                <option value="{{ $student->id }}">{{ $student->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+<!-- Approved Student Selection Dropdown with Select2 -->
+<div class="form-group">
+    <label for="approved_student_id">Select Approved Student:</label>
+    <select name="approved_student_id" id="approved_student_id" class="form-control" onchange="getApprovedStudentDetails()">
+        <option value="" disabled selected>Select Approved Student</option>
+        @foreach ($approvedStudents as $student)
+            <option value="{{ $student->id }}">{{ $student->name }}</option>
+        @endforeach
+    </select>
+</div>
+
 
                     <!-- Signature Display -->
                     <div id="signatureDisplay" style="display:none;">
@@ -204,6 +206,14 @@
     </div>
 </div>
 
+<!-- Include Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Include jQuery (required for Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <script>
     // Show the program and adviser type when a student is selected
@@ -260,6 +270,35 @@
         })
         .catch(error => console.error('Error fetching student details:', error));
     }
+
+    $(document).ready(function() {
+    // Initialize Select2 on #student_id
+    $('#student_id').select2({
+        placeholder: "Select or search for a student",
+        allowClear: true,
+        width: '100%'  // This ensures the Select2 dropdown matches the width of the parent container
+    });
+
+    // When an option is selected, call the showStudentProgram function
+    $('#student_id').on('change', function() {
+        showStudentProgram();
+    });
+            // Initialize Select2 on #approved_student_id
+    $('#approved_student_id').select2({
+            placeholder: "Select or search for an approved student",
+            allowClear: true,
+            width: '100%'  // Ensure the dropdown takes the full width
+        });
+
+        // When an option is selected, call the getApprovedStudentDetails function
+        $('#approved_student_id').on('change', function() {
+            getApprovedStudentDetails();
+        });
+
+});
+
+
+
 </script>
 
 @endsection
