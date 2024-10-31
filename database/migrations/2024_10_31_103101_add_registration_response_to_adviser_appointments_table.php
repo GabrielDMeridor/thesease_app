@@ -6,21 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up()
     {
         Schema::table('adviser_appointments', function (Blueprint $table) {
-            $table->text('consultation_dates')->nullable();  // Ensure it is text
+            $table->string('registration_response')->nullable()->after('similarity_certificate');
         });
-        
     }
     
     public function down()
     {
         Schema::table('adviser_appointments', function (Blueprint $table) {
-            $table->dropColumn('consultation_dates');
+            $table->dropColumn('registration_response');
         });
     }
     

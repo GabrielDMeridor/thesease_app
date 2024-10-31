@@ -10,7 +10,7 @@ class OVPRIProfileController extends Controller
     public function OVPRIdashboard()
     {
         if (!auth()->check() || auth()->user()->account_type !== 8) {
-            return redirect()->route('getLogin')->with('error', 'You must be logged in as a superadmin to access this page');
+            return redirect()->route('getLogin')->with('error', 'You must be logged in as a OVPRI to access this page');
         }
         
         $data = [

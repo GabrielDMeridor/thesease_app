@@ -249,6 +249,24 @@ public function removeConsultationDate(Request $request)
     return response()->json(['success' => true]);
 }
 
+public function markRegistrationResponded($appointmentId)
+{
+    // Find the appointment
+    $appointment = AdviserAppointment::findOrFail($appointmentId);
+
+    // Ensure the logged-in user is the assigned adviser
+    if ($appointment->adviser_id !== auth()->user()->id) {
+        return redirect()->back()->with('error', 'Unauthorized action.');
+    }
+
+    // Update the registration_response column
+    $appointment->registration_response = 'responded';
+    $appointment->save();
+
+    // Redirect back with success message
+    return redirect()->back()->with('success', 'Registration marked as responded.');
+}
+
 
 
 

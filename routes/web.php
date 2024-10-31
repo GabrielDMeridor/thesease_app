@@ -187,6 +187,9 @@
 
     //TDProfessor Route1
     Route::get('/tdprofessor/route1', action: [TDPRoute1Controller::class, 'show'])->name('tdprofessor.route1');
+    //TDProfessor Register Response
+    Route::post('/professor/mark-registration-responded/{appointmentId}', [TDPRoute1Controller::class, 'markRegistrationResponded'])->name('tdprofessor.markRegistrationResponded');
+
     // TD Professor Routes
     Route::put('/tdprofessor/requests/{id}', [TDPRoute1Controller::class, 'updateRequestStatus'])->name('professor.request.update');
     //Route for showiing routing form for tdprofessor for a specific advisee
@@ -202,6 +205,9 @@
 
     //OVPRI Routes Dashboard and Sidebar
     Route::get('/ovpri/dashboard', [OVPRIProfileController::class, 'OVPRIdashboard'])->name('OVPRIdashboard');
+
+    //OVPRI Route 1
+
 
 
 
