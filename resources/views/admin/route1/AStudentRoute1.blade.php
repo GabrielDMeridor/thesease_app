@@ -265,18 +265,61 @@
         </div>
     </div>
 @endif
-@else
-    <!-- Step 4: Lock Step if Similarity Certificate is Null -->
-            @if(is_null($appointment->similarity_certificate))
-                <p class="text-muted">Step 4 is locked. The Similarity Certificate must be uploaded in Step 3 to proceed.</p>
-            @else
-                <p>Step 4 content goes here.</p>
-            @endif
-                @endif
+@elseif ($step === 4)
+    <!-- Step 4: Research Registration -->
+    @if(is_null($appointment->similarity_certificate))
+        <!-- Lock Step 4 if Similarity Certificate is Null -->
+        <p class="text-muted">Step 4 is locked. The Similarity Certificate must be uploaded in Step 3 to proceed.</p>
+    @else
+<div class="container-fluid">
+    <!-- Research Registration Content Here -->
+    <div class="card shadow mb-4">
+        <div class="card-body d-flex align-items-center justify-content-between">
+            <!-- QR Code Section -->
+            <div class="qr-code-section">
+                <!-- Placeholder for QR Code -->
+                <img src="{{ asset('img/qr_code.png') }}" alt="QR Code" class="qr-code-image">
+            </div>
+
+            <!-- Instructions Section -->
+            <div class="instructions-section ml-4">
+                <h5><strong>Research Registration</strong></h5>
+                <p>Adviser accomplishes the <a href="https://docs.google.com/forms/d/e/1FAIpQLSeT2G_Ap-A2PrFS-WW3E4GwP38SGaLbnvQBCtr4SniWo8YQlA/viewform" target="_blank">Research Registration Form</a>. 
+                   Note that the primary author will be the student, and the adviser will be the co-author. 
+                   A copy of the form responses will be sent to the adviser’s email.</p>
+                <p>After completing the form, please forward the copy and the manuscript to the following emails:
+                    <br><strong>cdaic@auf.edu.ph</strong> (cc: <strong>ovpri@auf.edu.ph</strong>, <strong>collegesecretary.gs@auf.edu.ph</strong>).</p>
+
+                <!-- Display Status for OVPRI Approval -->
+                <p><strong>Status:</strong> 
+                    @if ($appointment->ovpri_approval === 'approved')
+                        <span class="text-success">Already approved by OVPRI.</span>
+                    @elseif ($appointment->ovpri_approval === 'pending')
+                        <span class="text-warning">Pending OVPRI approval.</span>
+                    @else
+                        <span class="text-muted">Not yet responded.</span>
+                    @endif
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+    @endif
+
+
+
+@elseif ($step === 5)
+    <!-- Step 5: Placeholder Content -->
+    <div class="container-fluid">
+        <p>Step 5 content goes here.</p>
+    </div>
+@endif
             </div>
         @endfor
     </div>
-    <div class="card-footer footersaroute1"></div>
+</div>
+<div class="card-footer footersaroute1"></div>
+
     </div>
 </div>
 @endsection

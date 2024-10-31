@@ -344,18 +344,32 @@
                         <p>After completing the form, please forward the copy and the manuscript to the following emails:
                             <br><strong>cdaic@auf.edu.ph</strong> (cc: <strong>ovpri@auf.edu.ph</strong>, <strong>collegesecretary.gs@auf.edu.ph</strong>).</p>
 
-                        <p>After completing the form, please click on the button below to mark as responded to notify the OVPRI in the system</p>
+                        <p>After completing the form, please click on the button below to mark as responded to notify the OVPRI in the system.</p>
                         
-                        <!-- Button to mark as responded -->
-                        <form method="POST" action="{{ route('tdprofessor.markRegistrationResponded', $appointment->id) }}">
-                            @csrf
-                            <button type="submit" class="btn btn-primary">Responded</button>
-                        </form>
+                        <!-- Display Status for OVPRI Approval -->
+                        <p><strong>Status:</strong> 
+                            {{ $appointment->ovpri_approval === 'approved' ? 'Approved' : ($appointment->ovpri_approval === 'pending' ? 'Pending' : 'Not Yet Responded') }}
+                        </p>
+
+                        <!-- Display appropriate message based on status -->
+                        @if ($appointment->ovpri_approval === 'approved')
+                            <p class="text-success">Already approved by OVPRI.</p>
+                        @elseif ($appointment->registration_response === 'responded')
+                            <p class="text-success">Responded successfully. Waiting for OVPRI approval.</p>
+                        @else
+                            <!-- Button to mark as responded -->
+                            <form method="POST" action="{{ route('tdprofessor.markRegistrationResponded', $appointment->id) }}">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">Responded</button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     @endif
+
+
 
 @elseif ($step === 5)
     <!-- Step 5: Placeholder Content -->

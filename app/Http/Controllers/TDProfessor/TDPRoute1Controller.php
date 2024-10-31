@@ -261,6 +261,7 @@ public function markRegistrationResponded($appointmentId)
 
     // Update the registration_response column
     $appointment->registration_response = 'responded';
+    $appointment->ovpri_approval = 'pending';
     $appointment->save();
 
     // Notify OVPRI users in the database

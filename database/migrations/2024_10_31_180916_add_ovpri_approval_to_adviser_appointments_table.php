@@ -9,13 +9,15 @@ class AddOvpriApprovalToAdviserAppointmentsTable extends Migration
     public function up()
     {
         Schema::table('adviser_appointments', function (Blueprint $table) {
-            $table->string('ovpri_approval')->nullable()->default('pending');
+            // Set default to 'not yet responded'
+            $table->string('ovpri_approval')->nullable()->default('not yet responded');
         });
     }
 
     public function down()
     {
         Schema::table('adviser_appointments', function (Blueprint $table) {
+            // Rollback by dropping the column
             $table->dropColumn('ovpri_approval');
         });
     }
