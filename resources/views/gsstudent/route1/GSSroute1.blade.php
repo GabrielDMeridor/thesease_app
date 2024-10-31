@@ -99,12 +99,12 @@
 
 <div class="card shadow mb-4">
     <div class="card-header"></div>
-</br>
+    <br>
     <!-- Multi-Step Navigation -->
     <div class="container-fluid">
         <div class="steps">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                @for ($step = 1; $step <= 10; $step++) <!-- Adjust the number of steps as needed -->
+                @for ($step = 1; $step <= 10; $step++)
                     <li class="nav-item" role="presentation">
                         <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab"
                            data-toggle="pill" href="#pills-step-{{ $step }}" role="tab" aria-controls="pills-step-{{ $step }}"
@@ -119,7 +119,7 @@
 
     <!-- Step Content -->
     <div class="tab-content" id="pills-tabContent">
-        @for ($step = 1; $step <= 10; $step++) <!-- Adjust the number of steps as needed -->
+        @for ($step = 1; $step <= 10; $step++)
             <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}"
                  role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
 
@@ -134,27 +134,26 @@
 
                                         <!-- Date Display -->
                                         <div class="form-group">
-                                            <label for="date">Date:</label>
-                                            @if ($appointment && $appointment->completed_at)
-                                                <input type="text" name="date" value="{{ $appointment->completed_at->toDateString() }}" class="form-control" readonly>
-                                            @else
-                                                <input type="text" name="date" value="{{ now()->toDateString() }}" class="form-control" readonly>
-                                            @endif
-                                        </div>
+    <label for="date">Date:</label>
+    <input type="text" name="date" value="{{ optional($appointment)->completed_at ? $appointment->completed_at->toDateString() : now()->toDateString() }}" class="form-control" readonly>
+</div>
+
 
                                         <!-- Program -->
                                         <div class="form-group">
                                             <label for="program">Program:</label>
-                                            <input type="text" name="program" value="{{ $user->program }}" class="form-control" readonly>
+                                            <input type="text" name="program" value="{{ $user->program ?? 'N/A' }}" class="form-control" readonly>
                                         </div>
+<!-- Adviser Display -->
+<div class="form-group">
+    <label for="adviser">Adviser:</label>
+    <input type="text" class="form-control"
+           value="{{ optional(optional($appointment)->adviser)->name ?? 'Adviser will be assigned by the Program Chair.' }}"
+           readonly>
+</div>
 
-                                        <!-- Adviser Display -->
-                                        <div class="form-group">
-                                            <label for="adviser">Adviser:</label>
-                                            <input type="text" class="form-control"
-                                                   value="{{ $appointment->adviser->name ?? 'Adviser will be assigned by the Program Chair.' }}"
-                                                   readonly>
-                                        </div>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -187,11 +186,11 @@
                         </div>
                     </div>
 
-                    @elseif ($step === 2)
+                @elseif ($step === 2)
                     <!-- Step 2: View Consultation Dates -->
-                    @if (is_null($appointment->adviser_signature) || is_null($appointment->chair_signature) || is_null($appointment->dean_signature))
-                        <p class="text-muted">Step 2 is locked. The signatures for the Adviser, Program Chair, and Dean must be completed to proceed.</p>
-                    @else
+                    @if (!$appointment || is_null($appointment->adviser_signature) || is_null($appointment->chair_signature) || is_null($appointment->dean_signature))
+    <p class="text-muted">Step 2 is locked. The signatures for the Adviser, Program Chair, and Dean must be completed to proceed.</p>
+@else
                         <div class="container-fluid">
                             <div class="card shadow mb-4">
                                 <div class="card-body">
@@ -210,65 +209,66 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="adviser_endorsement_signature">Adviser Endorsement Signature:</label>
-                                        <input type="text" name="adviser_endorsement_signature" class="form-control" value="{{ $appointment->adviser_endorsement_signature ?? 'Pending' }}" readonly>
-                                    </div>
+<!-- Adviser Endorsement Signature -->
+<div class="form-group">
+    <label for="adviser_endorsement_signature">Adviser Endorsement Signature:</label>
+    <input type="text" name="adviser_endorsement_signature" class="form-control" 
+           value="{{ optional($appointment)->adviser_endorsement_signature ?? 'Pending' }}" readonly>
+</div>
                                 </div>
                             </div>
                         </div>
                     @endif
 
 
-                    @elseif ($step === 3)
-    <!-- Step 3: Upload and View Similarity Manuscript and Certificate -->
-    @if(is_null($appointment->adviser_endorsement_signature))
-        <!-- Lock Step 3 if adviser's endorsement signature is not present -->
-        <p class="text-muted">Step 3 is locked. Please ensure the adviser's endorsement signature is completed in Step 2 to proceed.</p>
-    @else
-        <div class="container-fluid">
-            <div class="card shadow mb-4">
-                <h1> Similarity Check</h1>
-                <div class="card-body">
-                    <h4>Upload Similarity Manuscript</h4>
+                @elseif ($step === 3)
+                    <!-- Step 3: Upload and View Similarity Manuscript and Certificate -->
+                    @if (is_null(optional($appointment)->adviser_endorsement_signature))
+    <p class="text-muted">Step 3 is locked. Please ensure the adviser's endorsement signature is completed in Step 2 to proceed.</p>
+@else
+                        <div class="container-fluid">
+                            <div class="card shadow mb-4">
+                                <h1> Similarity Check</h1>
+                                <div class="card-body">
+                                    <h4>Upload Similarity Manuscript</h4>
 
-                    @if(auth()->user()->account_type == 11) <!-- Only visible to Graduate School Student -->
-                        @if(is_null($appointment->similarity_manuscript))
-                            <form action="{{ route('gsstudent.uploadSimilarityManuscript') }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <div class="form-group">
-                                    <label for="similarity_manuscript">Upload Manuscript</label>
-                                    <input type="file" name="similarity_manuscript" class="form-control" required accept=".pdf,.doc,.docx">
+                                    @if(auth()->user()->account_type == 11)
+                                        @if(is_null($appointment->similarity_manuscript))
+                                            <form action="{{ route('gsstudent.uploadSimilarityManuscript') }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <label for="similarity_manuscript">Upload Manuscript</label>
+                                                    <input type="file" name="similarity_manuscript" class="form-control" required accept=".pdf,.doc,.docx">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Upload Manuscript</button>
+                                            </form>
+                                        @else
+                                            <p>
+                                                <strong>Uploaded Manuscript:</strong>
+                                                <a href="#" data-toggle="modal" data-target="#manuscriptModal">
+                                                    {{ basename($appointment->similarity_manuscript) }}
+                                                </a>
+                                            </p>
+                                        @endif
+                                    @endif
                                 </div>
-                                <button type="submit" class="btn btn-primary">Upload Manuscript</button>
-                            </form>
-                        @else
-                            <!-- Display uploaded manuscript file name -->
-                            <p>
-                                <strong>Uploaded Manuscript:</strong>
-                                <a href="#" data-toggle="modal" data-target="#manuscriptModal">
-                                    {{ basename($appointment->similarity_manuscript) }}
-                                </a>
-                            </p>
-                        @endif
-                    @endif
-                </div>
-            </div>
+                            </div>
 
-            <div class="card shadow mb-4">
-                <div class="card-body">
-                    <h4>Similarity Check Results</h4>
-                    @if($appointment->similarity_certificate)
-                        <!-- Display uploaded certificate file name -->
-                        <p>
-                            <strong>View Certificate:</strong>
-                            <a href="#" data-toggle="modal" data-target="#certificateModal">
-                                {{ basename($appointment->similarity_certificate) }}
-                            </a>
-                        </p>
-                    @else
-                        <p>Please wait for the librarian to upload the certificate.</p>
-                    @endif
+                            <div class="card shadow mb-4">
+                                <div class="card-body">
+                                    <h4>Similarity Check Results</h4>
+                                    @if (optional($appointment)->similarity_certificate)
+    <!-- Display uploaded certificate file name -->
+    <p>
+        <strong>View Certificate:</strong>
+        <a href="#" data-toggle="modal" data-target="#certificateModal">
+            {{ basename($appointment->similarity_certificate) }}
+        </a>
+    </p>
+@else
+    <p>Please wait for the librarian to upload the certificate.</p>
+@endif
+
                 </div>
             </div>
 
@@ -316,14 +316,15 @@
         </div>
     @endif
 
-                @else
+    @else
     <!-- Step 4: Lock Step if Similarity Certificate is Null -->
-            @if(is_null($appointment->similarity_certificate))
-                <p class="text-muted">Step 4 is locked. The Similarity Certificate must be uploaded in Step 3 to proceed.</p>
-            @else
-                <p>Step 4 content goes here.</p>
-            @endif
-                @endif
+    @if (is_null(optional($appointment)->similarity_certificate))
+        <p class="text-muted">Step 4 is locked. The Similarity Certificate must be uploaded in Step 3 to proceed.</p>
+    @else
+        <p>Step 4 content goes here.</p>
+    @endif
+@endif
+
             </div>
         @endfor
     </div>
