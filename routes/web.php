@@ -41,6 +41,8 @@
     use App\Http\Controllers\Statistician\SProfileController;
 
     use App\Http\Controllers\OVPRI\OVPRIProfileController;
+    use App\Http\Controllers\OVPRI\OVPRIAccountController;
+
 
     use App\Http\Controllers\Library\LProfileController;
     use App\Http\Controllers\Library\LAccountController;
@@ -205,6 +207,8 @@
 
     //OVPRI Routes Dashboard and Sidebar
     Route::get('/ovpri/dashboard', [OVPRIProfileController::class, 'OVPRIdashboard'])->name('OVPRIdashboard');
+    //OVPRI Account
+    Route::get('/ovpri/account', action: [OVPRIAccountController::class, 'OVPRIaccount'])->name('ovpri.account');
 
     //OVPRI Route 1
 

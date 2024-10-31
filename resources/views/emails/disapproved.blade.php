@@ -70,8 +70,12 @@
                                         <h1 style="color:#1e1e2d; font-weight:500; margin:0; font-size:32px; text-align:center;">Hello, {{ $user->name }}</h1>
                                         <p style="color:#455056; font-size:15px; line-height:24px; margin:0; text-align:center;">
                                             We regret to inform you that your account has been disapproved.
+                                        </p>
+
+                                        <p style="color:#455056; font-size:15px; line-height:24px; margin:0; text-align:center;">
                                             <strong>Reason for Disapproval:</strong> {{ $reason }}
                                         </p>
+
                                         <p style="color:#455056; font-size:15px; line-height:24px; margin:0; text-align:center;">
                                             If you think this was a mistake, please contact our support team.
                                         </p>

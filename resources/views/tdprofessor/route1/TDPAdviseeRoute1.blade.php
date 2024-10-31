@@ -343,6 +343,8 @@
                            A copy of the form responses will be sent to the adviser’s email.</p>
                         <p>After completing the form, please forward the copy and the manuscript to the following emails:
                             <br><strong>cdaic@auf.edu.ph</strong> (cc: <strong>ovpri@auf.edu.ph</strong>, <strong>collegesecretary.gs@auf.edu.ph</strong>).</p>
+
+                        <p>After completing the form, please click on the button below to mark as responded to notify the OVPRI in the system</p>
                         
                         <!-- Button to mark as responded -->
                         <form method="POST" action="{{ route('tdprofessor.markRegistrationResponded', $appointment->id) }}">

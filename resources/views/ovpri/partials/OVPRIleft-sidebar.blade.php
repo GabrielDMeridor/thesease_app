@@ -24,7 +24,7 @@
 
     <!-- Nav Item - Account -->
     <li class="nav-item {{ $current_route == 'library.account' ? 'active' : '' }}">
-        <a href="{{ route('library.account') }}" class="nav-link">
+        <a href="{{ route('ovpri.account') }}" class="nav-link">
             <i class="fas fa-fw fa-user"></i>
             <span>Account</span>
         </a>

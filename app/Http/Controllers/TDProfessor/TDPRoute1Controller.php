@@ -263,9 +263,16 @@ public function markRegistrationResponded($appointmentId)
     $appointment->registration_response = 'responded';
     $appointment->save();
 
+    // Notify OVPRI users in the database
+    $ovpriUsers = User::where('account_type', 8)->get();
+    foreach ($ovpriUsers as $ovpriUser) {
+        $ovpriUser->notify(new \App\Notifications\OVPRINotification($appointment));
+    }
+
     // Redirect back with success message
-    return redirect()->back()->with('success', 'Registration marked as responded.');
+    return redirect()->back()->with('success', 'Registration marked as responded, and OVPRI has been notified.');
 }
+
 
 
 
