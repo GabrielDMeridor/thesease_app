@@ -65,7 +65,7 @@ class VerifyUserController extends Controller
             if ($verificationStatus === 'verified') {
                 Mail::to($user->email)->send(new UserVerified($user));
             } elseif ($verificationStatus === 'disapproved') {
-                Mail::to($user->email)->send(new UserDisapproved($user));
+                Mail::to($user->email)->send(new UserDisapproved($user, $request->disapprove_reason));
             }
         }
     
@@ -85,7 +85,7 @@ class VerifyUserController extends Controller
     if ($user->verification_status === 'verified') {
         Mail::to($user->email)->send(new UserVerified($user));
     } elseif ($user->verification_status === 'disapproved') {
-        Mail::to($user->email)->send(new UserDisapproved($user));
+        Mail::to($user->email)->send(new UserDisapproved($user, $request->disapprove_reason));
     }
 
 
@@ -105,30 +105,31 @@ class VerifyUserController extends Controller
     }
 
 
-public function disapprove(Request $request)
-{
-    // Validate the request
-    $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'disapprove_reason' => 'required|string',
-    ]);
-
-    // Find the user by ID
-    $user = User::findOrFail($request->user_id);
-
-    // Update the user's verification status to 'disapproved'
-    $user->verification_status = 'disapproved';
-    $user->save();
-
-    // Send a database notification to the user with the disapproval reason
-    $user->notify(new DisapprovalNotification($request->disapprove_reason));
-
-    // Send disapproval email to the user
-    Mail::to($user->email)->send(new UserDisapproved($user));
-
-    // Redirect with success message
-    return redirect()->route('verify-users.index')->with('success', 'User disapproved and notified successfully.');
-}
+    public function disapprove(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'disapprove_reason' => 'required|string',
+        ]);
+    
+        // Find the user by ID
+        $user = User::findOrFail($request->user_id);
+    
+        // Update the user's verification status to 'disapproved'
+        $user->verification_status = 'disapproved';
+        $user->save();
+    
+        // Send a database notification to the user with the disapproval reason
+        $user->notify(new DisapprovalNotification($request->disapprove_reason));
+    
+        // Send disapproval email to the user, passing both the user and the reason
+        Mail::to($user->email)->send(new UserDisapproved($user, $request->disapprove_reason));
+    
+        // Redirect with success message
+        return redirect()->route('verify-users.index')->with('success', 'User disapproved and notified successfully.');
+    }
+    
 
 public function search(Request $request)
 {

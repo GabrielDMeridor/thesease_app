@@ -12,10 +12,12 @@ class UserDisapproved extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
+    public $reason; // Add reason as a public property
 
-    public function __construct(User $user)
+    public function __construct(User $user, $reason)
     {
         $this->user = $user;
+        $this->reason = $reason; // Store the disapproval reason
     }
 
     public function build()
@@ -24,7 +26,7 @@ class UserDisapproved extends Mailable
                     ->subject('Account Disapproved')
                     ->with([
                         'user' => $this->user,
+                        'reason' => $this->reason, // Pass reason to the view
                     ]);
     }
 }
-
