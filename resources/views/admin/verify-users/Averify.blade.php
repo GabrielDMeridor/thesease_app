@@ -186,15 +186,17 @@
                                 <td>{{ \Carbon\Carbon::parse($user->created_at)->format('Y-m-d') }}</td>
 
                                 <!-- Verification Status -->
-                                <td class="text-center" style="font-size: 1.5rem;">
-                                    @if ($user->verification_status === 'verified')
-                                    <i class="fas fa-check-circle text-success" style="cursor: pointer;" onclick="openModal({{ $user->id }})"></i>
-                                    @elseif ($user->verification_status === 'disapproved')
-                                    <i class="fas fa-times-circle text-danger" style="cursor: pointer;" onclick="openModal({{ $user->id }})"></i>
-                                    @else
-                                    <i class="fas fa-circle text-secondary" style="cursor: pointer;" onclick="openModal({{ $user->id }})"></i>
-                                    @endif
-                                </td>
+<!-- In each row of the main table -->
+<td class="text-center" style="font-size: 1.5rem;">
+    @if ($user->verification_status === 'verified')
+    <i class="fas fa-check-circle text-success" style="cursor: pointer;" onclick="openModal({{ $user->id }})"></i>
+    @elseif ($user->verification_status === 'disapproved')
+    <i class="fas fa-times-circle text-danger" style="cursor: pointer;" onclick="openModal({{ $user->id }})"></i>
+    @else
+    <i class="fas fa-circle text-secondary" style="cursor: pointer;" onclick="openModal({{ $user->id }})"></i>
+    @endif
+</td>
+
 
                                 <!-- Action Buttons -->
                                 <td class="text-center">
@@ -280,9 +282,10 @@
                         <p>What would you like to do with this user?</p>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-sm btn-danger" onclick="openDisapproveModal({{ $user->id }})">
-                            Disapprove
-                        </button>
+<!-- Use the stored selectedUserId instead of passing user_id here -->
+<button class="btn btn-sm btn-danger" onclick="openDisapproveModal()">
+    Disapprove
+</button>
 
                         <button class="btn btn-success" onclick="verifyUser()">Verify</button>
                     </div>
@@ -408,23 +411,31 @@ function getVerificationIcon(status, userId) {
     }
 }
 
-            let selectedUserId = null;
+let selectedUserId = null;
 
-            // Function to open the modal for verification options
-            function openModal(userId) {
-                selectedUserId = userId;
-                $('#verificationModal').modal('show');
-            }
+function openModal(userId) {
+    selectedUserId = userId; // Store the correct user ID
+    console.log("Opening verification modal for User ID:", selectedUserId); // Debug log
+    $('#verificationModal').modal('show');
+}
 
             // Function to handle verification
             function verifyUser() {
                 updateVerificationStatus('verified');
             }
 
-            // Function to handle disapproval
             function disapproveUser() {
-                updateVerificationStatus('disapproved');
-            }
+    const userId = $('#user-id').val(); // Retrieve the user ID directly from the hidden input
+    console.log("Disapproving User ID:", userId); // Confirm this ID is correct
+    
+    if (!userId) {
+        alert("No user selected for disapproval.");
+        return;
+    }
+    
+    $('#disapproveForm').submit();  // Submit the disapproval form
+    $('#disapproveModal').modal('hide'); // Hide the modal after submission
+}
 
             // Function to update the verification status
             function updateVerificationStatus(status) {
@@ -510,10 +521,15 @@ function getVerificationIcon(status, userId) {
 
                 $('#filePreviewModal').modal('show');
             }
-            function openDisapproveModal(userId) {
-                $('#user-id').val(userId);  // Set user ID
-                $('#disapproveModal').modal('show');  // Show modal
-            }
+            function openDisapproveModal() {
+    if (selectedUserId) {
+        $('#user-id').val(selectedUserId); // Set the correct user ID in the hidden input
+        console.log("Opening disapprove modal for User ID:", selectedUserId); // Debug log
+        $('#disapproveModal').modal('show'); // Show disapprove modal
+    } else {
+        console.error("No user selected for disapproval.");
+    }
+}
 
         </script>
 @endsection
