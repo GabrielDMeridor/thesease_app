@@ -356,11 +356,18 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
         <script>
-        $(document).ready(function() {
+$(document).ready(function() {
     // Listen for keyup events on the search input
     $('#keyword').on('keyup', function() {
         let keyword = $(this).val();
 
+        // If the search input is cleared, reload the page to restore default sorting
+        if (!keyword.trim()) {
+            window.location.href = "{{ route('verify-users.index') }}";
+            return;
+        }
+
+        // Perform AJAX search when there's a keyword
         $.ajax({
             url: "{{ route('verify-users.search') }}",
             type: 'GET',
@@ -368,7 +375,7 @@
             success: function(response) {
                 let tableBody = '';
 
-                // Loop through the results and construct table rows
+                // Loop through the sorted results and construct table rows
                 response.forEach(function(user) {
                     tableBody += `
                         <tr>
@@ -395,12 +402,13 @@
                         </tr>`;
                 });
 
-                // Replace the table body with the new data
+                // Replace the table body with the sorted and filtered data
                 $('table tbody').html(tableBody);
             }
         });
     });
 });
+
 
 function getVerificationIcon(status, userId) {
     if (status === 'verified') {

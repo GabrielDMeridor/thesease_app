@@ -131,22 +131,26 @@ class GSVerifyUserController extends Controller
     {
         $keyword = $request->input('keyword');
     
-        // Filter users by keyword for names starting with the input
-        $users = User::where('name', 'like', "{$keyword}%")->get()->map(function ($user) {
-            return [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'account_type' => User::getAccountTypeName($user->account_type), // Get the readable account type name
-                'degree' => $user->degree ?? 'N/A',
-                'program' => $user->program ?? 'N/A',
-                'nationality' => $user->nationality ?? 'N/A',
-                'created_at' => $user->created_at->format('Y-m-d'), // Format the date
-                'verification_status' => $user->verification_status,
-            ];
-        });
+        // Filter users by keyword and apply sorting by verification_status
+        $users = User::where('name', 'like', "{$keyword}%")
+            ->orderByRaw("FIELD(verification_status, 'unverified', 'disapproved', 'verified')")
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'account_type' => User::getAccountTypeName($user->account_type),
+                    'degree' => $user->degree ?? 'N/A',
+                    'program' => $user->program ?? 'N/A',
+                    'nationality' => $user->nationality ?? 'N/A',
+                    'created_at' => $user->created_at->format('Y-m-d'),
+                    'verification_status' => $user->verification_status,
+                ];
+            });
     
-        // Return data as JSON for AJAX response
+        // Return sorted data as JSON for AJAX response
         return response()->json($users);
     }
+    
 }
