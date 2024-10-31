@@ -42,6 +42,8 @@
 
     use App\Http\Controllers\OVPRI\OVPRIProfileController;
     use App\Http\Controllers\OVPRI\OVPRIAccountController;
+    use App\Http\Controllers\OVPRI\OVPRIRoute1Controller;
+
 
 
     use App\Http\Controllers\Library\LProfileController;
@@ -209,8 +211,13 @@
     Route::get('/ovpri/dashboard', [OVPRIProfileController::class, 'OVPRIdashboard'])->name('OVPRIdashboard');
     //OVPRI Account
     Route::get('/ovpri/account', action: [OVPRIAccountController::class, 'OVPRIaccount'])->name('ovpri.account');
-
     //OVPRI Route 1
+    Route::get('/ovpri/route1', [OVPRIRoute1Controller::class, 'index'])->name('ovpri.route1');
+    Route::get('/ovpri/route1/ajax-search', [OVPRIRoute1Controller::class, 'ajaxSearch'])->name('ovpri.route1.ajaxSearch');
+    Route::post('/ovpri/route1/approve/{id}', [OVPRIRoute1Controller::class, 'approve'])->name('ovpri.route1.approve');
+
+
+
 
 
 
