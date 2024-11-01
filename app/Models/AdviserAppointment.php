@@ -29,6 +29,12 @@ class AdviserAppointment extends Model
         'community_extension_link',
         'community_extension_response',
         'community_extension_response_date',
+        'signed_routing_form_1',
+        'original_signed_routing_form_1',
+        'proposal_manuscript',
+        'original_proposal_manuscript',
+        'proposal_video_presentation',
+        'original_proposal_video_presentation',
 
     ];
 

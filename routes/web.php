@@ -99,13 +99,8 @@
     // SuperAdmin DRPH Step
     Route::post('/superadmin/adviser_appointments/{studentId}/upload-community-extension-link', [SARoute1Controller::class, 'uploadCommunityExtensionLink'])->name('superadmin.uploadCommunityExtensionLink');
     Route::post('/superadmin/route1/student/{studentId}/approve-community-extension', [SARoute1Controller::class, 'approveCommunityExtension'])->name('superadmin.approveCommunityExtension');
-
-
-
     //Superadmin Archive
     Route::get('/superadmin/archive', action: [SAArchiveController::class, 'index'])->name('superadmin.archive');
-    
-
     // SuperaAdmin Registration
     Route::get('superadmin/register', [SAAuthController::class, 'getSARegister'])->name('getSARegister');
     Route::post('superadmin/register', [SAAuthController::class, 'postSARegister'])->name('postSARegister');
@@ -119,6 +114,12 @@
     //All Users Registration 
     Route::get('/register', [UserAuthController::class, 'getRegister'])->name('getRegister');
     Route::post('/register', [UserAuthController::class, 'postRegister'])->name('postRegister');
+
+
+
+
+
+
 
 
     //Admin Routes Dashboard and Sidebar
@@ -268,6 +269,10 @@
     Route::post('/gsstudent/upload-similarity-manuscript', [GSSRoute1Controller::class, 'uploadSimilarityManuscript'])->name('gsstudent.uploadSimilarityManuscript');
     // GS  Stundent DRPH
     Route::post('/gsstudent/adviser_appointments/{id}/respond-community-extension', [GSSRoute1Controller::class, 'respondToCommunityExtension'])->name('gsstudent.respondToCommunityExtension');
+    // GS Student Step 5 : DRPH Step 6
+    Route::post('/gsstudent/upload-signed-routing-form', [GSSRoute1Controller::class, 'uploadSignedRoutingForm'])->name('gsstudent.uploadSignedRoutingForm');
+    Route::post('/gsstudent/upload-proposal-manuscript', [GSSRoute1Controller::class, 'uploadProposalManuscript'])->name('gsstudent.uploadProposalManuscript');
+    Route::post('/gsstudent/upload-video-presentation', [GSSRoute1Controller::class, 'uploadVideoPresentation'])->name('gsstudent.uploadVideoPresentation');
 
 
 
