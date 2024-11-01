@@ -120,19 +120,26 @@ class TDPRoute1Controller extends Controller
 }
 public function showAdviseeForm($studentId)
 {
+    $student = User::findOrFail($studentId); // Fetch the student by ID
+
     $appointment = AdviserAppointment::where('student_id', $studentId)
                                      ->where('adviser_id', auth()->user()->id)
                                      ->firstOrFail();
 
+    $isDrPH = $student->program === 'DrPH';
+
     // Set the title with the student's name
-    $title = 'Routing Form 1 for ' . $appointment->student->name;
+    $title = 'Routing Form 1 for ' . $student->name;
 
     return view('tdprofessor.route1.TDPAdviseeRoute1', [
         'appointment' => $appointment,
-        'advisee' => $appointment->student,
-        'title' => $title, // Pass the title to the view
+        'student' => $student,  // Pass the student explicitly
+        'advisee' => $student,
+        'title' => $title,
+        'isDrPH' => $isDrPH
     ]);
 }
+
 public function signRoutingForm(Request $request, $id)
 {
     // Find the appointment

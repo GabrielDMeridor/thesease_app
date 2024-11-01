@@ -365,6 +365,9 @@
 
 
     @elseif ($step === 5 && $isDrPH)
+    @if ($appointment->ovpri_approval !== 'approved')
+                    <p class="text-muted">Step 5 is locked. The OVPRI Approval must be completed in Step 4 to proceed.</p>
+                @else
                 <!-- Step 5 for DrPH students: Community Extension Registration -->
                 <div class="container-fluid">
                     <div class="card shadow mb-4">
@@ -416,6 +419,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
                 @endif
             </div>
         @endfor
