@@ -82,25 +82,32 @@
         <div class="card-header">
         </div>
         <div class="card-body">
-            <!-- Multi-Step Navigation -->
-            <div class="steps">
-                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                    @for ($step = 1; $step <= 10; $step++) <!-- Adjust step numbers as needed -->
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab" 
-                            data-toggle="pill" href="#pills-step-{{ $step }}" role="tab" aria-controls="pills-step-{{ $step }}" 
-                            aria-selected="{{ $step === 1 ? 'true' : 'false' }}">
-                                Step {{ $step }}
-                            </a>
-                        </li>
-                    @endfor
-                </ul>
-            </div>
+        @php
+            $isDrPH = $student->program === 'DrPH';
+            $totalSteps = $isDrPH ? 10 : 9; // 10 steps for DrPH, 9 for others
+        @endphp
+
+<!-- Multi-Step Navigation -->
+<div class="steps">
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        @for ($step = 1; $step <= $totalSteps; $step++)
+            <li class="nav-item">
+                <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab"
+                   data-toggle="pill" href="#pills-step-{{ $step }}" role="tab"
+                   aria-controls="pills-step-{{ $step }}" aria-selected="{{ $step === 1 ? 'true' : 'false' }}">
+                    Step {{ $step }}
+                </a>
+            </li>
+        @endfor
+    </ul>
+</div>
 
             <!-- Step Content -->
-            <div class="tab-content contentsaroute" id="pills-tabContent">
-                @for ($step = 1; $step <= 10; $step++) <!-- Adjust step numbers as needed -->
-                    <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}" role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
+<!-- Step Content -->
+<div class="tab-content" id="pills-tabContent">
+    @for ($step = 1; $step <= $totalSteps; $step++)
+        <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}"
+             role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
                         @if ($step === 1)
                             <!-- Step 1: Routing Form -->
                             <div class="card shadow mb-4">
