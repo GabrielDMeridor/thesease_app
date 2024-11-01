@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Notifications\LibraryNotification;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Storage;
+use App\Notifications\CommunityExtensionRespondedNotification;
 
 
 
@@ -19,33 +19,30 @@ class GSSRoute1Controller extends Controller
 {
     public function show()
     {
-        // Check if the user is authenticated and their account type is Graduate School Student (account_type = 11)
         if (!auth()->check() || auth()->user()->account_type !== 11) {
             return redirect()->route('getLogin')->with('error', 'You must be logged in as a graduate school student to access this page');
         }
     
-        // Fetch the currently authenticated user and the list of advisers
         $user = auth()->user();
         $advisers = User::where('account_type', User::Thesis_DissertationProfessor)->get();
-    
-        // Fetch the existing appointment for the student if it exists
         $appointment = AdviserAppointment::where('student_id', $user->id)->first();
-    
-        // Determine if all signatures are filled to allow unlocking the next step
         $allSignaturesFilled = $appointment && $appointment->adviser_signature && $appointment->chair_signature && $appointment->dean_signature;
     
-        // Pass the user data, advisers, and appointment to the view, along with the signature flag
+        // Check if the student is in the DrPH program
+        $isDrPH = $user->program === 'DrPH';
+    
         $data = [
             'title' => 'Routing Form 1',
             'user' => $user,
             'advisers' => $advisers,
             'appointment' => $appointment,
-            'allSignaturesFilled' => $allSignaturesFilled  // Pass the signature completion status to the view
+            'allSignaturesFilled' => $allSignaturesFilled,
+            'isDrPH' => $isDrPH,  // Pass the DrPH status to the view
         ];
     
-        // Return the view with the data
         return view('gsstudent.route1.GSSroute1', $data);
     }
+    
     
     public function sign(Request $request)
     {
@@ -92,6 +89,34 @@ class GSSRoute1Controller extends Controller
     Notification::send($libraryUsers, new LibraryNotification($user, $message));
     
         return redirect()->route('gsstudent.route1')->with('success', 'Similarity Manuscript uploaded successfully and Library notified!');
+    }
+    public function respondToCommunityExtension(Request $request, $appointmentId)
+    {
+        // Ensure that the user is authenticated as a GSStudent
+        if (!auth()->check() || auth()->user()->account_type !== User::GraduateSchoolStudent) {
+            return redirect()->route('getLogin')->with('error', 'You must be logged in as a graduate school student to access this feature.');
+        }
+    
+        // Retrieve authenticated user as a User instance
+        $user = User::find(auth()->id());
+        $appointment = AdviserAppointment::findOrFail($appointmentId);
+    
+        if (!$appointment->community_extension_response) {
+            $appointment->community_extension_response = 1;
+            $appointment->community_extension_approval = 'pending';
+            $appointment->save();
+    
+            // Fetch relevant users (SuperAdmin, Admin, GraduateSchool)
+            $superAdmins = User::where('account_type', User::SuperAdmin)->get();
+            $admins = User::where('account_type', User::Admin)->get();
+            $graduateSchoolUsers = User::where('account_type', User::GraduateSchool)->get();
+    
+            // Notify each group of users
+            Notification::send($superAdmins->merge($admins)->merge($graduateSchoolUsers), new CommunityExtensionRespondedNotification($user));
+        }
+    
+        return redirect()->route('gsstudent.route1')
+                         ->with('success', 'Your response has been recorded, and the approval status is now pending.');
     }
     
 

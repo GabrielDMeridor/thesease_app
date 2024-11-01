@@ -308,18 +308,66 @@
 
 
 
-@elseif ($step === 5)
-    <!-- Step 5: Placeholder Content -->
-    <div class="container-fluid">
-        <p>Step 5 content goes here.</p>
-    </div>
-@endif
-            </div>
-        @endfor
-    </div>
-</div>
-<div class="card-footer footersaroute1"></div>
+    @elseif ($step === 5 && $isDrPH)
+                            <!-- Step 5 Content specifically for DrPH students -->
+                            <div class="container-fluid">
+                                <div class="card shadow mb-4">
+                                    <div class="card-body">
+                                        <h5><strong>Community Extension Registration (For DrPH students only)</strong></h5>
+                                        @if ($appointment->community_extension_link)
+                                            <p><strong>Form Link:</strong> 
+                                                <a href="{{ $appointment->community_extension_link }}" target="_blank">
+                                                    {{ $appointment->community_extension_link }}
+                                                </a>
+                                            </p>
+                                        @else
+                                            <form action="{{ route('superadmin.uploadCommunityExtensionLink', $student->id) }}" method="POST">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <label for="community_extension_link">Community Extension Link:</label>
+                                                    <input type="url" name="community_extension_link" class="form-control" required placeholder="Enter the form link">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Upload Link</button>
+                                            </form>
+                                        @endif
 
+                                        @if ($appointment->community_extension_response)
+                                        <p><strong>Status:</strong> 
+                                            Responded on {{ optional($appointment->community_extension_response_date)->format('F j, Y') }}
+                                        </p>
+                                        @else
+                                            <p class="text-muted">Student has not responded yet.</p>
+                                        @endif
+
+                                        <p><strong>Approval Status:</strong> 
+                                    @if ($appointment->community_extension_approval === 'approved')
+                                        <span class="text-success">Approved</span>
+                                    @elseif ($appointment->community_extension_approval === 'pending')
+                                        <span class="text-warning">Pending</span>
+                                    @else
+                                        <span class="text-muted">Not yet responded.</span>
+                                    @endif
+                                </p>
+
+                                <!-- SuperAdmin Approval Button (only if approval is pending) -->
+                                @if ($appointment->community_extension_approval === 'pending')
+                                    <form action="{{ route('graduateschool.approveCommunityExtension', $student->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary">Approve Community Extension</button>
+                                    </form>
+                                @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                        @endif
+                    </div>
+                @endfor
+            </div>
+        </div>
+
+        <!-- Card footer added here as requested -->
+        <div class="card-footer footersaroute1"></div>
     </div>
 </div>
 @endsection

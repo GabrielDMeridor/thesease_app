@@ -96,6 +96,9 @@
     //Route for showiing routing form for superadmin for a specific student
     Route::get('/superadmin/route1/student/{studentId}', [SARoute1Controller::class, 'showRoutingForm'])->name('superadmin.showRoutingForm');
     Route::post('/superadmin/route1/student/{studentId}/sign', [SARoute1Controller::class, 'sign'])->name('superadmin.sign');
+    // SuperAdmin DRPH Step
+    Route::post('/superadmin/adviser_appointments/{studentId}/upload-community-extension-link', [SARoute1Controller::class, 'uploadCommunityExtensionLink'])->name('superadmin.uploadCommunityExtensionLink');
+    Route::post('/superadmin/route1/student/{studentId}/approve-community-extension', [SARoute1Controller::class, 'approveCommunityExtension'])->name('superadmin.approveCommunityExtension');
 
 
 
@@ -137,6 +140,9 @@
     Route::post('/admin/route1/student/{studentId}/sign', [ARoute1Controller::class, 'sign'])->name('admin.sign');
     // Admin Archive
     Route::get('/admin/archive', action: [AArchiveController::class, 'index'])->name('admin.archive');
+    // Admin DRPH
+    Route::post('/admin/adviser_appointments/{studentId}/upload-community-extension-link', [ARoute1Controller::class, 'uploadCommunityExtensionLink'])->name('admin.uploadCommunityExtensionLink');
+    Route::post('/admin/route1/student/{studentId}/approve-community-extension', [ARoute1Controller::class, 'approveCommunityExtension'])->name('admin.approveCommunityExtension');
 
 
 
@@ -260,6 +266,8 @@
     Route::post('/gsstudent/route1/sign', [GSSRoute1Controller::class, 'sign'])->name('gsstudent.route1.sign');
     // GS Route 1 Step 3
     Route::post('/gsstudent/upload-similarity-manuscript', [GSSRoute1Controller::class, 'uploadSimilarityManuscript'])->name('gsstudent.uploadSimilarityManuscript');
+    // GS  Stundent DRPH
+    Route::post('/gsstudent/adviser_appointments/{id}/respond-community-extension', [GSSRoute1Controller::class, 'respondToCommunityExtension'])->name('gsstudent.respondToCommunityExtension');
 
 
 

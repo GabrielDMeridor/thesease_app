@@ -78,29 +78,38 @@
     <div class="sagreet">{{ $title }}</div>
     <br>
 
+    
     <div class="card shadow mb-4">
         <div class="card-header">
         </div>
         <div class="card-body">
-            <!-- Multi-Step Navigation -->
-            <div class="steps">
-                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                    @for ($step = 1; $step <= 10; $step++) <!-- Adjust step numbers as needed -->
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab" 
-                            data-toggle="pill" href="#pills-step-{{ $step }}" role="tab" aria-controls="pills-step-{{ $step }}" 
-                            aria-selected="{{ $step === 1 ? 'true' : 'false' }}">
-                                Step {{ $step }}
-                            </a>
-                        </li>
-                    @endfor
-                </ul>
-            </div>
+        @php
+            $isDrPH = $student->program === 'DrPH';
+            $totalSteps = $isDrPH ? 10 : 9; // 10 steps for DrPH, 9 for others
+        @endphp
+
+<!-- Multi-Step Navigation -->
+<div class="steps">
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        @for ($step = 1; $step <= $totalSteps; $step++)
+            <li class="nav-item">
+                <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab"
+                   data-toggle="pill" href="#pills-step-{{ $step }}" role="tab"
+                   aria-controls="pills-step-{{ $step }}" aria-selected="{{ $step === 1 ? 'true' : 'false' }}">
+                    Step {{ $step }}
+                </a>
+            </li>
+        @endfor
+    </ul>
+</div>
 
             <!-- Step Content -->
-            <div class="tab-content contentsaroute" id="pills-tabContent">
-                @for ($step = 1; $step <= 10; $step++) <!-- Adjust step numbers as needed -->
-                    <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}" role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
+<!-- Step Content -->
+<div class="tab-content" id="pills-tabContent">
+    @for ($step = 1; $step <= $totalSteps; $step++)
+        <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}"
+             role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
+
                         @if ($step === 1)
                             <!-- Step 1: Routing Form -->
                             <div class="card shadow mb-4">
@@ -318,19 +327,66 @@
     @endif
 
 
+    @elseif ($step === 5 && $isDrPH)
+                            <!-- Step 5 Content specifically for DrPH students -->
+                            <div class="container-fluid">
+                                <div class="card shadow mb-4">
+                                    <div class="card-body">
+                                        <h5><strong>Community Extension Registration (For DrPH students only)</strong></h5>
+                                        @if ($appointment->community_extension_link)
+                                            <p><strong>Form Link:</strong> 
+                                                <a href="{{ $appointment->community_extension_link }}" target="_blank">
+                                                    {{ $appointment->community_extension_link }}
+                                                </a>
+                                            </p>
+                                        @else
+                                            <form action="{{ route('superadmin.uploadCommunityExtensionLink', $student->id) }}" method="POST">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <label for="community_extension_link">Community Extension Link:</label>
+                                                    <input type="url" name="community_extension_link" class="form-control" required placeholder="Enter the form link">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Upload Link</button>
+                                            </form>
+                                        @endif
 
-@elseif ($step === 5)
-    <!-- Step 5: Placeholder Content -->
-    <div class="container-fluid">
-        <p>Step 5 content goes here.</p>
-    </div>
-@endif
+                                        @if ($appointment->community_extension_response)
+                                        <p><strong>Status:</strong> 
+                                            Responded on {{ optional($appointment->community_extension_response_date)->format('F j, Y') }}
+                                        </p>
+                                        @else
+                                            <p class="text-muted">Student has not responded yet.</p>
+                                        @endif
+
+                                        <p><strong>Approval Status:</strong> 
+                                    @if ($appointment->community_extension_approval === 'approved')
+                                        <span class="text-success">Approved</span>
+                                    @elseif ($appointment->community_extension_approval === 'pending')
+                                        <span class="text-warning">Pending</span>
+                                    @else
+                                        <span class="text-muted">Not yet responded.</span>
+                                    @endif
+                                </p>
+
+                                <!-- SuperAdmin Approval Button (only if approval is pending) -->
+                                @if ($appointment->community_extension_approval === 'pending')
+                                    <form action="{{ route('superadmin.approveCommunityExtension', $student->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary">Approve Community Extension</button>
+                                    </form>
+                                @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                        @endif
+                    </div>
+                @endfor
             </div>
-        @endfor
-    </div>
-</div>
-<div class="card-footer footersaroute1"></div>
+        </div>
 
+        <!-- Card footer added here as requested -->
+        <div class="card-footer footersaroute1"></div>
     </div>
 </div>
 @endsection

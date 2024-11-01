@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\AdviserAppointment;
 use App\Models\User;
+use App\Notifications\CommunityExtensionApprovedNotification;
+use Illuminate\Support\Facades\Notification;
 
 class ARoute1Controller extends Controller
 {
@@ -43,11 +45,13 @@ class ARoute1Controller extends Controller
         $student = User::findOrFail($studentId);
         $appointment = AdviserAppointment::where('student_id', $student->id)->first();
         
+        $isDrPH = $student->program === 'DrPH';
+
         // Define the title for the view
         $title = 'Routing Form 1 for ' . $student->name;
     
         // Pass the title along with the other data to the view
-        return view('admin.route1.AStudentRoute1', compact('student', 'appointment', 'title'));
+        return view('admin.route1.AStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH'));
     }
     
     public function sign(Request $request, $studentId)
@@ -81,5 +85,48 @@ class ARoute1Controller extends Controller
 
         // Return the students as JSON for AJAX
         return response()->json($students);
+    }
+
+    public function uploadCommunityExtensionLink(Request $request, $studentId)
+{
+    // Validate the input for a URL
+    $request->validate([
+        'community_extension_link' => 'required|url',
+    ]);
+
+    // Find the student's appointment record
+    $appointment = AdviserAppointment::where('student_id', $studentId)->first();
+
+    if ($appointment) {
+        // Save the link to the appointment
+        $appointment->community_extension_link = $request->input('community_extension_link');
+        $appointment->save();
+
+        return redirect()->route('admin.showRoutingForm', $studentId)->with('success', 'Community Extension link uploaded successfully.');
+    }
+
+    return redirect()->route('admin.showRoutingForm', $studentId)->with('error', 'Unable to find appointment.');
+}
+
+    public function approveCommunityExtension(Request $request, $studentId)
+    {
+        $appointment = AdviserAppointment::where('student_id', $studentId)->first();
+        $adminUser = User::find(auth()->id());  // Explicitly cast to User
+
+        if ($appointment && $adminUser) {
+            $appointment->community_extension_approval = 'approved';
+            $appointment->save();
+
+            // Notify the GraduateSchool and the student
+            $graduateSchoolUsers = User::where('account_type', User::GraduateSchool)->get();
+            Notification::send($graduateSchoolUsers, new CommunityExtensionApprovedNotification($adminUser));
+            Notification::send($appointment->student, new CommunityExtensionApprovedNotification($adminUser));
+
+            return redirect()->route('admin.showRoutingForm', $studentId)
+                             ->with('success', 'Community Extension approved successfully.');
+        }
+
+        return redirect()->route('admin.showRoutingForm', $studentId)
+                         ->with('error', 'Unable to find appointment.');
     }
 }

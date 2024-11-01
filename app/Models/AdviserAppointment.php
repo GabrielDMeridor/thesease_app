@@ -26,6 +26,9 @@ class AdviserAppointment extends Model
         'consultation_dates', // Add this if you're mass assigning it
         'similarity_certificate',
         'similarity_manusccript',
+        'community_extension_link',
+        'community_extension_response',
+        'community_extension_response_date',
 
     ];
 

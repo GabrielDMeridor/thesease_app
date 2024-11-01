@@ -100,26 +100,31 @@
 <div class="card shadow mb-4">
     <div class="card-header"></div>
     <br>
-    <!-- Multi-Step Navigation -->
-    <div class="container-fluid">
-        <div class="steps">
-            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                @for ($step = 1; $step <= 10; $step++)
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab"
-                           data-toggle="pill" href="#pills-step-{{ $step }}" role="tab" aria-controls="pills-step-{{ $step }}"
-                           aria-selected="{{ $step === 1 ? 'true' : 'false' }}">
-                            Step {{ $step }}
-                        </a>
-                    </li>
-                @endfor
-            </ul>
-        </div>
+
+    @php
+    // Determine the total number of steps
+        $totalSteps = $isDrPH ? 10 : 9; // DrPH students have an additional Community Extension step
+    @endphp
+<!-- Multi-Step Navigation -->
+<div class="container-fluid">
+    <div class="steps">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            @for ($step = 1; $step <= $totalSteps; $step++)
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link {{ $step === 1 ? 'active' : '' }}" id="pills-step-{{ $step }}-tab"
+                       data-toggle="pill" href="#pills-step-{{ $step }}" role="tab" aria-controls="pills-step-{{ $step }}"
+                       aria-selected="{{ $step === 1 ? 'true' : 'false' }}">
+                        Step {{ $step }}
+                    </a>
+                </li>
+            @endfor
+        </ul>
     </div>
+</div>
 
     <!-- Step Content -->
     <div class="tab-content" id="pills-tabContent">
-        @for ($step = 1; $step <= 10; $step++)
+        @for ($step = 1; $step <= 9; $step++)
             <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}"
                  role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
 
@@ -359,12 +364,59 @@
 
 
 
-@elseif ($step === 5)
-    <!-- Step 5: Placeholder Content -->
-    <div class="container-fluid">
-        <p>Step 5 content goes here.</p>
-    </div>
-@endif
+    @elseif ($step === 5 && $isDrPH)
+                <!-- Step 5 for DrPH students: Community Extension Registration -->
+                <div class="container-fluid">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <h5><strong>Community Extension Registration (For DrPH students only)</strong></h5>
+
+                            @if ($appointment->community_extension_link)
+                                <!-- Display the form link if it exists -->
+                                <p><strong>Form Link:</strong> 
+                                    <a href="{{ $appointment->community_extension_link }}" target="_blank">
+                                        Community Extension Registration Form
+                                    </a>
+                                </p>
+                            @else
+                                <p class="text-muted">Form link will be uploaded by the Superadmin/Admin/GraduateSchool .</p>
+                            @endif
+
+                            <p><strong>Your Response:</strong>
+    @if ($appointment->community_extension_response === 1)
+        Responded
+    @else
+        <span class="text-muted">Not responded yet.</span>
+    @endif
+</p>
+
+
+
+
+
+
+        <!-- Display Approval Status -->
+        <p><strong>Approval Status:</strong> 
+            @if ($appointment->community_extension_approval === 'approved')
+                <span class="text-success">Approved</span>
+            @elseif ($appointment->community_extension_approval === 'pending')
+                <span class="text-warning">Pending Approval</span>
+            @else
+                <span class="text-muted">Not yet responded.</span>
+            @endif
+        </p>
+
+        <!-- Response Button for Student -->
+        @if (!$appointment->community_extension_response)
+            <form action="{{ route('gsstudent.respondToCommunityExtension', $appointment->id) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-primary">Mark as Responded</button>
+            </form>
+        @endif
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
         @endfor
     </div>
