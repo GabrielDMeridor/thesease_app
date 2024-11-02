@@ -379,65 +379,188 @@
     @if ($appointment->ovpri_approval !== 'approved')
                     <p class="text-muted">Step 5 is locked. The OVPRI Approval must be completed in Step 4 to proceed.</p>
                 @else
-                            <!-- Step 5 Content specifically for DrPH students -->
-                            <div class="container-fluid">
-                                <div class="card shadow mb-4">
-                                    <div class="card-body">
-                                        <h5><strong>Community Extension Registration (For DrPH students only)</strong></h5>
-                                        @if ($appointment->community_extension_link)
-                                            <p><strong>Form Link:</strong> 
-                                                <a href="{{ $appointment->community_extension_link }}" target="_blank">
-                                                    {{ $appointment->community_extension_link }}
-                                                </a>
-                                            </p>
-                                        @else
-                                            <form action="{{ route('superadmin.uploadCommunityExtensionLink', $student->id) }}" method="POST">
-                                                @csrf
-                                                <div class="form-group">
-                                                    <label for="community_extension_link">Community Extension Link:</label>
-                                                    <input type="url" name="community_extension_link" class="form-control" required placeholder="Enter the form link">
-                                                </div>
-                                                <button type="submit" class="btn btn-primary">Upload Link</button>
-                                            </form>
-                                        @endif
+                <!-- Step 5 for DrPH students: Community Extension Registration -->
+                <div class="container-fluid">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <h5><strong>Community Extension Registration (For DrPH students only)</strong></h5>
 
-                                        @if ($appointment->community_extension_response)
-                                        <p><strong>Status:</strong> 
-                                            Responded on {{ optional($appointment->community_extension_response_date)->format('F j, Y') }}
-                                        </p>
-                                        @else
-                                            <p class="text-muted">Student has not responded yet.</p>
-                                        @endif
-
-                                        <p><strong>Approval Status:</strong> 
-                                    @if ($appointment->community_extension_approval === 'approved')
-                                        <span class="text-success">Approved</span>
-                                    @elseif ($appointment->community_extension_approval === 'pending')
-                                        <span class="text-warning">Pending</span>
-                                    @else
-                                        <span class="text-muted">Not yet responded.</span>
-                                    @endif
+                            @if ($appointment->community_extension_link)
+                                <!-- Display the form link if it exists -->
+                                <p><strong>Form Link:</strong> 
+                                    <a href="{{ $appointment->community_extension_link }}" target="_blank">
+                                        Community Extension Registration Form
+                                    </a>
                                 </p>
+                            @else
+                                <p class="text-muted">Form link will be uploaded by the Superadmin/Admin/GraduateSchool .</p>
+                            @endif
 
-                                <!-- SuperAdmin Approval Button (only if approval is pending) -->
-                                @if ($appointment->community_extension_approval === 'pending')
-                                    <form action="{{ route('superadmin.approveCommunityExtension', $student->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-primary">Approve Community Extension</button>
-                                    </form>
-                                @endif
+                            <p><strong>Your Response:</strong>
+    @if ($appointment->community_extension_response === 1)
+        Responded
+    @else
+        <span class="text-muted">Not responded yet.</span>
+    @endif
+</p>
+
+
+
+        <!-- Display Approval Status -->
+        <p><strong>Approval Status:</strong> 
+            @if ($appointment->community_extension_approval === 'approved')
+                <span class="text-success">Approved</span>
+            @elseif ($appointment->community_extension_approval === 'pending')
+                <span class="text-warning">Pending Approval</span>
+            @else
+                <span class="text-muted">Not yet responded.</span>
+            @endif
+        </p>
                                     </div>
                                 </div>
                             </div>
                 @endif
-                        @endif
-                    </div>
-                @endfor
-            </div>
+                @elseif (($step === 5 && !$isDrPH) || ($step === 6 && $isDrPH))
+    <!-- Step 5 for non-DrPH or Step 6 for DrPH - File Uploads -->
+    <div class="container-fluid">
+        <h4>File Uploads</h4>
+
+        <!-- Signed Routing Form 1 -->
+        <div class="form-group">
+            <label for="signed_routing_form_1">Signed Routing Form 1</label>
+            @if($appointment->signed_routing_form_1)
+                <p><a href="#" data-toggle="modal" data-target="#routingFormModal">{{ $appointment->original_signed_routing_form_1 }}</a></p>
+            @else
+                <p>File not yet uploaded</p>
+            @endif
         </div>
 
-        <!-- Card footer added here as requested -->
-        <div class="card-footer footersaroute1"></div>
+        <!-- Proposal Manuscript -->
+        <div class="form-group">
+            <label for="proposal_manuscript">Proposal Manuscript</label>
+            @if($appointment->proposal_manuscript)
+                <p><a href="#" data-toggle="modal" data-target="#proposalManuscriptModal">{{ $appointment->original_proposal_manuscript }}</a></p>
+            @else
+                <p>File not yet uploaded</p>
+            @endif
+        </div>
+
+        <!-- Video Presentation -->
+        <div class="form-group">
+            <label for="proposal_video_presentation">Video Presentation</label>
+            @if($appointment->proposal_video_presentation)
+                <p><a href="#" data-toggle="modal" data-target="#videoPresentationModal">{{ $appointment->original_proposal_video_presentation }}</a></p>
+            @else
+                <p>Student did not upload the file yet.</p>
+            @endif
+    </div>
+
+                    <!-- Additional Section for Submission Files, shown if proposal_submission_completed is true -->
+                    @if ($appointment->proposal_submission_completed)
+                        <div class="card mt-4">
+                            <div class="card-body">
+                                <h5><strong>Submission Files</strong></h5>
+
+                                <!-- Display the submission files link if it exists -->
+                                @if ($appointment->submission_files_link)
+                                    <p><strong>Submission Files Link:</strong>
+                                        <a href="{{ $appointment->submission_files_link }}" target="_blank">
+                                            View Submission Files
+                                        </a>
+                                    </p>
+                                @else
+                                    <p class="text-muted">Submission files link will be uploaded by the Superadmin/Admin/GraduateSchool.</p>
+                                @endif
+
+                                <!-- Display the student's response status -->
+                                <p><strong>Your Response:</strong>
+                                    @if ($appointment->submission_files_response === 1)
+                                        Responded
+                                    @else
+                                        <span class="text-muted">Not responded yet.</span>
+                                    @endif
+                                </p>
+                                <p><strong>Approval Status:</strong> 
+                                @if ($appointment->submission_files__approval === 'approved')
+                                    <span class="text-success">Approved</span>
+                                @elseif ($appointment->submission_files__approval === 'pending')
+                                    <span class="text-warning">Pending Approval</span>
+                                @else
+                                    <span class="text-muted">Not yet responded.</span>
+                                @endif
+                            </p>
+
+                            </div>
+                        </div>
+                    @endif
+                @endif
+            </div>
+        @endfor
+    </div>
+    <div class="card-footer footersaroute1"></div>
+</div>
+
+<!-- Modals for Uploaded Files -->
+<div class="modal fade" id="routingFormModal" tabindex="-1" aria-labelledby="routingFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">View Signed Routing Form 1</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{ Storage::url($appointment->signed_routing_form_1) }}" width="100%" height="600px"></iframe>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ Storage::url($appointment->signed_routing_form_1) }}" target="_blank" class="btn btn-primary" download>Download</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="proposalManuscriptModal" tabindex="-1" aria-labelledby="proposalManuscriptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">View Proposal Manuscript</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{ Storage::url($appointment->proposal_manuscript) }}" width="100%" height="600px"></iframe>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ Storage::url($appointment->proposal_manuscript) }}" target="_blank" class="btn btn-primary" download>Download</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="videoPresentationModal" tabindex="-1" aria-labelledby="videoPresentationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">View Video Presentation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <video controls width="100%">
+                    <source src="{{ Storage::url($appointment->proposal_video_presentation) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ Storage::url($appointment->proposal_video_presentation) }}" target="_blank" class="btn btn-primary" download>Download</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

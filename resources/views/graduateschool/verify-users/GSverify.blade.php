@@ -84,7 +84,7 @@
         <!-- Filter Form -->
         <div class="card">
             <div class="card-body">
-                <form method="GET" action="{{ route('verify-users.index') }}" id="filterForm" class="mb-4">
+                <form method="GET" action="{{ route('graduateschool.verify-users.index') }}" id="filterForm" class="mb-4">
                     <div class="container">
                         <div class="row">
                             <div class="col-sm">
@@ -146,7 +146,7 @@
 
         <div class="user-management-section">
             <!-- Main Table for User Information -->
-            <form id="verification-form" method="POST" action="{{ route('verify-users.verify') }}">
+            <form id="verification-form" method="POST" action="{{ route('graduateschool.verify-users.verify') }}">
                 @csrf
                 <input type="hidden" name="verification_status" id="verification-status">
 
@@ -323,7 +323,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="disapproveForm" method="POST" action="{{ route('verify-users.disapprove') }}">
+                <form id="disapproveForm" method="POST" action="{{ route('graduateschool.verify-users.disapprove') }}">
                     @csrf
                     <input type="hidden" name="user_id" id="user-id">
                     
@@ -361,13 +361,13 @@ $(document).ready(function() {
 
         // If the search input is cleared, reload the page to restore default sorting
         if (!keyword.trim()) {
-            window.location.href = "{{ route('verify-users.index') }}";
+            window.location.href = "{{ route('graduateschool.verify-users.index') }}";
             return;
         }
 
         // Perform AJAX search when there's a keyword
         $.ajax({
-            url: "{{ route('verify-users.search') }}",
+            url: "{{ route('graduateschool.verify-users.search') }}",
             type: 'GET',
             data: { keyword: keyword },
             success: function(response) {

@@ -337,6 +337,9 @@
     Route::get('/graduateschool/verifyusers/search', [GSVerifyUserController::class, 'search'])->name('graduateschool.verify-users.search');
     // routes/web.php
 
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // AJAX search route for SuperAdmin route1 page
     Route::get('/superadmin/route1/search', [SARoute1Controller::class, 'ajaxSearch'])->name('superadmin.route1.search');
      // AJAX search route for Admin route1 page

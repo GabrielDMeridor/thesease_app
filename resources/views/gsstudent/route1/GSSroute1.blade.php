@@ -157,6 +157,7 @@
            readonly>
 </div>
 
+<!-- Kulang pa to ng if $appointment)->status = pending = waiting for the adviser to accept the request from program chair -->
 
 
                                     </div>
