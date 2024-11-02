@@ -102,6 +102,7 @@
 <br>
 
     <!-- Students Table -->
+<div class="table-responsive">
     <table class="table table-bordered table-hover table-striped custom-table">
         <thead class="table-dark">
             <tr>
@@ -121,11 +122,13 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="3">No students found.</td>
+                    <td colspan="3" class="text-center">No students found.</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
+</div>
+
 
     <!-- Pagination Links -->
     {{ $students->links() }}

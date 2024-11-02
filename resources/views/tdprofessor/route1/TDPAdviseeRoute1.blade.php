@@ -185,7 +185,16 @@
 <div class="tab-content" id="pills-tabContent">
     @if (is_null($appointment->adviser_signature) || is_null($appointment->chair_signature) || is_null($appointment->dean_signature))
         <!-- Step is locked: Display the lock message -->
-        <p class="text-muted">Step 2 is locked. You must complete the signatures for the Adviser, Program Chair, and Dean to proceed.</p>
+        <div class="container d-flex justify-content-center my-4">
+    <div style="width: 100%;">
+        <div class="card-body text-center">
+            <div class="alert alert-warning mb-0" role="alert">
+                <i class="fas fa-lock mr-2"></i>
+                <strong>Step Locked:</strong> Step 2 is locked. You must complete the signatures for the Adviser, Program Chair, and Dean to proceed.
+            </div>
+        </div>
+    </div>
+</div>
     @else
         <!-- Step is unlocked: Show the step content -->
         <div class="container-fluid">
@@ -229,7 +238,7 @@
                         <!-- Endorsement Signature -->
                         <div class="form-group">
                             @if (is_null($appointment->adviser_endorsement_signature))
-                                <button type="submit" class="btn btn-success">Affix Endorsement Signature</button>
+                                <button type="submit" class="btn btn-affix" style="color: white;">Affix Endorsement Signature</button>
                             @endif
                         </div>
 
@@ -245,7 +254,16 @@
     <!-- Step 3: View Similarity Manuscript and Certificate -->
     @if(is_null($appointment->adviser_endorsement_signature))
         <!-- Lock Step 3 if adviser's endorsement signature is not present -->
-        <p class="text-muted">Step 3 is locked. Please ensure the adviser's endorsement signature is completed in Step 2 to proceed.</p>
+        <div class="container d-flex justify-content-center my-4">
+    <div style="width: 100%;">
+        <div class="card-body text-center">
+            <div class="alert alert-warning mb-0" role="alert">
+                <i class="fas fa-lock mr-2"></i>
+                <strong>Step Locked:</strong> Step 3 is locked. Please ensure the adviser's endorsement signature is completed in Step 2 to proceed.
+            </div>
+        </div>
+    </div>
+</div>
     @else
         <div class="container-fluid">
             <div class="card shadow mb-4">
@@ -255,11 +273,24 @@
 
                     @if($appointment->similarity_manuscript)
                         <!-- Link to open manuscript modal -->
-                        <a href="#" data-toggle="modal" data-target="#manuscriptModal">
-                            {{ basename($appointment->similarity_manuscript) }}
-                        </a>
+                        <div class="form-group">
+                        <label for="manuscript">Uploaded Manuscript:</label>
+                        <input type="text" 
+                            id="manuscript" 
+                            class="form-control" 
+                            value="{{ basename($appointment->similarity_manuscript) }}" 
+                            readonly 
+                            onclick="$('#manuscriptModal').modal('show')" 
+                            style="cursor: pointer;">
+                    </div>
                     @else
-                        <p class="text-muted">No manuscript uploaded yet.</p>
+                    <div class="form-group">
+                        <label>Uploaded Manuscript:</label>
+                        <input type="text" 
+                            class="form-control text-muted" 
+                            value="No manuscript uploaded yet." 
+                            readonly>
+                    </div>
                     @endif
                 </div>
             </div>
@@ -270,11 +301,24 @@
                     
                     @if($appointment->similarity_certificate)
                         <!-- Link to open certificate modal -->
-                        <a href="#" data-toggle="modal" data-target="#certificateModal">
-                            {{ basename($appointment->similarity_certificate) }}
-                        </a>
+                        <div class="form-group">
+                            <label for="certificate">Uploaded Certificate:</label>
+                            <input type="text" 
+                                id="certificate" 
+                                class="form-control" 
+                                value="{{ basename($appointment->similarity_certificate) }}" 
+                                readonly 
+                                onclick="$('#certificateModal').modal('show')" 
+                                style="cursor: pointer;" />
+                        </div>
                     @else
-                        <p>Please wait for the librarian to upload the certificate.</p>
+                    <div class="form-group">
+                        <label>Certificate Status:</label>
+                        <input type="text" 
+                            class="form-control text-muted" 
+                            value="Please wait for the librarian to upload the certificate." 
+                            readonly>
+                    </div>
                     @endif
                 </div>
             </div>
@@ -327,57 +371,79 @@
     <!-- Step 4: Research Registration -->
     @if(is_null($appointment->similarity_certificate))
         <!-- Lock Step 4 if Similarity Certificate is Null -->
-        <p class="text-muted">Step 4 is locked. The Similarity Certificate must be uploaded in Step 3 to proceed.</p>
-    @else
-        <div class="container-fluid">
-            <!-- Research Registration Content Here -->
-            <div class="card shadow mb-4">
-                <div class="card-body d-flex align-items-center justify-content-between">
-                    <!-- QR Code Section -->
-                    <div class="qr-code-section">
-                        <!-- Placeholder for QR Code -->
-                        <img src="{{ asset('img/qr_code.png') }}" alt="QR Code" class="qr-code-image">
-                    </div>
-
-                    <!-- Instructions Section -->
-                    <div class="instructions-section ml-4">
-                        <h5><strong>Research Registration</strong></h5>
-                        <p>Adviser accomplishes the <a href="https://docs.google.com/forms/d/e/1FAIpQLSeT2G_Ap-A2PrFS-WW3E4GwP38SGaLbnvQBCtr4SniWo8YQlA/viewform" target="_blank">Research Registration Form</a>. 
-                           Note that the primary author will be the student, and the adviser will be the co-author. 
-                           A copy of the form responses will be sent to the adviser’s email.</p>
-                        <p>After completing the form, please forward the copy and the manuscript to the following emails:
-                            <br><strong>cdaic@auf.edu.ph</strong> (cc: <strong>ovpri@auf.edu.ph</strong>, <strong>collegesecretary.gs@auf.edu.ph</strong>).</p>
-
-                        <p>After completing the form, please click on the button below to mark as responded to notify the OVPRI in the system.</p>
-                        
-                        <!-- Display Status for OVPRI Approval -->
-                        <p><strong>Status:</strong> 
-                            {{ $appointment->ovpri_approval === 'approved' ? 'Approved' : ($appointment->ovpri_approval === 'pending' ? 'Pending' : 'Not Yet Responded') }}
-                        </p>
-
-                        <!-- Display appropriate message based on status -->
-                        @if ($appointment->ovpri_approval === 'approved')
-                            <p class="text-success">Already approved by OVPRI.</p>
-                        @elseif ($appointment->registration_response === 'responded')
-                            <p class="text-success">Responded successfully. Waiting for OVPRI approval.</p>
-                        @else
-                            <!-- Button to mark as responded -->
-                            <form method="POST" action="{{ route('tdprofessor.markRegistrationResponded', $appointment->id) }}">
-                                @csrf
-                                <button type="submit" class="btn btn-primary">Responded</button>
-                            </form>
-                        @endif
-                    </div>
-                </div>
+        <div class="container d-flex justify-content-center my-4">
+    <div style="width: 100%;">
+        <div class="card-body text-center">
+            <div class="alert alert-warning mb-0" role="alert">
+                <i class="fas fa-lock mr-2"></i>
+                <strong>Step Locked:</strong> Step 4 is locked. The Similarity Certificate must be uploaded in Step 3 to proceed.
             </div>
         </div>
+    </div>
+</div>
+    @else
+    <div class="container my-4">
+    <div class="card shadow mb-4">
+        <div class="card-body d-flex flex-column flex-md-row align-items-center justify-content-between">
+            <!-- QR Code Section -->
+            <div class="qr-code-section text-center mb-4 mb-md-0">
+                <img src="{{ asset('img/qr_code.png') }}" alt="QR Code" class="qr-code-image rounded" style="width: 150px; border: 2px solid #ddd;">
+                <p class="mt-2 text-muted" style="font-size: 0.9rem;">Scan for Registration Form</p>
+            </div>
+
+            <!-- Instructions Section -->
+            <div class="instructions-section ml-md-4">
+                <h4><strong>Research Registration</strong></h4>
+                <p>Adviser accomplishes the 
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeT2G_Ap-A2PrFS-WW3E4GwP38SGaLbnvQBCtr4SniWo8YQlA/viewform" target="_blank" class="text-decoration-underline text-primary">
+                        Research Registration Form
+                    </a>. 
+                    Note that the primary author will be the student, and the adviser will be the co-author. A copy of the form responses will be sent to the adviser’s email.
+                </p>
+                <p>After completing the form, please forward the copy and the manuscript to the following emails:
+                    <br><strong>cdaic@auf.edu.ph</strong> (cc: <strong>ovpri@auf.edu.ph</strong>, <strong>collegesecretary.gs@auf.edu.ph</strong>).
+                </p>
+                <p>After completing the form, please click on the button below to mark as responded to notify the OVPRI in the system.</p>
+
+                <!-- Display Status for OVPRI Approval -->
+                <p><strong>Status:</strong> 
+                    @if ($appointment->ovpri_approval === 'approved')
+                        <span class="text-success">Already approved by OVPRI.</span>
+                    @elseif ($appointment->ovpri_approval === 'pending')
+                        <span class="text-warning">Pending OVPRI approval.</span>
+                    @else
+                        <span class="text-muted">Not yet responded.</span>
+                    @endif
+                </p>
+
+                <!-- Button to mark as responded -->
+                @if ($appointment->ovpri_approval !== 'approved' && $appointment->registration_response !== 'responded')
+                    <form method="POST" action="{{ route('tdprofessor.markRegistrationResponded', $appointment->id) }}">
+                        @csrf
+                        <button type="submit" class="btn btn-primary">Responded</button>
+                    </form>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
     @endif
 
 
 
     @elseif ($step === 5 && $isDrPH)
     @if ($appointment->ovpri_approval !== 'approved')
-                    <p class="text-muted">Step 5 is locked. The OVPRI Approval must be completed in Step 4 to proceed.</p>
+    <div class="container d-flex justify-content-center my-4">
+    <div style="width: 100%;">
+        <div class="card-body text-center">
+            <div class="alert alert-warning mb-0" role="alert">
+                <i class="fas fa-lock mr-2"></i>
+                <strong>Step Locked:</strong> Step 5 is locked. The OVPRI Approval must be completed in Step 4 to proceed.
+            </div>
+        </div>
+    </div>
+</div>
                 @else
                 <!-- Step 5 for DrPH students: Community Extension Registration -->
                 <div class="container-fluid">
@@ -397,12 +463,12 @@
                             @endif
 
                             <p><strong>Your Response:</strong>
-    @if ($appointment->community_extension_response === 1)
-        Responded
-    @else
-        <span class="text-muted">Not responded yet.</span>
-    @endif
-</p>
+                                @if ($appointment->community_extension_response === 1)
+                                    Responded
+                                @else
+                                    <span class="text-muted">Not responded yet.</span>
+                                @endif
+                            </p>
 
 
 
@@ -423,81 +489,147 @@
                 @elseif (($step === 5 && !$isDrPH) || ($step === 6 && $isDrPH))
     <!-- Step 5 for non-DrPH or Step 6 for DrPH - File Uploads -->
     <div class="container-fluid">
-        <h4>File Uploads</h4>
-
-        <!-- Signed Routing Form 1 -->
-        <div class="form-group">
-            <label for="signed_routing_form_1">Signed Routing Form 1</label>
-            @if($appointment->signed_routing_form_1)
-                <p><a href="#" data-toggle="modal" data-target="#routingFormModal">{{ $appointment->original_signed_routing_form_1 }}</a></p>
-            @else
-                <p>File not yet uploaded</p>
-            @endif
-        </div>
-
-        <!-- Proposal Manuscript -->
-        <div class="form-group">
-            <label for="proposal_manuscript">Proposal Manuscript</label>
-            @if($appointment->proposal_manuscript)
-                <p><a href="#" data-toggle="modal" data-target="#proposalManuscriptModal">{{ $appointment->original_proposal_manuscript }}</a></p>
-            @else
-                <p>File not yet uploaded</p>
-            @endif
-        </div>
-
-        <!-- Video Presentation -->
-        <div class="form-group">
-            <label for="proposal_video_presentation">Video Presentation</label>
-            @if($appointment->proposal_video_presentation)
-                <p><a href="#" data-toggle="modal" data-target="#videoPresentationModal">{{ $appointment->original_proposal_video_presentation }}</a></p>
-            @else
-                <p>Student did not upload the file yet.</p>
-            @endif
-    </div>
-
-                    <!-- Additional Section for Submission Files, shown if proposal_submission_completed is true -->
-                    @if ($appointment->proposal_submission_completed)
-                        <div class="card mt-4">
-                            <div class="card-body">
-                                <h5><strong>Submission Files</strong></h5>
-
-                                <!-- Display the submission files link if it exists -->
-                                @if ($appointment->submission_files_link)
-                                    <p><strong>Submission Files Link:</strong>
-                                        <a href="{{ $appointment->submission_files_link }}" target="_blank">
-                                            View Submission Files
-                                        </a>
-                                    </p>
-                                @else
-                                    <p class="text-muted">Submission files link will be uploaded by the Superadmin/Admin/GraduateSchool.</p>
-                                @endif
-
-                                <!-- Display the student's response status -->
-                                <p><strong>Your Response:</strong>
-                                    @if ($appointment->submission_files_response === 1)
-                                        Responded
-                                    @else
-                                        <span class="text-muted">Not responded yet.</span>
-                                    @endif
-                                </p>
-                                <p><strong>Approval Status:</strong> 
-                                @if ($appointment->submission_files__approval === 'approved')
-                                    <span class="text-success">Approved</span>
-                                @elseif ($appointment->submission_files__approval === 'pending')
-                                    <span class="text-warning">Pending Approval</span>
-                                @else
-                                    <span class="text-muted">Not yet responded.</span>
-                                @endif
-                            </p>
-
-                            </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4>File Uploads</h4>
+                    <!-- Signed Routing Form 1 -->
+                    <div class="form-group">
+                        @if($appointment->signed_routing_form_1)
+                        <div class="form-group">
+                            <label for="signed_routing_form_1">Signed Routing Form 1:</label>
+                            <input type="text" 
+                                id="signed_routing_form_1" 
+                                class="form-control" 
+                                value="{{ $appointment->original_signed_routing_form_1 }}" 
+                                readonly 
+                                onclick="$('#routingFormModal').modal('show')" 
+                                style="cursor: pointer;">
                         </div>
+                        @else
+                        <div class="form-group">
+                            <label for="signed_routing_form_1">Signed Routing Form 1:</label>
+                            <input type="text" 
+                                id="signed_routing_form_1" 
+                                class="form-control" 
+                                value="File not yet uploaded" 
+                                readonly 
+                                disabled 
+                                style="cursor: not-allowed;">
+                        </div>
+                        @endif
+                    </div>
+
+                    <!-- Proposal Manuscript -->
+                    <div class="form-group">
+                        @if($appointment->proposal_manuscript)
+                        <div class="form-group">
+                            <label for="proposal_manuscript">Proposal Manuscript:</label>
+                            <input type="text" 
+                                id="proposal_manuscript" 
+                                class="form-control" 
+                                value="{{ $appointment->original_proposal_manuscript }}" 
+                                readonly 
+                                onclick="$('#proposalManuscriptModal').modal('show')" 
+                                style="cursor: pointer;">
+                        </div>
+                        @else
+                        <div class="form-group">
+                            <label for="proposal_manuscript">Proposal Manuscript:</label>
+                            <input type="text" 
+                                id="proposal_manuscript" 
+                                class="form-control" 
+                                value="File not yet uploaded" 
+                                readonly 
+                                disabled 
+                                style="cursor: not-allowed;">
+                        </div>
+                        @endif
+                    </div>
+
+                    <!-- Video Presentation -->
+                    <div class="form-group">
+                        @if($appointment->proposal_video_presentation)
+                        <div class="form-group">
+                            <label for="proposal_video_presentation">Video Presentation:</label>
+                            <input type="text" 
+                                id="proposal_video_presentation" 
+                                class="form-control" 
+                                value="{{ $appointment->original_proposal_video_presentation }}" 
+                                readonly 
+                                onclick="$('#videoPresentationModal').modal('show')" 
+                                style="cursor: pointer;">
+                        </div>
+                        @else
+                        <div class="form-group">
+                            <label for="proposal_video_presentation">Video Presentation:</label>
+                            <input type="text" 
+                                id="proposal_video_presentation" 
+                                class="form-control" 
+                                value="Student did not upload the file yet" 
+                                readonly 
+                                disabled 
+                                style="cursor: not-allowed;">
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if ($appointment->proposal_submission_completed)
+        <div class="col-md-6">
+            <div class="card mt-4 mt-md-0">
+                <div class="card-body">
+                    <h5>Submission Files</h5>
+                    <!-- Display the submission files link if it exists -->
+                    @if ($appointment->submission_files_link)
+                        <p>
+                            <strong>Submission Files Link:</strong>
+                            <a href="{{ $appointment->submission_files_link }}" target="_blank">
+                                View Submission Files
+                            </a>
+                        </p>
+                    @else
+                        <p class="text-muted">Submission files link will be uploaded by the Superadmin/Admin/Graduate School.</p>
                     @endif
+
+                    <!-- Display the student's response status -->
+                    <p>
+                        <strong>Your Response:</strong>
+                        @if ($appointment->submission_files_response === 1)
+                            <span class="text-success">Responded</span>
+                        @else
+                            <span class="text-muted">Not responded yet.</span>
+                        @endif
+                    </p>
+
+                    <!-- Display the approval status -->
+                    <p>
+                        <strong>Approval Status:</strong>
+                        @if ($appointment->submission_files__approval === 'approved')
+                            <span class="text-success">Approved</span>
+                        @elseif ($appointment->submission_files__approval === 'pending')
+                            <span class="text-warning">Pending Approval</span>
+                        @else
+                            <span class="text-muted">Not yet responded.</span>
+                        @endif
+                    </p>
+                </div>
+            </div>
+        </div>
+        @endif
+    </div>
+</div>
+<br>
+                                </div>
+                            </div>
                 @endif
             </div>
         @endfor
+        <div class="card-footer footersaroute1"></div>
     </div>
-    <div class="card-footer footersaroute1"></div>
 </div>
 
 <!-- Modals for Uploaded Files -->

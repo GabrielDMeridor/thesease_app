@@ -79,37 +79,47 @@
     </div>
     <br>
 
-    <div class="container">
-        <h2>Advisers Who Responded in Registration</h2>
-
-        <!-- Search Form -->
-        <form method="GET" action="{{ route('ovpri.route1.ajaxSearch') }}" class="mb-4">
-            <div class="input-group">
-                <input type="text" name="search" id="search" class="form-control" placeholder="Search by adviser name" value="{{ request('search') }}">
-                <div class="input-group-append">
-                    <button class="btn btn-primary" type="submit">Search</button>
+<!-- Search Form -->
+<div class="card">
+    <div class="card-body">
+        <form method="GET" action="{{ route('ovpri.route1.ajaxSearch') }}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm">
+                        <!-- Keyword search input -->
+                        <div class="input-group mb-3">
+                            <input type="text" name="search" id="search" class="form-control" placeholder="Search by adviser name" value="{{ request('search') }}">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>
+    </div>
+</div>
+
+<br>
 
         <!-- List of Appointments -->
         <div class="table-responsive">
-            <table class="table table-bordered" id="results-table">
-                <thead>
+            <table class="table table-bordered table-hover table-striped custom-table" id="results-table">
+                <thead class="table-dark">
                     <tr>
-                        <th>Adviser Name</th>
-                        <th>Program</th>
-                        <th>Registration Response</th>
-                        <th>OVPRI Approval</th>
+                        <th style="text-align:center;">Adviser Name</th>
+                        <th style="text-align:center;">Program</th>
+                        <th style="text-align:center;">Registration Response</th>
+                        <th style="text-align:center;">OVPRI Approval</th>
                     </tr>
                 </thead>
                 <tbody id="results-body">
                     @forelse ($appointments as $appointment)
                         <tr>
-                            <td>{{ $appointment->adviser->name }}</td>
-                            <td>{{ $appointment->adviser->program ?? 'N/A' }}</td>
-                            <td>{{ ucfirst($appointment->registration_response) }}</td>
-                            <td>
+                            <td class="text-center">{{ $appointment->adviser->name }}</td>
+                            <td class="text-center">{{ $appointment->adviser->program ?? 'N/A' }}</td>
+                            <td class="text-center">{{ ucfirst($appointment->registration_response) }}</td>
+                            <td class="text-center">
                                 @if ($appointment->ovpri_approval === 'approved')
                                     Approved
                                 @else
@@ -133,7 +143,6 @@
         <div class="d-flex justify-content-center" id="pagination-links">
             {{ $appointments->links() }}
         </div>
-    </div>
 </div>
 
 <!-- JavaScript for AJAX Search -->

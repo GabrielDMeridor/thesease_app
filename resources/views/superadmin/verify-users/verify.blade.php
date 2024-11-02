@@ -178,8 +178,9 @@
                                 
                                 <!-- Single button for all files -->
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-sm btn-primary" onclick="openFileListModal({{ $user->id }})">
-                                        <i class="fas fa-folder-open"></i> View Files
+                                    <button type="button" class="btn btn-primary btn-sm d-inline-flex align-items-center" onclick="openFileListModal({{ $user->id }})">
+                                        <i class="fas fa-folder-open me-1"></i>
+                                        <span class="d-none d-md-inline">View Files</span>
                                     </button>
                                 </td>
 
@@ -544,4 +545,14 @@ function openModal(userId) {
 
 
         </script>
+
+<style>
+/* Responsive button styling */
+@media (max-width: 576px) {
+    .btn-sm {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.5rem;
+    }
+}
+</style>
 @endsection

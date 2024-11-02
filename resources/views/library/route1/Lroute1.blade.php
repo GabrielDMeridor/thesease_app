@@ -74,104 +74,120 @@
 <div class="container-fluid">
     <div class="sagreet">{{ $title }}</div> 
     <br>
-</div>
 
 <!-- Search Bar -->
-<div class="mb-3">
-    <form action="{{ route('library.search') }}" method="GET">
-        <input type="text" name="query" id="searchInput" class="form-control" placeholder="Search Student by Name..." value="{{ old('query', $keyword ?? '') }}">
-    </form>
-</div>
-
-<div class="container-fluid">
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Student Name</th>
-                    <th>Uploaded Manuscript</th>
-                    <th>Uploaded Certificate</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="appointments-table">
-    @foreach($appointments as $appointment)
-        <tr>
-            <td>{{ $appointment->student->name }}</td>
-            <td>
-                @if($appointment->similarity_manuscript)
-                    <a href="#" data-toggle="modal" data-target="#manuscriptModal{{ $appointment->id }}">
-                        {{ basename($appointment->similarity_manuscript) }}
-                    </a>
-                @else
-                    <span>No manuscript uploaded</span>
-                @endif
-            </td>
-            <td>
-                <form action="{{ route('library.uploadSimilarityCertificate') }}" method="POST" enctype="multipart/form-data" id="certificateUploadForm{{ $appointment->student_id }}">
-                    @csrf
-                    <input type="hidden" name="student_id" value="{{ $appointment->student_id }}">
-                    
-                    @if($appointment->similarity_certificate)
-                        <a href="#" data-toggle="modal" data-target="#certificateModal{{ $appointment->id }}">
-                            {{ basename($appointment->similarity_certificate) }}
-                        </a>
-                    @else
-                        <input type="file" name="similarity_certificate" class="form-control" required accept=".pdf">
-                    @endif
-                </form>
-            </td>
-            <td>
-                <button type="submit" form="certificateUploadForm{{ $appointment->student_id }}" class="btn btn-primary">Save</button>
-            </td>
-        </tr>
-
-                    <!-- Manuscript Modal -->
-                    <div class="modal fade" id="manuscriptModal{{ $appointment->id }}" tabindex="-1" aria-labelledby="manuscriptModalLabel{{ $appointment->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="manuscriptModalLabel{{ $appointment->id }}">View Manuscript</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <iframe src="{{ Storage::url($appointment->similarity_manuscript) }}" width="100%" height="600px"></iframe>
-                                </div>
-                                <div class="modal-footer">
-                                    <a href="{{ Storage::url($appointment->similarity_manuscript) }}" target="_blank" class="btn btn-primary" download>Download Manuscript</a>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                </div>
+<div class="card mb-3">
+    <div class="card-body">
+        <form action="{{ route('library.search') }}" method="GET">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm">
+                        <!-- Keyword search input with design imported -->
+                        <div class="input-group">
+                            <input type="text" name="query" id="searchInput" class="form-control" placeholder="Search Student by Name..." value="{{ old('query', $keyword ?? '') }}">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Certificate Modal -->
-                    <div class="modal fade" id="certificateModal{{ $appointment->id }}" tabindex="-1" aria-labelledby="certificateModalLabel{{ $appointment->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="certificateModalLabel{{ $appointment->id }}">View Certificate</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <iframe src="{{ Storage::url($appointment->similarity_certificate) }}" width="100%" height="600px"></iframe>
-                                </div>
-                                <div class="modal-footer">
-                                    <a href="{{ Storage::url($appointment->similarity_certificate) }}" target="_blank" class="btn btn-primary" download>Download Certificate</a>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </tbody>
-        </table>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
+
+
+        <!-- Students Table -->
+<div class="table-responsive">
+    <table class="table table-bordered table-hover table-striped custom-table">
+        <thead class="table-dark">
+            <tr>
+                <th style="text-align:center;">Student Name</th>
+                <th style="text-align:center;">Uploaded Manuscript</th>
+                <th style="text-align:center;">Uploaded Certificate</th>
+                <th style="text-align:center;">Action</th>
+            </tr>
+        </thead>
+        <tbody id="appointments-table">
+            @foreach($appointments as $appointment)
+                <tr>
+                    <td class="text-center">{{ $appointment->student->name }}</td>
+                    <td class="text-center">
+                        @if($appointment->similarity_manuscript)
+                            <a href="#" data-toggle="modal" data-target="#manuscriptModal{{ $appointment->id }}">
+                                {{ basename($appointment->similarity_manuscript) }}
+                            </a>
+                        @else
+                            <span>No manuscript uploaded</span>
+                        @endif
+                    </td>
+                    <td class="text-center">
+                        <form action="{{ route('library.uploadSimilarityCertificate') }}" method="POST" enctype="multipart/form-data" id="certificateUploadForm{{ $appointment->student_id }}">
+                            @csrf
+                            <input type="hidden" name="student_id" value="{{ $appointment->student_id }}">
+                            
+                            @if($appointment->similarity_certificate)
+                                <a href="#" data-toggle="modal" data-target="#certificateModal{{ $appointment->id }}">
+                                    {{ basename($appointment->similarity_certificate) }}
+                                </a>
+                            @else
+                                <input type="file" name="similarity_certificate" class="form-control" required accept=".pdf">
+                            @endif
+                        </form>
+                    </td>
+                    <td class="text-center">
+                        <button type="submit" form="certificateUploadForm{{ $appointment->student_id }}" class="btn btn-primary">Save</button>
+                    </td>
+                </tr>
+
+                <!-- Manuscript Modal -->
+                <div class="modal fade" id="manuscriptModal{{ $appointment->id }}" tabindex="-1" aria-labelledby="manuscriptModalLabel{{ $appointment->id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="manuscriptModalLabel{{ $appointment->id }}">View Manuscript</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <iframe src="{{ Storage::url($appointment->similarity_manuscript) }}" width="100%" height="600px"></iframe>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="{{ Storage::url($appointment->similarity_manuscript) }}" target="_blank" class="btn btn-primary" download>Download Manuscript</a>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate Modal -->
+                <div class="modal fade" id="certificateModal{{ $appointment->id }}" tabindex="-1" aria-labelledby="certificateModalLabel{{ $appointment->id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="certificateModalLabel{{ $appointment->id }}">View Certificate</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <iframe src="{{ Storage::url($appointment->similarity_certificate) }}" width="100%" height="600px"></iframe>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="{{ Storage::url($appointment->similarity_certificate) }}" target="_blank" class="btn btn-primary" download>Download Certificate</a>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
 @endsection
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

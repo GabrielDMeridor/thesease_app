@@ -1,5 +1,97 @@
 @extends('gsstudent.GSSmain-layout')
 
+<style>
+ /* responsiveness of the table */
+.card {
+    width: 100%;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    padding: 10px 15px;
+    font-size: 1.25rem;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+.card-body {
+    padding: 15px;
+    overflow-x: auto; /* Enable horizontal scrolling if content overflows */
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+/* Button styling */
+.btn-primary {
+    padding: 5px 10px;
+    font-size: 0.9rem;
+}
+
+/* Responsive layout adjustments */
+@media (max-width: 768px) {
+    .table th, .table td {
+        font-size: 0.875rem;
+        padding: 8px;
+    }
+
+    /* Stack file input and save button on small screens */
+    .table td {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .table td button,
+    .table td input[type="file"] {
+        width: 100%;
+        margin-top: 5px;
+    }
+}
+
+/* Stack table rows vertically on extra small screens */
+@media (max-width: 576px) {
+    .table thead {
+        display: none; /* Hide the table header */
+    }
+
+    .table tr {
+        display: block;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+    }
+
+    .table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+    }
+
+    /* Labeling each cell with a pseudo-element */
+    .table td:nth-child(1)::before { content: "File:"; font-weight: bold; }
+    .table td:nth-child(2)::before { content: "Status:"; font-weight: bold; }
+    .table td:nth-child(3)::before { content: "Choose File:"; font-weight: bold; }
+    .table td:nth-child(4)::before { content: "Save:"; font-weight: bold; }
+}
+
+    </style>
+
 
     @section('content-header')
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
