@@ -499,9 +499,9 @@
                                     @endif
                                 </p>
                                 <p><strong>Approval Status:</strong> 
-                                @if ($appointment->submission_files__approval === 'approved')
+                                @if ($appointment->submission_files_approval === 'approved')
                                     <span class="text-success">Approved</span>
-                                @elseif ($appointment->submission_files__approval === 'pending')
+                                @elseif ($appointment->submission_files_approval === 'pending')
                                     <span class="text-warning">Pending Approval</span>
                                 @else
                                     <span class="text-muted">Not yet responded.</span>

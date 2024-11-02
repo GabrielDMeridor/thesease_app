@@ -331,7 +331,7 @@
                                                 </a>
                                             </p>
                                         @else
-                                            <form action="{{ route('superadmin.uploadCommunityExtensionLink', $student->id) }}" method="POST">
+                                            <form action="{{ route('graduateschool.uploadCommunityExtensionLink', $student->id) }}" method="POST">
                                                 @csrf
                                                 <div class="form-group">
                                                     <label for="community_extension_link">Community Extension Link:</label>
@@ -413,7 +413,7 @@
     </p>
 @else
     <!-- Form for SuperAdmin to upload the submission files link -->
-    <form action="{{ route('admin.uploadSubmissionFilesLink', $student->id) }}" method="POST">
+    <form action="{{ route('graduateschool.uploadSubmissionFilesLink', $student->id) }}" method="POST">
         @csrf
         <div class="form-group">
             <label for="submission_files_link">Submission Files Link:</label>
@@ -445,7 +445,7 @@
 
 <!-- SuperAdmin Approval Button (only if approval is pending) -->
 @if ($appointment->submission_files_approval === 'pending')
-    <form action="{{ route('admin.approveSubmissionFiles', $student->id) }}" method="POST">
+    <form action="{{ route('graduateschool.approveSubmissionFiles', $student->id) }}" method="POST">
         @csrf
         <button type="submit" class="btn btn-primary">Approve Submission Files</button>
     </form>

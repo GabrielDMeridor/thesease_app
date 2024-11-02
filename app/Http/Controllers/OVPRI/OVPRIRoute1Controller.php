@@ -63,5 +63,27 @@ class OVPRIRoute1Controller extends Controller
         // Redirect back with success message
         return redirect()->back()->with('success', 'Adviser registration has been approved and notifications sent.');
     }
+    public function ajaxSearch(Request $request)
+{
+    // Ensure the user is logged in as an OVPRI user
+    if (!auth()->check() || auth()->user()->account_type !== 8) {
+        return response()->json(['error' => 'Unauthorized access'], 403);
+    }
+
+    // Get the search query
+    $query = $request->input('search');
+
+    // Fetch appointments where registration_response is "responded" and match the adviser's name
+    $appointments = AdviserAppointment::where('registration_response', 'responded')
+        ->whereHas('adviser', function ($q) use ($query) {
+            $q->where('name', 'like', '%' . $query . '%');
+        })
+        ->with('adviser')
+        ->get();
+
+    // Return the data as JSON
+    return response()->json(['data' => $appointments]);
+}
+
     
 }

@@ -331,7 +331,7 @@
                                                 </a>
                                             </p>
                                         @else
-                                            <form action="{{ route('superadmin.uploadCommunityExtensionLink', $student->id) }}" method="POST">
+                                            <form action="{{ route('admin.uploadCommunityExtensionLink', $student->id) }}" method="POST">
                                                 @csrf
                                                 <div class="form-group">
                                                     <label for="community_extension_link">Community Extension Link:</label>
