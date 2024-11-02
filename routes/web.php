@@ -101,7 +101,7 @@
     Route::post('/superadmin/route1/student/{studentId}/approve-community-extension', [SARoute1Controller::class, 'approveCommunityExtension'])->name('superadmin.approveCommunityExtension');
    // SuperAdmin Step 6 DRPH : Step 5
    Route::post('/superadmin/adviser_appointments/{studentId}/upload-submission-files-link', [SARoute1Controller::class, 'uploadSubmissionFilesLink'])->name('superadmin.uploadSubmissionFilesLink');
-Route::post('/superadmin/route1/student/{studentId}/approve-submission-files', [SARoute1Controller::class, 'approveSubmissionFiles'])->name('superadmin.approveSubmissionFiles');
+    Route::post('/superadmin/route1/student/{studentId}/approve-submission-files', [SARoute1Controller::class, 'approveSubmissionFiles'])->name('superadmin.approveSubmissionFiles');
     
     //Superadmin Archive
     Route::get('/superadmin/archive', action: [SAArchiveController::class, 'index'])->name('superadmin.archive');
@@ -148,7 +148,9 @@ Route::post('/superadmin/route1/student/{studentId}/approve-submission-files', [
     // Admin DRPH
     Route::post('/admin/adviser_appointments/{studentId}/upload-community-extension-link', [ARoute1Controller::class, 'uploadCommunityExtensionLink'])->name('admin.uploadCommunityExtensionLink');
     Route::post('/admin/route1/student/{studentId}/approve-community-extension', [ARoute1Controller::class, 'approveCommunityExtension'])->name('admin.approveCommunityExtension');
-
+     // Admin Step 6 DRPH : Step 5
+   Route::post('/admin/adviser_appointments/{studentId}/upload-submission-files-link', [ARoute1Controller::class, 'uploadSubmissionFilesLink'])->name('admin.uploadSubmissionFilesLink');
+   Route::post('/admin/route1/student/{studentId}/approve-submission-files', [ARoute1Controller::class, 'approveSubmissionFiles'])->name('admin.approveSubmissionFiles');
 
 
 
@@ -169,8 +171,14 @@ Route::post('/superadmin/route1/student/{studentId}/approve-submission-files', [
     //Route for showiing routing form for admin for a specific student
     Route::get('/graduateschool/route1/student/{studentId}', [GSRoute1Controller::class, 'showRoutingForm'])->name('graduateschool.showRoutingForm');
     Route::post('/graduateschool/route1/student/{studentId}/sign', [GSRoute1Controller::class, 'sign'])->name('graduateschool.sign');
-    //Graduate School ArchiveF
+    //Graduate School Archive
     Route::get('/graduateschool/archive', action: [GSArchiveController::class, 'index'])->name('graduateschool.archive');
+    // GraduateSchool DRPH
+    Route::post('/graduateschool/adviser_appointments/{studentId}/upload-community-extension-link', [GSRoute1Controller::class, 'uploadCommunityExtensionLink'])->name('graduateschool.uploadCommunityExtensionLink');
+    Route::post('/graduateschool/route1/student/{studentId}/approve-community-extension', [GSRoute1Controller::class, 'approveCommunityExtension'])->name('graduateschool.approveCommunityExtension');
+    // GraduateSCchool Step 6 DRPH : Step 5
+    Route::post('/graduateschool/adviser_appointments/{studentId}/upload-submission-files-link', [GSRoute1Controller::class, 'uploadSubmissionFilesLink'])->name('graduateschool.uploadSubmissionFilesLink');
+   Route::post('/graduateschool/route1/student/{studentId}/approve-submission-files', [GSRoute1Controller::class, 'approveSubmissionFiles'])->name('graduateschool.approveSubmissionFiles');
 
 
 

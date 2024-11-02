@@ -8,6 +8,8 @@ use App\Models\AdviserAppointment;
 use App\Models\User;
 use App\Notifications\CommunityExtensionApprovedNotification;
 use Illuminate\Support\Facades\Notification;
+use App\Notifications\SubmissionFilesApprovedNotification;
+
 
 class GSRoute1Controller extends Controller
 {
@@ -128,6 +130,57 @@ class GSRoute1Controller extends Controller
         return redirect()->route('graduateschool.showRoutingForm', $studentId)
                          ->with('error', 'Unable to find appointment.');
     }
+    public function uploadSubmissionFilesLink(Request $request, $studentId)
+    {
+        // Validate the input for a URL
+        $request->validate([
+            'submission_files_link' => 'required|url',
+        ]);
+    
+        // Find the student's appointment record
+        $appointment = AdviserAppointment::where('student_id', $studentId)->first();
+    
+        if ($appointment) {
+            // Save the link to the appointment
+            $appointment->submission_files_link = $request->input('submission_files_link');
+            $appointment->save();
+    
+            return redirect()->route('graduateschool.showRoutingForm', $studentId)->with('success', 'Submission files link uploaded successfully.');
+        }
+    
+        return redirect()->route('graduateschool.showRoutingForm', $studentId)->with('error', 'Unable to find appointment.');
+    }
+    
+    public function approveSubmissionFiles(Request $request, $studentId)
+    {
+        // Ensure user is authenticated and has SuperAdmin privileges
+        if (!auth()->check() || auth()->user()->account_type !== User::GraduateSchool) {
+            return redirect()->route('getLogin')->with('error', 'Unauthorized access.');
+        }
+    
+        $superAdmin = User::find(auth()->id());
+    
+        // Retrieve authenticated user as User instance
+        $appointment = AdviserAppointment::where('student_id', $studentId)->first();
+    
+        if ($appointment) {
+            // Set the submission_files_approval to "approved"
+            $appointment->submission_files_approval = 'approved';
+            $appointment->save();
+    
+            Notification::send($appointment->student, new SubmissionFilesApprovedNotification($superAdmin));
+    
+    
+            // Notify the student about the approval
+    
+            return redirect()->route('graduateschool.showRoutingForm', $studentId)
+                             ->with('success', 'Submission files approved successfully.');
+        }
+    
+        return redirect()->route('graduateschool.showRoutingForm', $studentId)
+                         ->with('error', 'Unable to find appointment.');
+    }
+    
 }
 
 
