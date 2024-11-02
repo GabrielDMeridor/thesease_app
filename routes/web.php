@@ -99,7 +99,9 @@
     // SuperAdmin DRPH Step
     Route::post('/superadmin/adviser_appointments/{studentId}/upload-community-extension-link', [SARoute1Controller::class, 'uploadCommunityExtensionLink'])->name('superadmin.uploadCommunityExtensionLink');
     Route::post('/superadmin/route1/student/{studentId}/approve-community-extension', [SARoute1Controller::class, 'approveCommunityExtension'])->name('superadmin.approveCommunityExtension');
-
+   // SuperAdmin Step 6 DRPH : Step 5
+   Route::post('/superadmin/adviser_appointments/{studentId}/upload-submission-files-link', [SARoute1Controller::class, 'uploadSubmissionFilesLink'])->name('superadmin.uploadSubmissionFilesLink');
+Route::post('/superadmin/route1/student/{studentId}/approve-submission-files', [SARoute1Controller::class, 'approveSubmissionFiles'])->name('superadmin.approveSubmissionFiles');
     
     //Superadmin Archive
     Route::get('/superadmin/archive', action: [SAArchiveController::class, 'index'])->name('superadmin.archive');
@@ -271,11 +273,12 @@
     Route::post('/gsstudent/upload-similarity-manuscript', [GSSRoute1Controller::class, 'uploadSimilarityManuscript'])->name('gsstudent.uploadSimilarityManuscript');
     // GS  Stundent DRPH
     Route::post('/gsstudent/adviser_appointments/{id}/respond-community-extension', [GSSRoute1Controller::class, 'respondToCommunityExtension'])->name('gsstudent.respondToCommunityExtension');
-    // GS Student Step 5 : DRPH , Step 6
+    // GS Student Step 6 DRPH :  Step 5
     Route::post('/gsstudent/upload-signed-routing-form', [GSSRoute1Controller::class, 'uploadSignedRoutingForm'])->name('gsstudent.uploadSignedRoutingForm');
     Route::post('/gsstudent/upload-proposal-manuscript', [GSSRoute1Controller::class, 'uploadProposalManuscript'])->name('gsstudent.uploadProposalManuscript');
     Route::post('/gsstudent/upload-video-presentation', [GSSRoute1Controller::class, 'uploadVideoPresentation'])->name('gsstudent.uploadVideoPresentation');
-    // GS Student Step 6 : DRPH , Step 7
+
+    Route::post('/gsstudent/adviser_appointments/{id}/respond-community-extension', [GSSRoute1Controller::class, 'respondToSubmissionFiles'])->name('gsstudent.respondToSubmissionFiles');
 
 
     //Notificaion Event Handler

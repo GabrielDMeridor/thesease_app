@@ -415,7 +415,53 @@
             @else
                 <p>Student did not upload the file yet.</p>
             @endif
-            
+    </div>
+@if ($appointment->submission_files_link)
+<h5><strong>Submission Files </strong></h5>
+<a href="{{ $appointment->submission_files_link }}" target="_blank">
+            {{ $appointment->submission_files_link }}
+        </a>
+    </p>
+@else
+    <!-- Form for SuperAdmin to upload the submission files link -->
+    <form action="{{ route('superadmin.uploadSubmissionFilesLink', $student->id) }}" method="POST">
+        @csrf
+        <div class="form-group">
+            <label for="submission_files_link">Submission Files Link:</label>
+            <input type="url" name="submission_files_link" class="form-control" required placeholder="Enter the form link">
+        </div>
+        <button type="submit" class="btn btn-primary">Upload Link</button>
+    </form>
+@endif
+
+<!-- Display submission files response status -->
+@if ($appointment->submission_files_response)
+    <p><strong>Status:</strong> 
+        Responded on {{ optional($appointment->submission_files_response_date)->format('F j, Y') }}
+    </p>
+@else
+    <p class="text-muted">Student has not responded yet.</p>
+@endif
+
+<!-- Display approval status for submission files -->
+<p><strong>Approval Status:</strong> 
+    @if ($appointment->submission_files_approval === 'approved')
+        <span class="text-success">Approved</span>
+    @elseif ($appointment->submission_files_approval === 'pending')
+        <span class="text-warning">Pending</span>
+    @else
+        <span class="text-muted">Not yet responded.</span>
+    @endif
+</p>
+
+<!-- SuperAdmin Approval Button (only if approval is pending) -->
+@if ($appointment->submission_files_approval === 'pending')
+    <form action="{{ route('superadmin.approveSubmissionFiles', $student->id) }}" method="POST">
+        @csrf
+        <button type="submit" class="btn btn-primary">Approve Submission Files</button>
+    </form>
+@endif
+            </div>
         </div>
     </div>
 @endif

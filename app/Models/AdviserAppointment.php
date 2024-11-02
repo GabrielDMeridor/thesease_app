@@ -35,6 +35,9 @@ class AdviserAppointment extends Model
         'original_proposal_manuscript',
         'proposal_video_presentation',
         'original_proposal_video_presentation',
+        'submission_files_link',
+        'submission_files_approval',
+        'submission_files_response'
 
 
     ];

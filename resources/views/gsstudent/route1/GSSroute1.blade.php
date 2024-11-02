@@ -471,6 +471,52 @@
                             </div>
                         </form>
                     </div>
+
+                    <!-- Additional Section for Submission Files, shown if proposal_submission_completed is true -->
+                    @if ($appointment->proposal_submission_completed)
+                        <div class="card mt-4">
+                            <div class="card-body">
+                                <h5><strong>Submission Files</strong></h5>
+
+                                <!-- Display the submission files link if it exists -->
+                                @if ($appointment->submission_files_link)
+                                    <p><strong>Submission Files Link:</strong>
+                                        <a href="{{ $appointment->submission_files_link }}" target="_blank">
+                                            View Submission Files
+                                        </a>
+                                    </p>
+                                @else
+                                    <p class="text-muted">Submission files link will be uploaded by the Superadmin/Admin/GraduateSchool.</p>
+                                @endif
+
+                                <!-- Display the student's response status -->
+                                <p><strong>Your Response:</strong>
+                                    @if ($appointment->submission_files_response === 1)
+                                        Responded
+                                    @else
+                                        <span class="text-muted">Not responded yet.</span>
+                                    @endif
+                                </p>
+                                <p><strong>Approval Status:</strong> 
+                                @if ($appointment->submission_files__approval === 'approved')
+                                    <span class="text-success">Approved</span>
+                                @elseif ($appointment->submission_files__approval === 'pending')
+                                    <span class="text-warning">Pending Approval</span>
+                                @else
+                                    <span class="text-muted">Not yet responded.</span>
+                                @endif
+                            </p>
+
+                                <!-- Button to respond to submission files, if not responded yet -->
+                                @if ($appointment->submission_files_response !== 1)
+                                    <form action="{{ route('gsstudent.respondToSubmissionFiles', $appointment->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary">Respond to Submission Files</button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
                 @endif
             </div>
         @endfor

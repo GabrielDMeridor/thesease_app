@@ -11,6 +11,8 @@ use App\Notifications\LibraryNotification;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\CommunityExtensionRespondedNotification;
 use App\Notifications\ProposalSubmissionCompletedNotification; // Import the notification class
+use App\Notifications\SubmissionFilesRespondedNotification;
+
 
 
 
@@ -201,5 +203,36 @@ class GSSRoute1Controller extends Controller
             Notification::send($notifyUsers, new ProposalSubmissionCompletedNotification($appointment));
         }
     }
+    public function respondToSubmissionFiles(Request $request, $appointmentId)
+    {
+        // Ensure that the user is authenticated as a GSStudent
+        if (!auth()->check() || auth()->user()->account_type !== User::GraduateSchoolStudent) {
+            return redirect()->route('getLogin')->with('error', 'You must be logged in as a graduate school student to access this feature.');
+        }
+        
+        $user = User::find(auth()->id());
 
+        // Retrieve the authenticated user as a User instance
+        $appointment = AdviserAppointment::findOrFail($appointmentId);
+    
+        // Check if submission_files_response has not been set
+        if (!$appointment->submission_files_response) {
+            // Set submission_files_response to 1 and submission_files_approval to "pending"
+            $appointment->submission_files_response = 1;
+            $appointment->submission_files_approval = 'pending';
+            $appointment->save();
+
+
+            $superAdmins = User::where('account_type', User::SuperAdmin)->get();
+            $admins = User::where('account_type', User::Admin)->get();
+            $graduateSchoolUsers = User::where('account_type', User::GraduateSchool)->get();
+    
+            // Notify each group of users
+            Notification::send($superAdmins->merge($admins)->merge($graduateSchoolUsers), new SubmissionFilesRespondedNotification($user));
+        }
+    
+        return redirect()->route('gsstudent.route1')
+                         ->with('success', 'Your response has been recorded, and the approval status for submission files is now pending.');
+    }
+    
 }
