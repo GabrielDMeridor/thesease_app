@@ -99,10 +99,6 @@
     // SuperAdmin DRPH Step
     Route::post('/superadmin/adviser_appointments/{studentId}/upload-community-extension-link', [SARoute1Controller::class, 'uploadCommunityExtensionLink'])->name('superadmin.uploadCommunityExtensionLink');
     Route::post('/superadmin/route1/student/{studentId}/approve-community-extension', [SARoute1Controller::class, 'approveCommunityExtension'])->name('superadmin.approveCommunityExtension');
-    // Superadmin Step 6 DRPH : Step 5
-    Route::post('/superadmin/approve-submission/{appointmentId}', [SARoute1Controller::class, 'approveSubmission'])->name('superadmin.approveSubmission');
-    // Adviser route to upload submission file
-    Route::post('/superadmin/upload-submission-file/{appointmentId}', [SARoute1Controller::class, 'UploadSubmissionUrl'])->name('superadmin.uploadSubmissionFile');
 
     
     //Superadmin Archive
@@ -280,7 +276,6 @@
     Route::post('/gsstudent/upload-proposal-manuscript', [GSSRoute1Controller::class, 'uploadProposalManuscript'])->name('gsstudent.uploadProposalManuscript');
     Route::post('/gsstudent/upload-video-presentation', [GSSRoute1Controller::class, 'uploadVideoPresentation'])->name('gsstudent.uploadVideoPresentation');
     // GS Student Step 6 : DRPH , Step 7
-    Route::post('/gsstudent/mark-responded/{appointmentId}', [GSSRoute1Controller::class, 'markAsResponded'])->name('gsstudent.markResponded');
 
 
     //Notificaion Event Handler
