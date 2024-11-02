@@ -85,7 +85,7 @@
         <div class="card-body">
         @php
             $isDrPH = $student->program === 'DrPH';
-            $totalSteps = $isDrPH ? 10 : 9; // 10 steps for DrPH, 9 for others
+            $totalSteps = $isDrPH ? 9 : 8; // 9 steps for DrPH, 8 for others
         @endphp
 
 <!-- Multi-Step Navigation -->
@@ -382,7 +382,44 @@
                                 </div>
                             </div>
                 @endif
-                        @endif
+                @elseif (($step === 5 && !$isDrPH) || ($step === 6 && $isDrPH))
+    <!-- Step 5 for non-DrPH or Step 6 for DrPH - File Uploads -->
+    <div class="container-fluid">
+        <h4>File Uploads</h4>
+
+        <!-- Signed Routing Form 1 -->
+        <div class="form-group">
+            <label for="signed_routing_form_1">Signed Routing Form 1</label>
+            @if($appointment->signed_routing_form_1)
+                <p><a href="#" data-toggle="modal" data-target="#routingFormModal">{{ $appointment->original_signed_routing_form_1 }}</a></p>
+            @else
+                <p>File not yet uploaded</p>
+            @endif
+        </div>
+
+        <!-- Proposal Manuscript -->
+        <div class="form-group">
+            <label for="proposal_manuscript">Proposal Manuscript</label>
+            @if($appointment->proposal_manuscript)
+                <p><a href="#" data-toggle="modal" data-target="#proposalManuscriptModal">{{ $appointment->original_proposal_manuscript }}</a></p>
+            @else
+                <p>File not yet uploaded</p>
+            @endif
+        </div>
+
+        <!-- Video Presentation -->
+        <div class="form-group">
+            <label for="proposal_video_presentation">Video Presentation</label>
+            @if($appointment->proposal_video_presentation)
+                <p><a href="#" data-toggle="modal" data-target="#videoPresentationModal">{{ $appointment->original_proposal_video_presentation }}</a></p>
+            @else
+                <p>Student did not upload the file yet.</p>
+            @endif
+            
+        </div>
+    </div>
+@endif
+
                     </div>
                 @endfor
             </div>
@@ -390,6 +427,68 @@
 
         <!-- Card footer added here as requested -->
         <div class="card-footer footersaroute1"></div>
+    </div>
+<!-- Modals for Uploaded Files -->
+<div class="modal fade" id="routingFormModal" tabindex="-1" aria-labelledby="routingFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">View Signed Routing Form 1</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{ Storage::url($appointment->signed_routing_form_1) }}" width="100%" height="600px"></iframe>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ Storage::url($appointment->signed_routing_form_1) }}" target="_blank" class="btn btn-primary" download>Download</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="proposalManuscriptModal" tabindex="-1" aria-labelledby="proposalManuscriptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">View Proposal Manuscript</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{ Storage::url($appointment->proposal_manuscript) }}" width="100%" height="600px"></iframe>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ Storage::url($appointment->proposal_manuscript) }}" target="_blank" class="btn btn-primary" download>Download</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="videoPresentationModal" tabindex="-1" aria-labelledby="videoPresentationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">View Video Presentation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <video controls width="100%">
+                    <source src="{{ Storage::url($appointment->proposal_video_presentation) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ Storage::url($appointment->proposal_video_presentation) }}" target="_blank" class="btn btn-primary" download>Download</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

@@ -8,6 +8,8 @@ use App\Models\AdviserAppointment;
 use App\Models\User;
 use App\Notifications\CommunityExtensionApprovedNotification;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Auth;
+
 
 
 
@@ -148,8 +150,7 @@ public function showRoutingForm($studentId)
         return redirect()->route('superadmin.showRoutingForm', $studentId)
                          ->with('error', 'Unable to find appointment.');
     }
-    
-    
+
     
     
 }

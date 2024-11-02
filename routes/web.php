@@ -99,6 +99,12 @@
     // SuperAdmin DRPH Step
     Route::post('/superadmin/adviser_appointments/{studentId}/upload-community-extension-link', [SARoute1Controller::class, 'uploadCommunityExtensionLink'])->name('superadmin.uploadCommunityExtensionLink');
     Route::post('/superadmin/route1/student/{studentId}/approve-community-extension', [SARoute1Controller::class, 'approveCommunityExtension'])->name('superadmin.approveCommunityExtension');
+    // Superadmin Step 6 DRPH : Step 5
+    Route::post('/superadmin/approve-submission/{appointmentId}', [SARoute1Controller::class, 'approveSubmission'])->name('superadmin.approveSubmission');
+    // Adviser route to upload submission file
+    Route::post('/superadmin/upload-submission-file/{appointmentId}', [SARoute1Controller::class, 'UploadSubmissionUrl'])->name('superadmin.uploadSubmissionFile');
+
+    
     //Superadmin Archive
     Route::get('/superadmin/archive', action: [SAArchiveController::class, 'index'])->name('superadmin.archive');
     // SuperaAdmin Registration
@@ -269,11 +275,12 @@
     Route::post('/gsstudent/upload-similarity-manuscript', [GSSRoute1Controller::class, 'uploadSimilarityManuscript'])->name('gsstudent.uploadSimilarityManuscript');
     // GS  Stundent DRPH
     Route::post('/gsstudent/adviser_appointments/{id}/respond-community-extension', [GSSRoute1Controller::class, 'respondToCommunityExtension'])->name('gsstudent.respondToCommunityExtension');
-    // GS Student Step 5 : DRPH Step 6
+    // GS Student Step 5 : DRPH , Step 6
     Route::post('/gsstudent/upload-signed-routing-form', [GSSRoute1Controller::class, 'uploadSignedRoutingForm'])->name('gsstudent.uploadSignedRoutingForm');
     Route::post('/gsstudent/upload-proposal-manuscript', [GSSRoute1Controller::class, 'uploadProposalManuscript'])->name('gsstudent.uploadProposalManuscript');
     Route::post('/gsstudent/upload-video-presentation', [GSSRoute1Controller::class, 'uploadVideoPresentation'])->name('gsstudent.uploadVideoPresentation');
-
+    // GS Student Step 6 : DRPH , Step 7
+    Route::post('/gsstudent/mark-responded/{appointmentId}', [GSSRoute1Controller::class, 'markAsResponded'])->name('gsstudent.markResponded');
 
 
     //Notificaion Event Handler

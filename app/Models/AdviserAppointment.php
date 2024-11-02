@@ -25,7 +25,7 @@ class AdviserAppointment extends Model
         'completed_at',
         'consultation_dates', // Add this if you're mass assigning it
         'similarity_certificate',
-        'similarity_manusccript',
+        'similarity_manuscript',
         'community_extension_link',
         'community_extension_response',
         'community_extension_response_date',
@@ -35,6 +35,7 @@ class AdviserAppointment extends Model
         'original_proposal_manuscript',
         'proposal_video_presentation',
         'original_proposal_video_presentation',
+
 
     ];
 

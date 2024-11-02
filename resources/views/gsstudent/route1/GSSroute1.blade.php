@@ -103,7 +103,7 @@
 
     @php
     // Determine the total number of steps
-        $totalSteps = $isDrPH ? 10 : 9; // DrPH students have an additional Community Extension step
+    $totalSteps = $isDrPH ? 9 : 8; // 9 steps for DrPH, 8 for others
     @endphp
 <!-- Multi-Step Navigation -->
 <div class="container-fluid">
@@ -411,15 +411,19 @@
 
         <!-- Response Button for Student -->
         @if (!$appointment->community_extension_response)
-            <form action="{{ route('gsstudent.respondToCommunityExtension', $appointment->id) }}" method="POST">
+            <form action="{{ route('gsstudent.respondToCommunityExtension', parameters: $appointment->id) }}" method="POST">
                 @csrf
                 <button type="submit" class="btn btn-primary">Mark as Responded</button>
             </form>
         @endif
+
+
                         </div>
                     </div>
                 </div>
                 @endif
+
+                
                 @elseif (($step === 5 && !$isDrPH) || ($step === 6 && $isDrPH))
                     <!-- Step 5 for non-DrPH or Step 6 for DrPH - File Uploads -->
                     <div class="container-fluid">

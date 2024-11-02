@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Notifications\LibraryNotification;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\CommunityExtensionRespondedNotification;
+use App\Notifications\ProposalSubmissionCompletedNotification; // Import the notification class
 
 
 
@@ -119,69 +120,86 @@ class GSSRoute1Controller extends Controller
                          ->with('success', 'Your response has been recorded, and the approval status is now pending.');
     }
     public function uploadSignedRoutingForm(Request $request)
-{
-    $user = Auth::user();
-    $appointment = AdviserAppointment::where('student_id', $user->id)->first();
-
-    $request->validate([
-        'signed_routing_form_1' => 'required|file|mimes:pdf|max:2048',
-    ]);
-
-    $file = $request->file('signed_routing_form_1');
-    $originalFileName = $file->getClientOriginalName(); // Get original filename
-    $uniqueFileName = time() . '_' . $originalFileName; // Create unique filename
-    $storedFilePath = $file->storeAs('public/signed_routing_forms', $uniqueFileName);
-
-    // Save both the file path and the original filename
-    $appointment->signed_routing_form_1 = $storedFilePath;
-    $appointment->original_signed_routing_form_1 = $originalFileName;
-    $appointment->save();
-
-    return redirect()->route('gsstudent.route1')->with('success', 'Signed Routing Form uploaded successfully!');
-}
-
-public function uploadProposalManuscript(Request $request)
-{
-    $user = Auth::user();
-    $appointment = AdviserAppointment::where('student_id', $user->id)->first();
-
-    $request->validate([
-        'proposal_manuscript' => 'required|file|mimes:pdf|max:2048',
-    ]);
-
-    $file = $request->file('proposal_manuscript');
-    $originalFileName = $file->getClientOriginalName();
-    $uniqueFileName = time() . '_' . $originalFileName;
-    $storedFilePath = $file->storeAs('public/proposal_manuscripts', $uniqueFileName);
-
-    $appointment->proposal_manuscript = $storedFilePath;
-    $appointment->original_proposal_manuscript = $originalFileName;
-    $appointment->save();
-
-    return redirect()->route('gsstudent.route1')->with('success', 'Proposal Manuscript uploaded successfully!');
-}
-
-public function uploadVideoPresentation(Request $request)
-{
-    $user = Auth::user();
-    $appointment = AdviserAppointment::where('student_id', $user->id)->first();
-
-    $request->validate([
-        'proposal_video_presentation' => 'required|file|mimes:mp4,avi,mov|max:10240',
-    ]);
-
-    $file = $request->file('proposal_video_presentation');
-    $originalFileName = $file->getClientOriginalName();
-    $uniqueFileName = time() . '_' . $originalFileName;
-    $storedFilePath = $file->storeAs('public/video_presentations', $uniqueFileName);
-
-    $appointment->proposal_video_presentation = $storedFilePath;
-    $appointment->original_proposal_video_presentation = $originalFileName;
-    $appointment->save();
-
-    return redirect()->route('gsstudent.route1')->with('success', 'Video Presentation uploaded successfully!');
-}
-
+    {
+        $user = Auth::user();
+        $appointment = AdviserAppointment::where('student_id', $user->id)->first();
     
+        $request->validate([
+            'signed_routing_form_1' => 'required|file|mimes:pdf|max:2048',
+        ]);
+    
+        $file = $request->file('signed_routing_form_1');
+        $originalFileName = $file->getClientOriginalName();
+        $uniqueFileName = time() . '_' . $originalFileName;
+        $storedFilePath = $file->storeAs('public/signed_routing_forms', $uniqueFileName);
+    
+        $appointment->signed_routing_form_1 = $storedFilePath;
+        $appointment->original_signed_routing_form_1 = $originalFileName;
+        $appointment->save();
+    
+        $this->checkAndNotifyProposalSubmissionCompletion($appointment);
+    
+        return redirect()->route('gsstudent.route1')->with('success', 'Signed Routing Form uploaded successfully!');
+    }
+    
+    public function uploadProposalManuscript(Request $request)
+    {
+        $user = Auth::user();
+        $appointment = AdviserAppointment::where('student_id', $user->id)->first();
+    
+        $request->validate([
+            'proposal_manuscript' => 'required|file|mimes:pdf|max:2048',
+        ]);
+    
+        $file = $request->file('proposal_manuscript');
+        $originalFileName = $file->getClientOriginalName();
+        $uniqueFileName = time() . '_' . $originalFileName;
+        $storedFilePath = $file->storeAs('public/proposal_manuscripts', $uniqueFileName);
+    
+        $appointment->proposal_manuscript = $storedFilePath;
+        $appointment->original_proposal_manuscript = $originalFileName;
+        $appointment->save();
+    
+        $this->checkAndNotifyProposalSubmissionCompletion($appointment);
+    
+        return redirect()->route('gsstudent.route1')->with('success', 'Proposal Manuscript uploaded successfully!');
+    }
+    
+    public function uploadVideoPresentation(Request $request)
+    {
+        $user = Auth::user();
+        $appointment = AdviserAppointment::where('student_id', $user->id)->first();
+    
+        $request->validate([
+            'proposal_video_presentation' => 'required|file|mimes:mp4,avi,mov|max:10240',
+        ]);
+    
+        $file = $request->file('proposal_video_presentation');
+        $originalFileName = $file->getClientOriginalName();
+        $uniqueFileName = time() . '_' . $originalFileName;
+        $storedFilePath = $file->storeAs('public/video_presentations', $uniqueFileName);
+    
+        $appointment->proposal_video_presentation = $storedFilePath;
+        $appointment->original_proposal_video_presentation = $originalFileName;
+        $appointment->save();
+    
+        $this->checkAndNotifyProposalSubmissionCompletion($appointment);
+    
+        return redirect()->route('gsstudent.route1')->with('success', 'Video Presentation uploaded successfully!');
+    }
+    
+    // Helper function to check proposal submission completion and notify
+    protected function checkAndNotifyProposalSubmissionCompletion($appointment)
+    {
+        if ($appointment->signed_routing_form_1 && $appointment->proposal_manuscript && $appointment->proposal_video_presentation) {
+            // All files are uploaded
+            $appointment->proposal_submission_completed = true;
+            $appointment->save();
+    
+            // Notify SuperAdmin, Admin, and GraduateSchool users
+            $notifyUsers = User::whereIn('account_type', [1, 2, 3])->get();
+            Notification::send($notifyUsers, new ProposalSubmissionCompletedNotification($appointment));
+        }
+    }
 
 }

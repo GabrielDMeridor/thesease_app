@@ -87,7 +87,7 @@
         <div class="card-body">
         @php
             $isDrPH = $student->program === 'DrPH';
-            $totalSteps = $isDrPH ? 10 : 9; // 10 steps for DrPH, 9 for others
+            $totalSteps = $isDrPH ? 9 : 8; // 9 steps for DrPH, 8 for others
         @endphp
 
 <!-- Multi-Step Navigation -->
