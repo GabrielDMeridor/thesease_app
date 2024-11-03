@@ -6,6 +6,8 @@
     use App\Http\Controllers\SuperAdmin\VerifyUserController;
     use App\Http\Controllers\SuperAdmin\SAArchiveController;
     use App\Http\Controllers\SuperAdmin\SARoute1Controller;
+    use App\Http\Controllers\SuperAdmin\SACalendarController;
+
 
 
     use App\Http\Controllers\Admin\AProfileController;
@@ -13,6 +15,8 @@
     use App\Http\Controllers\Admin\AVerifyUserController;
     use App\Http\Controllers\Admin\ARoute1Controller;
     use App\Http\Controllers\Admin\AArchiveController;
+    use App\Http\Controllers\Admin\ACalendarController;
+
 
 
 
@@ -22,6 +26,8 @@
     use App\Http\Controllers\GraduateSchool\GSVerifyUserController;
     use App\Http\Controllers\GraduateSchool\GSRoute1Controller;
     use App\Http\Controllers\GraduateSchool\GSArchiveController;
+    use App\Http\Controllers\GraduateSchool\GSCalendarController;
+
 
 
 
@@ -353,6 +359,28 @@
        Route::get('/admin/archive/search', [AArchiveController::class, 'ajaxSearch'])->name('admin.archive.search');
        // AJAX search route for Graduate School archie page
        Route::get('/graduateschool/archive/search', [GSArchiveController::class, 'ajaxSearch'])->name('graduateschool.archive.search');
+
+
+
+
+
+       Route::get('/superadmin/calendar', [SACalendarController::class, 'index'])->name('superadmin.calendar');
+       Route::post('/superadmin/calendar/schedule', [SACalendarController::class, 'storeSchedule'])->name('superadmin.calendar.schedule.store');
+       Route::get('/superadmin/calendar/events', [SACalendarController::class, 'getEvents'])->name('superadmin.calendar.events');
+
+       Route::get('/admin/calendar', [ACalendarController::class, 'index'])->name('admin.calendar');
+       Route::post('/admin/calendar/schedule', [ACalendarController::class, 'storeSchedule'])->name('admin.calendar.schedule.store');
+       Route::get('/admin/calendar/events', [ACalendarController::class, 'getEvents'])->name('admin.calendar.events');
+
+
+       Route::get('/graduateschool/calendar', [GSCalendarController::class, 'index'])->name('graduateschool.calendar');
+       Route::post('/graduateschool/calendar/schedule', [GSCalendarController::class, 'storeSchedule'])->name('graduateschool.calendar.schedule.store');
+       Route::get('/graduateschool/calendar/events', [GSCalendarController::class, 'getEvents'])->name('graduateschool.calendar.events');
+          
+
+
+
+
 
 
 

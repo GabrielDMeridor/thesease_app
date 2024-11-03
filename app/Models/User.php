@@ -93,6 +93,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(AdviserAppointment::class, 'adviser_id');
     }
+    
 
 
 }

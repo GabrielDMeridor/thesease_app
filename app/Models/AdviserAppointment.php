@@ -15,7 +15,7 @@ class AdviserAppointment extends Model
     protected $fillable = [
         'student_id',
         'adviser_id',
-        'program_chair_id',  // Add this
+        'program_chair_id',
         'appointment_type',
         'status',
         'adviser_signature',
@@ -23,7 +23,7 @@ class AdviserAppointment extends Model
         'dean_signature',
         'disapproval_count',
         'completed_at',
-        'consultation_dates', // Add this if you're mass assigning it
+        'consultation_dates',
         'similarity_certificate',
         'similarity_manuscript',
         'community_extension_link',
@@ -37,16 +37,18 @@ class AdviserAppointment extends Model
         'original_proposal_video_presentation',
         'submission_files_link',
         'submission_files_approval',
-        'submission_files_response'
-
-
+        'submission_files_response',
+        'proposal_defense_date',
+        'proposal_defense_time',
+        'panel_members', // Add panel_members to fillable
+        'schedule_type',
     ];
 
-    // Cast completed_at as a datetime
+    // Casts for specific fields
     protected $casts = [
         'completed_at' => 'datetime',
         'consultation_dates' => 'array',
-
+        'panel_members' => 'array', // Cast panel_members as an array
     ];
 
     // Relationship: The appointment belongs to a student
@@ -66,9 +68,10 @@ class AdviserAppointment extends Model
     {
         return $this->belongsTo(User::class, 'program_chair_id');
     }
+
+    // Accessor for consultation dates
     public function getConsultationDatesAttribute($value)
     {
         return $value ? json_decode($value) : [];
     }
 }
-

@@ -39,8 +39,8 @@
     </li>
 
     <!-- Nav Item - Set Schedules -->
-    <li class="nav-item">
-        <a href="#" class="nav-link">
+    <li class="nav-item {{ $current_route == 'superadmin.calendar' ? 'active' : '' }}">
+        <a href="{{ route('superadmin.calendar') }}" class="nav-link">
             <i class="fas fa-fw fa-calendar"></i>
             <span>Set Schedules</span>
         </a>
