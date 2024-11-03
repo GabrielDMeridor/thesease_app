@@ -124,9 +124,9 @@
 
     <!-- Step Content -->
     <div class="tab-content" id="pills-tabContent">
-        @for ($step = 1; $step <= 9; $step++)
-            <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}"
-                 role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
+    @for ($step = 1; $step <= $totalSteps; $step++)
+        <div class="tab-pane fade {{ $step === 1 ? 'show active' : '' }}" id="pills-step-{{ $step }}"
+             role="tabpanel" aria-labelledby="pills-step-{{ $step }}-tab">
 
                 @if ($step === 1)
                     <!-- Step 1 Form: Adviser Appointment Form -->
@@ -149,13 +149,26 @@
                                             <label for="program">Program:</label>
                                             <input type="text" name="program" value="{{ $user->program ?? 'N/A' }}" class="form-control" readonly>
                                         </div>
-                                <!-- Adviser Display -->
-                                <div class="form-group">
-                                    <label for="adviser">Adviser:</label>
-                                    <input type="text" class="form-control"
-                                        value="{{ optional(optional($appointment)->adviser)->name ?? 'Adviser will be assigned by the Program Chair.' }}"
-                                        readonly>
-                                </div>
+                            <!-- Adviser Display -->
+                            @php
+                                $adviserText = 'Adviser will be assigned by the Program Chair.';
+                                if (!is_null($appointment)) {
+                                    if ($appointment->status === 'pending') {
+                                        $adviserText = 'Waiting for the adviser to accept the request from the Program Chair.';
+                                    } elseif ($appointment->status === 'approved') {
+                                        $adviserText = optional($appointment->adviser)->name;
+                                    } else {
+                                        $adviserText = 'Adviser status is unclear.';
+                                    }
+                                }
+                            @endphp
+
+                            <div class="form-group">
+                                <label for="adviser">Adviser:</label>
+                                <input type="text" class="form-control" value="{{ $adviserText }}" readonly>
+                            </div>
+
+
 
                                 <!-- Kulang pa to ng if $appointment)->status = pending = waiting for the adviser to accept the request from program chair -->
 
