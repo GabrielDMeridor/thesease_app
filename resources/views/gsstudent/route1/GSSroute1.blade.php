@@ -759,8 +759,8 @@
 
     <!-- Panel Review Section -->
     <h4>Panel Review</h4>
-    @foreach ($appointment->panel_members as $panelistId)
-        @php
+    @foreach ($appointment->panel_members ?? [] as $panelistId)
+    @php
             // Retrieve panelist information
             $panelist = \App\Models\User::find($panelistId);
             $panelistName = $panelist ? $panelist->name : "Unknown Panelist";
