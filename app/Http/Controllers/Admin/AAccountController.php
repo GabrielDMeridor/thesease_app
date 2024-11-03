@@ -14,7 +14,7 @@ class AAccountController extends Controller
     public function Aaccount()
     {
         if (!auth()->check() || auth()->user()->account_type !== User::Admin) {
-            return redirect()->route('getALogin')->with('error', 'You must be logged in as an admin to access this page.');
+            return redirect()->route('getSALogin')->with('error', 'You must be logged in as an admin to access this page.');
         }
 
         $data = [

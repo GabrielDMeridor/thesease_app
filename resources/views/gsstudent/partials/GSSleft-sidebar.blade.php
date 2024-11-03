@@ -52,11 +52,11 @@
         </li>
 
         <!-- Additional Nav Items for verified users -->
-        <li class="nav-item {{ $current_route == 'verify-users.index' ? 'active' : '' }}">
-            <a href="{{ route('verify-users.index') }}" class="nav-link">
-                <i class="fas fa-fw fa-calendar"></i>
-                <span>Calendar</span>
-            </a>
+        <li class="nav-item {{ $current_route == 'gsstudent.calendar' ? 'active' : '' }}">
+        <a href="{{ route('gsstudent.calendar') }}" class="nav-link">
+            <i class="fas fa-fw fa-calendar"></i>
+            <span>Calendar</span>
+        </a>
         </li>
         <!-- Nav Item - Thesis Checking -->
         <li class="nav-item">

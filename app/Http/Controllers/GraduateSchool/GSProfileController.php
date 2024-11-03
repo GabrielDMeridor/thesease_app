@@ -10,7 +10,7 @@ class GSProfileController extends Controller
     public function GSdashboard()
     {
         if (!auth()->check() || auth()->user()->account_type !== 3) {
-            return redirect()->route('getLogin')->with('error', 'You must be logged in as a superadmin to access this page');
+            return redirect()->route('getSALogin')->with('error', 'You must be logged in as a superadmin to access this page');
         }
         
         $data = [

@@ -16,7 +16,7 @@ class AVerifyUserController extends Controller
     {
         // Ensure the user is authenticated and is an admin (account_type = 2, assuming this is the identifier for Admin)
         if (!auth()->check() || auth()->user()->account_type !== User::Admin) {
-            return redirect()->route('getLogin')->with('error', 'You must be logged in as an admin to access this page');
+            return redirect()->route('getSALogin')->with('error', 'You must be logged in as an admin to access this page');
         }
 
         // Get the filters from the request

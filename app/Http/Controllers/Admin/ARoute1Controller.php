@@ -17,7 +17,7 @@ class ARoute1Controller extends Controller
     {
         // Ensure the user is logged in as Admin or Dean (assuming Admin type is User::Admin)
         if (!auth()->check() || auth()->user()->account_type !== User::Admin) {
-            return redirect()->route('getLogin')->with('error', 'You must be logged in as an admin to access this page');
+            return redirect()->route('getSALogin')->with('error', 'You must be logged in as an admin to access this page');
         }
 
         // Query to fetch students with an approved adviser appointment
@@ -157,7 +157,7 @@ class ARoute1Controller extends Controller
     {
         // Ensure user is authenticated and has SuperAdmin privileges
         if (!auth()->check() || auth()->user()->account_type !== User::Admin) {
-            return redirect()->route('getLogin')->with('error', 'Unauthorized access.');
+            return redirect()->route('getSALogin')->with('error', 'Unauthorized access.');
         }
     
         $superAdmin = User::find(auth()->id());

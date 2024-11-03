@@ -14,7 +14,7 @@ class GSAccountController extends Controller
     public function GSAccount()
     {
         if (!auth()->check() || auth()->user()->account_type !== User::GraduateSchool) {
-            return redirect()->route('getALogin')->with('error', 'You must be logged in as an graduate school to access this page.');
+            return redirect()->route('getSALogin')->with('error', 'You must be logged in as an graduate school to access this page.');
         }
 
         $data = [

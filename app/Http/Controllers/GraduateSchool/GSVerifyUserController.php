@@ -16,7 +16,7 @@ class GSVerifyUserController extends Controller
     {
         // Ensure the user is authenticated and is an GraduateSchool (account_type = 3, assuming this is the identifier for GraduateSchool)
         if (!auth()->check() || auth()->user()->account_type !== User::GraduateSchool) {
-            return redirect()->route('getLogin')->with('error', 'You must be logged in as an graduate school to access this page');
+            return redirect()->route('getSALogin')->with('error', 'You must be logged in as an graduate school to access this page');
         }
 
         // Get the filters from the request

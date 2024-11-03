@@ -17,7 +17,7 @@ class GSRoute1Controller extends Controller
     {
         // Ensure the user is logged in as GraduateSchool or Dean (assuming GraduateSchool type is User::GraduateSchool)
         if (!auth()->check() || auth()->user()->account_type !== User::GraduateSchool) {
-            return redirect()->route('getLogin')->with('error', 'You must be logged in as an graduate school to access this page');
+            return redirect()->route('getSALogin')->with('error', 'You must be logged in as an graduate school to access this page');
         }
 
         // Query to fetch students with an approved adviser appointment
@@ -155,7 +155,7 @@ class GSRoute1Controller extends Controller
     {
         // Ensure user is authenticated and has SuperAdmin privileges
         if (!auth()->check() || auth()->user()->account_type !== User::GraduateSchool) {
-            return redirect()->route('getLogin')->with('error', 'Unauthorized access.');
+            return redirect()->route('getSALogin')->with('error', 'Unauthorized access.');
         }
     
         $superAdmin = User::find(auth()->id());

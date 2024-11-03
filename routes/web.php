@@ -41,6 +41,9 @@
     use App\Http\Controllers\TDProfessor\TDPProfileController;
     use App\Http\Controllers\TDProfessor\TDPRoute1Controller;
     use App\Http\Controllers\TDProfessor\TDPAccountController;
+    use App\Http\Controllers\TDProfessor\TDPCalendarController;
+
+    
 
     use App\Http\Controllers\AUFCommittee\AUFCProfileController;
 
@@ -63,6 +66,8 @@
     use App\Http\Controllers\GSStudent\GSSAccountController;
     use App\Http\Controllers\GSStudent\GSSFileUploadController;
     use App\Http\Controllers\GSStudent\GSSRoute1Controller;
+    use App\Http\Controllers\GSStudent\GSSCalendarController;
+
 
 
     use App\Http\Controllers\PasswordResetController;
@@ -377,8 +382,11 @@
        Route::post('/graduateschool/calendar/schedule', [GSCalendarController::class, 'storeSchedule'])->name('graduateschool.calendar.schedule.store');
        Route::get('/graduateschool/calendar/events', [GSCalendarController::class, 'getEvents'])->name('graduateschool.calendar.events');
           
+       Route::get('/gsstudent/calendar', [GSSCalendarController::class, 'showStudentSchedule'])->name('gsstudent.calendar');
+       Route::get('/gsstudent/calendar/events', [GSSCalendarController::class, 'getEvents']); // Optional, to handle calendar events
 
-
+       Route::get('/tdprofessor/calendar', [TDPCalendarController::class, 'showTDProfessorCalendar'])->name('tdprofessor.calendar');
+       Route::get('/tdprofessor/calendar/events', [TDPCalendarController::class, 'getTDEvents'])->name('tdprofessor.calendar.events');
 
 
 

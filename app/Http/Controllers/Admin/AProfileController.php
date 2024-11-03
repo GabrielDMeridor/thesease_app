@@ -10,7 +10,7 @@ class AProfileController extends Controller
     public function Adashboard()
     {
         if (!auth()->check() || auth()->user()->account_type !== 2) {
-            return redirect()->route('getLogin')->with('error', 'You must be logged in as an admin to access this page');
+            return redirect()->route('getSALogin')->with('error', 'You must be logged in as an admin to access this page');
         }
         
         $data = [

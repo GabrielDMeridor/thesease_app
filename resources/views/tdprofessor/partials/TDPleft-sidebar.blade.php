@@ -30,12 +30,12 @@
         </a>
     </li>
         <!-- Nav Item - Set Schedules -->
-    <li class="nav-item">
-        <a href="#" class="nav-link">
+        <li class="nav-item {{ $current_route == 'tdprofessor.calendar' ? 'active' : '' }}">
+        <a href="{{ route('tdprofessor.calendar') }}" class="nav-link">
             <i class="fas fa-fw fa-calendar"></i>
             <span>Calendar</span>
         </a>
-    </li>
+        </li>
 
     <!-- Nav Item - Thesis Checking -->
     <li class="nav-item">
