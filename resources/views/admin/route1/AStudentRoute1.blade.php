@@ -444,6 +444,18 @@
                             </div>
                 @endif
                 @elseif (($step === 5 && !$isDrPH) || ($step === 6 && $isDrPH))
+                @if (($isDrPH && optional($appointment)->community_extension_approval !== 'approved') ||
+         (!$isDrPH && optional($appointment)->ovpri_approval !== 'approved'))
+        {{-- Display lock message based on the type of approval needed --}}
+        <p class="text-muted">
+            This step is locked. 
+            @if ($isDrPH)
+                Community Extension approval must be completed in Step 5 to proceed.
+            @else
+                OVPRI approval must be completed in Step 4 to proceed.
+            @endif
+        </p>
+    @else
                 <div class="container-fluid my-4">
     <div class="row">
         <!-- File Uploads Section -->
@@ -562,6 +574,8 @@
             </div>
         </div>
     </div>
+    @endif
+
     <div class="card-footer footersaroute1"></div>
 @endif
                     </div>

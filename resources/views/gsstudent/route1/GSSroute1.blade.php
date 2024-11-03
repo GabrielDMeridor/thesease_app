@@ -238,7 +238,7 @@
 
                 @elseif ($step === 3)
                     <!-- Step 3: Upload and View Similarity Manuscript and Certificate -->
-                    @if (is_null(optional($appointment)->adviser_endorsement_signature))
+                    @if (is_null(optional(value: $appointment)->adviser_endorsement_signature))
                     <div class="container d-flex justify-content-center my-4">
                         <div style="width: 100%;">
                             <div class="card-body text-center">
@@ -358,8 +358,8 @@
 
     @elseif ($step === 4)
     <!-- Step 4: Research Registration -->
-    @if(is_null($appointment->similarity_certificate))
-        <!-- Lock Step 4 if Similarity Certificate is Null -->
+    @if (is_null(optional(value: $appointment)->similarity_certificate))
+    <!-- Lock Step 4 if Similarity Certificate is Null -->
         <div class="container d-flex justify-content-center my-4">
     <div style="width: 100%;">
         <div class="card-body text-center">
@@ -418,7 +418,7 @@
 
 
     @elseif ($step === 5 && $isDrPH)
-    @if ($appointment->ovpri_approval !== 'approved')
+@if (optional($appointment)->ovpri_approval !== 'approved')
                     <p class="text-muted">Step 5 is locked. The OVPRI Approval must be completed in Step 4 to proceed.</p>
                 @else
                 <!-- Step 5 for DrPH students: Community Extension Registration -->
@@ -471,11 +471,23 @@
 
                 
                 @elseif (($step === 5 && !$isDrPH) || ($step === 6 && $isDrPH))
+                @if (($isDrPH && optional($appointment)->community_extension_approval !== 'approved') ||
+         (!$isDrPH && optional($appointment)->ovpri_approval !== 'approved'))
+        {{-- Display lock message based on the type of approval needed --}}
+        <p class="text-muted">
+            This step is locked. 
+            @if ($isDrPH)
+                Community Extension approval must be completed in Step 5 to proceed.
+            @else
+                OVPRI approval must be completed in Step 4 to proceed.
+            @endif
+        </p>
+    @else
                     <!-- Step 5 for non-DrPH or Step 6 for DrPH - File Uploads -->
  <!-- Additional Section for Submission Files, shown if proposal_submission_completed is true -->
                     <!-- Submission Files Section -->
-                    @if ($appointment->proposal_submission_completed)
-    <div class="container my-4 d-flex justify-content-center">
+                    @if (optional($appointment)->proposal_submission_completed ?? false)
+                    <div class="container my-4 d-flex justify-content-center">
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-body text-center">
@@ -523,8 +535,18 @@
             </div>
         </div>
     </div>
+    @endif
 @endif
-                     
+
+@if (($isDrPH && optional($appointment)->community_extension_approval !== 'approved') ||
+         (!$isDrPH && optional($appointment)->ovpri_approval !== 'approved'))
+        {{-- Display lock message based on the type of approval needed --}}
+        <p class="text-muted">
+            @if ($isDrPH)
+            @else
+            @endif
+        </p>
+    @else          
 <div class="container-fluid my-4">
     <!-- Research Registration Content Here -->
     <div class="card shadow mb-4">
@@ -547,8 +569,8 @@
                         <tr>
                             <td class="text-center">Signed Routing Form 1</td>
                             <td class="text-center">
-                                @if($appointment->signed_routing_form_1)
-                                    <a href="#" data-toggle="modal" data-target="#routingFormModal" class="text-primary text-decoration-underline">
+                            @if(!empty(optional(value: $appointment)->signed_routing_form_1))
+                            <a href="#" data-toggle="modal" data-target="#routingFormModal" class="text-primary text-decoration-underline">
                                         {{ $appointment->original_signed_routing_form_1 }}
                                     </a>
                                 @else
@@ -570,7 +592,8 @@
                         <tr>
                             <td class="text-center">Proposal Manuscript</td>
                             <td class="text-center">
-                                @if($appointment->proposal_manuscript)
+                                @if(!empty(optional(value: $appointment)->proposal_manuscript))
+
                                     <a href="#" data-toggle="modal" data-target="#proposalManuscriptModal" class="text-primary text-decoration-underline">
                                         {{ $appointment->original_proposal_manuscript }}
                                     </a>
@@ -593,7 +616,8 @@
                         <tr>
                             <td class="text-center">Video Presentation</td>
                             <td class="text-center">
-                                @if($appointment->proposal_video_presentation)
+                                @if(!empty(optional(value: $appointment)->proposal_video_presentation))
+
                                     <a href="#" data-toggle="modal" data-target="#videoPresentationModal" class="text-primary text-decoration-underline">
                                         {{ $appointment->original_proposal_video_presentation }}
                                     </a>
@@ -618,7 +642,7 @@
     </div>
 </div>
 
-
+                @endif
                 @endif
             </div>
         @endfor
@@ -637,11 +661,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <iframe src="{{ Storage::url($appointment->signed_routing_form_1) }}" width="100%" height="600px"></iframe>
+                <iframe src="{{ Storage::url(optional($appointment)->signed_routing_form_1) }}" width="100%" height="600px"></iframe>
             </div>
             <div class="modal-footer">
-                <a href="{{ Storage::url($appointment->signed_routing_form_1) }}" target="_blank" class="btn btn-primary" download>Download</a>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <a href="{{ Storage::url(optional($appointment)->signed_routing_form_1) }}" target="_blank" class="btn btn-primary" download>Download</a>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -657,11 +681,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <iframe src="{{ Storage::url($appointment->proposal_manuscript) }}" width="100%" height="600px"></iframe>
+            <iframe src="{{ Storage::url(optional($appointment)->proposal_manuscript) }}" width="100%" height="600px"></iframe>
             </div>
             <div class="modal-footer">
-                <a href="{{ Storage::url($appointment->proposal_manuscript) }}" target="_blank" class="btn btn-primary" download>Download</a>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <a href="{{ Storage::url(optional($appointment)->proposal_manuscript) }}" target="_blank" class="btn btn-primary" download>Download</a>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -678,13 +702,13 @@
             </div>
             <div class="modal-body">
                 <video controls width="100%">
-                    <source src="{{ Storage::url($appointment->proposal_video_presentation) }}" type="video/mp4">
-                    Your browser does not support the video tag.
+                <iframe src="{{ Storage::url(optional($appointment)->proposal_video_presentation) }}" width="100%" height="600px"></iframe>
+                Your browser does not support the video tag.
                 </video>
             </div>
             <div class="modal-footer">
-                <a href="{{ Storage::url($appointment->proposal_video_presentation) }}" target="_blank" class="btn btn-primary" download>Download</a>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <a href="{{ Storage::url(optional($appointment)->proposal_video_presentation) }}" target="_blank" class="btn btn-primary" download>Download</a>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
