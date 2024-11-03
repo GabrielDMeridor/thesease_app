@@ -74,7 +74,11 @@
 @endsection
 
 @section('body')
-
+<div class="container-fluid">
+    <div class="sagreet">
+        {{ $title }}
+    </div>
+    <br>
 
 <div class="container-fluid">
     <div class="sagreet">

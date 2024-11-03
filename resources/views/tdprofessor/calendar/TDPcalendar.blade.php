@@ -75,6 +75,11 @@
 
 @section('body')
 
+<div class="container-fluid">
+    <div class="sagreet">
+        {{ $title }}
+    </div>
+    <br>
 
 
     <div style="display: flex; gap: 20px;">
@@ -86,9 +91,9 @@
             </div>
         </div>
 
-        <!-- Assigned Students and Schedules -->
+        <!-- Panel Assignments -->
         <div style="flex: 1; border: 1px solid #000; padding: 20px;">
-            <h2>Assigned Students</h2>
+            <h2>Panel Assignments</h2>
 
             @forelse ($appointments as $appointment)
                 <div style="margin-bottom: 15px;">
@@ -99,7 +104,7 @@
                     <hr>
                 </div>
             @empty
-                <p>No students assigned to you.</p>
+                <p>No panel assignments for you.</p>
             @endforelse
         </div>
     </div>
@@ -133,5 +138,4 @@
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
 @endsection
-
 

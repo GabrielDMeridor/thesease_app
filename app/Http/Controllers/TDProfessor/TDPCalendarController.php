@@ -16,14 +16,16 @@ class TDPCalendarController extends Controller
 
         // Ensure the user is logged in as a TD Professor
         if (!$tdProfessor || $tdProfessor->account_type !== User::Thesis_DissertationProfessor) {
-            return redirect()->route('login')->with('error', 'You must be logged in as a TD Professor to access this page.');
+            return redirect()->route('getLogin')->with('error', 'You must be logged in as a TD Professor to access this page.');
         }
 
-        // Fetch students where the TD Professor is assigned as the adviser
-        $appointments = AdviserAppointment::where('adviser_id', $tdProfessor->id)->with('student')->get();
+        // Fetch only appointments where the TD Professor is a panel member (not an adviser)
+        $appointments = AdviserAppointment::whereJsonContains('panel_members', (string) $tdProfessor->id) // Check only in panel_members array
+            ->with('student')
+            ->get();
 
         return view('tdprofessor.calendar.TDPcalendar', [
-            'title' => 'My Assigned Students and Their Schedules',
+            'title' => 'Panel Assignment Schedules',
             'appointments' => $appointments,
         ]);
     }
@@ -36,9 +38,9 @@ class TDPCalendarController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        // Fetch schedules where the TD Professor is the assigned adviser
+        // Fetch only panel assignments for the TD Professor
         $appointments = AdviserAppointment::with('student')
-            ->where('adviser_id', $tdProfessor->id)
+            ->whereJsonContains('panel_members', (string) $tdProfessor->id) // Check only in panel_members array
             ->whereNotNull('proposal_defense_date')
             ->get();
 
