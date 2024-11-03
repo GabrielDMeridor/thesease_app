@@ -83,24 +83,24 @@
 
     <div style="display: flex; gap: 20px;">
         <!-- Calendar Section -->
-        <div style="flex: 2; border: 1px solid #000; padding: 20px;">
-            <h3>Calendar</h3>
-            <div id="calendar" style="min-height: 300px;">
+        <div class="calendar-design">
+            <h3 class="calendar-heading">Calendar</h3>
+            <div id="calendar" style="min-height: 300px;" class="calendar-body">
                 <!-- FullCalendar will be rendered here -->
             </div>
         </div>
 
         <!-- Scheduling Form Section -->
-        <div style="flex: 1; border: 1px solid #000; padding: 20px;">
-            <h2>Set Schedule</h2>
+        <div style="flex: 1; border: 1px solid #000; padding: 20px;" class="setsched-body">
+            <h2 class="setsched-heading">Schedule a defense</h2>
 
             <form action="{{ route('admin.calendar.schedule.store') }}" method="POST">
                 @csrf
 
                 <!-- Select Student -->
                 <div style="margin-bottom: 15px;">
-                    <label for="student_id">Select Student:</label>
-                    <select name="student_id" id="student_id" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                    <label for="student_id" class="setsched-p">Select Student:</label>
+                    <select name="student_id" id="student_id" required style="width: 100%; padding: 8px; margin-top: 5px;" class="form-control">
                         @foreach($students as $student)
                             <option value="{{ $student->id }}">{{ $student->name }}</option>
                         @endforeach
@@ -109,8 +109,8 @@
 
                 <!-- Schedule Type -->
                 <div style="margin-bottom: 15px;">
-                    <label for="schedule_type">Schedule Type:</label>
-                    <select name="schedule_type" id="schedule_type" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                    <label for="schedule_type" class="setsched-p">Schedule Type:</label>
+                    <select name="schedule_type" id="schedule_type" required style="width: 100%; padding: 8px; margin-top: 5px;" class="form-control">
                         <option value="Proposal Defense">Proposal Defense</option>
                         <option value="Final Defense">Final Defense</option>
                     </select>
@@ -118,8 +118,8 @@
 
                 <!-- Available Panel Members -->
                 <div style="margin-bottom: 15px;">
-                    <label for="available_panel_members">Select Panel Members:</label>
-                    <select id="available_panel_members" style="width: 100%; padding: 8px; margin-top: 5px;">
+                    <label for="available_panel_members" class="setsched-p">Select Panel Members:</label>
+                    <select id="available_panel_members" style="width: 100%; padding: 8px; margin-top: 5px;" class="form-control">
                         <option value="">-- Select Panel Member --</option>
                         @foreach($advisers as $adviser)
                             <option value="{{ $adviser->id }}">{{ $adviser->name }}</option>
@@ -127,28 +127,31 @@
                     </select>
                 </div>
 
-                <!-- Selected Panel Members -->
+                <div style="border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                                    <!-- Selected Panel Members -->
                 <div style="margin-bottom: 15px;">
-                    <label>Selected Panel Members:</label>
-                    <ul id="selected_panel_members" style="list-style: none; padding: 0; margin-top: 5px;">
+                    <label class="setsched-p">Selected Panel Members:</label>
+                    <ul id="selected_panel_members" style="list-style: none; padding: 0; margin-top: 5px;" class="setsched-p">
                         <!-- Selected panel members will appear here -->
                     </ul>
                 </div>
 
                 <!-- Hidden input to store selected panel members as array -->
                 <input type="hidden" name="panel_members" id="panel_members">
+                </div>
+
 
                 <!-- Proposal Defense Schedule -->
                 <div style="margin-bottom: 15px;">
-                    <h3>Proposal Defense Schedule</h3>
-                    <label for="proposal_defense_date">Date:</label>
-                    <input type="date" name="proposal_defense_date" id="proposal_defense_date" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                    <h3 class="setsched-heading">Proposal Defense Schedule</h3>
+                    <label for="proposal_defense_date" class="setsched-p">Date:</label>
+                    <input type="date" name="proposal_defense_date" id="proposal_defense_date" required style="width: 100%; padding: 8px; margin-top: 5px;" class="form-control">
 
-                    <label for="proposal_defense_time" style="margin-top: 10px; display: block;">Time:</label>
-                    <input type="time" name="proposal_defense_time" id="proposal_defense_time" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                    <label for="proposal_defense_time" style="margin-top: 10px; display: block;" class="setsched-p">Time:</label>
+                    <input type="time" name="proposal_defense_time" id="proposal_defense_time" required style="width: 100%; padding: 8px; margin-top: 5px;" class="form-control">
                 </div>
 
-                <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px;">Save Schedule</button>
+                <button type="submit" class="btn btn-success btn-affix">Save Schedule</button>
             </form>
         </div>
     </div>
@@ -235,6 +238,10 @@
                     const removeButton = document.createElement("button");
                     removeButton.textContent = "Remove";
                     removeButton.style.marginLeft = "10px";
+                    removeButton.style.backgroundColor = '#CA6D38'; // Orange background color
+                    removeButton.style.color = 'white'; // White text color
+                    removeButton.style.border = 'none'; // Remove default border
+                    removeButton.style.fontSize = '13px'; // Font size
                     removeButton.type = "button";
                     removeButton.addEventListener("click", function () {
                         selectedMembers = selectedMembers.filter(id => id !== selectedId);

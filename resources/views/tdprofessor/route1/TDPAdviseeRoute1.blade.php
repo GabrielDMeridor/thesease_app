@@ -120,7 +120,7 @@
                                     @csrf
                                     @method('PUT')
 
-                                    <h4>Appointment Details</h4>
+                                    <h4 class="routing-heading">Appointment Details</h4>
 
                                     <!-- Date Display -->
                                     <div class="form-group">
@@ -147,7 +147,7 @@
                                     <hr>
 
                                     <!-- Signatures -->
-                                    <h4>Signatures</h4>
+                                    <h4 class="routing-heading">Signatures</h4>
 
                                     <!-- Adviser Signature -->
                                     <div class="form-group">
@@ -200,7 +200,7 @@
         <div class="container-fluid">
             <div class="card shadow mb-4">
                 <div class="card-body">
-                    <h4>Consultation with Adviser and Endorsement Signature</h4>
+                    <h4 class="routing-heading">Consultation with Adviser and Endorsement Signature</h4>
 
                     <form method="POST" action="{{ route('professor.addConsultationDatesAndSign', $appointment->id) }}">
                         @csrf
@@ -267,14 +267,15 @@
     @else
         <div class="container-fluid">
             <div class="card shadow mb-4">
-                <h1>Similarity Check</h1>
+                <h1 class="routing-heading" style="font-size: 60px; text-align:center;">Similarity Check</h1>
                 <div class="card-body">
-                    <h4>Uploaded Similarity Manuscript</h4>
+                    <h4 class="routing-heading">Uploaded Similarity Manuscript</h4>
 
                     @if($appointment->similarity_manuscript)
                         <!-- Link to open manuscript modal -->
                         <div class="form-group">
                         <label for="manuscript">Uploaded Manuscript:</label>
+                        <i class="fa-solid fa-download"></i>
                         <input type="text" 
                             id="manuscript" 
                             class="form-control" 
@@ -297,12 +298,13 @@
 
             <div class="card shadow mb-4">
                 <div class="card-body">
-                    <h4>Similarity Check Results</h4>
+                    <h4 class="routing-heading">Similarity Check Results</h4>
                     
                     @if($appointment->similarity_certificate)
                         <!-- Link to open certificate modal -->
                         <div class="form-group">
                             <label for="certificate">Uploaded Certificate:</label>
+                            <i class="fa-solid fa-download"></i>
                             <input type="text" 
                                 id="certificate" 
                                 class="form-control" 
@@ -393,10 +395,11 @@
 
             <!-- Instructions Section -->
             <div class="instructions-section ml-md-4">
-                <h4><strong>Research Registration</strong></h4>
+                <h4 class="routing-heading">Research Registration</h4>
                 <p>Adviser accomplishes the 
                     <a href="https://docs.google.com/forms/d/e/1FAIpQLSeT2G_Ap-A2PrFS-WW3E4GwP38SGaLbnvQBCtr4SniWo8YQlA/viewform" target="_blank" class="text-decoration-underline text-primary">
-                        Research Registration Form
+                    <i class="fa-solid fa-link"></i>    
+                    Research Registration Form
                     </a>. 
                     Note that the primary author will be the student, and the adviser will be the co-author. A copy of the form responses will be sent to the adviser’s email.
                 </p>
@@ -420,7 +423,7 @@
                 @if ($appointment->ovpri_approval !== 'approved' && $appointment->registration_response !== 'responded')
                     <form method="POST" action="{{ route('tdprofessor.markRegistrationResponded', $appointment->id) }}">
                         @csrf
-                        <button type="submit" class="btn btn-primary">Responded</button>
+                        <button type="submit" class="btn btn-primary">Respond</button>
                     </form>
                 @endif
             </div>
@@ -490,14 +493,23 @@
                 @if (($isDrPH && optional($appointment)->community_extension_approval !== 'approved') ||
          (!$isDrPH && optional($appointment)->ovpri_approval !== 'approved'))
         {{-- Display lock message based on the type of approval needed --}}
-        <p class="text-muted">
-            This step is locked. 
-            @if ($isDrPH)
-                Community Extension approval must be completed in Step 5 to proceed.
-            @else
-                OVPRI approval must be completed in Step 4 to proceed.
-            @endif
-        </p>
+        <div class="container d-flex justify-content-center my-4">
+                <div style="width: 100%;">
+                    <div class="card-body text-center">
+                        <div class="alert alert-warning mb-0" role="alert">
+                            <p>
+                            <i class="fas fa-lock mr-2"></i>
+                    This step is locked. 
+                    @if ($isDrPH)
+                        Community Extension approval must be completed in Step 5 to proceed.
+                    @else
+                        OVPRI approval must be completed in Step 4 to proceed.
+                    @endif
+                </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
     @else
     <!-- Step 5 for non-DrPH or Step 6 for DrPH - File Uploads -->
     <div class="container-fluid">
@@ -505,12 +517,14 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h4>File Uploads</h4>
+                    <h4 class="routing-heading">File Uploads</h4>
                     <!-- Signed Routing Form 1 -->
                     <div class="form-group">
                         @if($appointment->signed_routing_form_1)
                         <div class="form-group">
                             <label for="signed_routing_form_1">Signed Routing Form 1:</label>
+                            
+<i class="fa-solid fa-download"></i>
                             <input type="text" 
                                 id="signed_routing_form_1" 
                                 class="form-control" 
@@ -522,6 +536,7 @@
                         @else
                         <div class="form-group">
                             <label for="signed_routing_form_1">Signed Routing Form 1:</label>
+
                             <input type="text" 
                                 id="signed_routing_form_1" 
                                 class="form-control" 
@@ -538,6 +553,8 @@
                         @if($appointment->proposal_manuscript)
                         <div class="form-group">
                             <label for="proposal_manuscript">Proposal Manuscript:</label>
+                            
+<i class="fa-solid fa-download"></i>
                             <input type="text" 
                                 id="proposal_manuscript" 
                                 class="form-control" 
@@ -565,6 +582,8 @@
                         @if($appointment->proposal_video_presentation)
                         <div class="form-group">
                             <label for="proposal_video_presentation">Video Presentation:</label>
+                            
+<i class="fa-solid fa-download"></i>
                             <input type="text" 
                                 id="proposal_video_presentation" 
                                 class="form-control" 
@@ -598,8 +617,10 @@
                     <!-- Display the submission files link if it exists -->
                     @if ($appointment->submission_files_link)
                         <p>
-                            <strong>Submission Files Link:</strong>
+                            Submission Files Link:
+
                             <a href="{{ $appointment->submission_files_link }}" target="_blank">
+                            <i class="fa-solid fa-link"></i>
                                 View Submission Files
                             </a>
                         </p>
@@ -641,8 +662,8 @@
                 @endif
             </div>
         @endfor
-        <div class="card-footer footersaroute1"></div>
     </div>
+    <div class="card-footer footersaroute1"></div>
 </div>
 
 <!-- Modals for Uploaded Files -->

@@ -80,50 +80,49 @@
     </div>
     <br>
 
-<div class="container-fluid">
-    <div class="sagreet">
-        {{ $title }}
-    </div>
     <br><div style="display: flex; gap: 20px;">
     <!-- Calendar Section -->
-    <div style="flex: 2; border: 1px solid #000; padding: 20px;">
-        <h3>Calendar</h3>
-        <div id="calendar" style="min-height: 300px;">
+    <div class="calendar-design">
+        <h3 class="calendar-heading">Calendar</h3>
+        <div id="calendar" style="min-height: 300px;" class="calendar-body">
             <!-- FullCalendar will be rendered here -->
         </div>
     </div>
 
     <!-- Student's Schedule Display -->
 <!-- Student's Schedule Display -->
-<div style="flex: 1; border: 1px solid #000; padding: 20px;">
-    <h2>Your Schedule</h2>
-    
+<div class="setsched-body">
+    <h2 class="setsched-heading">Your Schedule</h2>
+
+    <div class="tdprofassigns">
     @if($appointment)
-        <p><strong>Schedule Type:</strong> {{ $appointment->schedule_type ?? 'Not available' }}</p>
+        <p class="setsched-p"><strong>Schedule Type:</strong> {{ $appointment->schedule_type ?? 'Not available' }}</p>
         
         @if($appointment->proposal_defense_date)
-            <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($appointment->proposal_defense_date)->format('m/d/y') }}</p>
+            <p class="setsched-p"><strong>Date:</strong> {{ \Carbon\Carbon::parse($appointment->proposal_defense_date)->format('m/d/y') }}</p>
         @else
-            <p><strong>Date:</strong> Not scheduled</p>
+            <p class="setsched-p"><strong>Date:</strong> Not scheduled</p>
         @endif
         
         @if($appointment->proposal_defense_time)
-            <p><strong>Time:</strong> {{ \Carbon\Carbon::parse($appointment->proposal_defense_time)->format('g:i A') }}</p>
+            <p class="setsched-p"><strong>Time:</strong> {{ \Carbon\Carbon::parse($appointment->proposal_defense_time)->format('g:i A') }}</p>
         @else
-            <p><strong>Time:</strong> Not scheduled</p>
+            <p class="setsched-p"><strong>Time:</strong> Not scheduled</p>
         @endif
 
-        <p><strong>Panel Members:</strong></p>
+        <p class="setsched-p"><strong>Panel Members:</strong></p>
         <ul>
             @forelse ($panelMembers as $panelMember)
-                <li>{{ $panelMember->name }}</li>
+                <li class="setsched-p">{{ $panelMember->name }}</li>
             @empty
-                <li>No panel members assigned.</li>
+                <li class="setsched-p">No panel members assigned.</li>
             @endforelse
         </ul>
     @else
-        <p>No schedule assigned yet.</p>
+        <p class="setsched-p">No schedule assigned yet.</p>
     @endif
+</div>
+
 </div>
 
 

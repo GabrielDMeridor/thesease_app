@@ -9927,6 +9927,139 @@ span::after {
     color:#CA6D38;
 }
 
+.calendar-design{
+    background-color: #495464;
+    flex: 2;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 50px;
+}
+
+.calendar-heading{
+    text-align:center; 
+    padding-bottom:30px; 
+    color:white; 
+    font-weight: lighter;
+    font-size: 50px;
+}
+
+.calendar-body{
+    background-color: white;
+}
+
+.fc-toolbar-title{
+    color: #495464;
+    font-size: 40px;
+    padding-top: 20px;
+    padding-left: 20px;
+    font-weight: 400;
+}
+
+.fc-toolbar-chunk{
+    padding: 20px;
+
+}
+
+.fc-col-header-cell-cushion {
+    color: #495464;
+}
+
+.fc-col-header-cell-cushion:hover {
+    color: #495464;
+    text-decoration: underline;
+}
+
+.fc-daygrid-day-number{
+    color: #495464;
+}
+
+.fc-daygrid-day-number:hover {
+    color: #495464;
+    text-decoration: underline;
+}
+
+.fc-event-main{
+    background-color: #CA6D38;
+    border: 1px;
+}
+
+.fc-event-main:hover{
+    background-color: #A55629;
+    border: 1px;
+}
+
+.fc .fc-button-primary {
+    color: #fff;
+    color: var(--fc-button-text-color,#fff);
+    background-color: #CA6D38;
+    background-color: var(--fc-button-bg-color,#CA6D38) !important;
+    border-color: #CA6D38;
+    border-color: var(--fc-button-border-color,#CA6D38) !important;
+}
+
+.fc .fc-button-primary:hover {
+    color: #fff;
+    color: var(--fc-button-text-color,#fff);
+    background-color: #A55629 ;
+    background-color: var(--fc-button-bg-color,#A55629 ) !important;
+    border-color: #A55629 ;
+    border-color: var(--fc-button-border-color,#A55629 ) !important;
+}
+
+.fc .fc-button-primary:disabled {
+    color: #fff;
+    color: var(--fc-button-text-color,#fff);
+    background-color: #CA6D38;
+    background-color: var(--fc-button-bg-color,#CA6D38) !important;
+    border-color: #CA6D38;
+    border-color: var(--fc-button-border-color,#CA6D38) !important;
+}
+
+.fc-event-main {
+    background-color: #CA6D38;
+    font-size: 12px;
+    overflow-x: auto; /* Adds horizontal scroll if content overflows */
+
+}
+
+.setsched-body{
+    background-color: #495464;
+    flex: 1;
+    padding: 20px;
+}
+
+.setsched-heading{
+    color:white; 
+    font-weight: lighter;
+    font-size: 40px;
+}
+
+.setsched-p{
+    color:white;
+}
+.tdprofassigns{
+    background-color: white;
+    padding: 20px;
+}
+
+.tdprofassigns p{
+    color: #495464;
+}
+
+.tdprofassigns li{
+    color: #495464;
+}
+
+.routing-heading{
+    color:#495464; 
+    font-weight: lighter;
+    font-size: 40px;
+}
+
+
+
+
 
 
 

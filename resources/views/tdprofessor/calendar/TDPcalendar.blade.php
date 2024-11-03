@@ -84,23 +84,23 @@
 
     <div style="display: flex; gap: 20px;">
         <!-- Calendar Section -->
-        <div style="flex: 2; border: 1px solid #000; padding: 20px;">
-            <h3>Calendar</h3>
-            <div id="calendar" style="min-height: 300px;">
+        <div class="calendar-design">
+            <h3 class="calendar-heading">Calendar</h3>
+            <div id="calendar" style="min-height: 300px;" class="calendar-body">
                 <!-- FullCalendar will be rendered here -->
             </div>
         </div>
 
         <!-- Panel Assignments -->
-        <div style="flex: 1; border: 1px solid #000; padding: 20px;">
-            <h2>Panel Assignments</h2>
+        <div class="setsched-body">
+            <h2 class="setsched-heading">Panel Assignments</h2>
 
             @forelse ($appointments as $appointment)
-                <div style="margin-bottom: 15px;">
-                    <p><strong>Student:</strong> {{ $appointment->student->name }}</p>
-                    <p><strong>Schedule Type:</strong> {{ $appointment->schedule_type }}</p>
-                    <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($appointment->proposal_defense_date)->format('m/d/y') }}</p>
-                    <p><strong>Time:</strong> {{ \Carbon\Carbon::parse($appointment->proposal_defense_time)->format('g:i A') }}</p>
+                <div style="margin-bottom: 15px;" class="tdprofassigns">
+                    <p ><strong>Student:</strong> {{ $appointment->student->name }}</p>
+                    <p ><strong>Schedule Type:</strong> {{ $appointment->schedule_type }}</p>
+                    <p ><strong>Date:</strong> {{ \Carbon\Carbon::parse($appointment->proposal_defense_date)->format('m/d/y') }}</p>
+                    <p ><strong>Time:</strong> {{ \Carbon\Carbon::parse($appointment->proposal_defense_time)->format('g:i A') }}</p>
                     <hr>
                 </div>
             @empty

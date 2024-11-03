@@ -117,7 +117,7 @@
                                     <form method="POST" action="{{ route('superadmin.sign', $student->id) }}">
                                         @csrf
 
-                                        <h4>Appointment Details</h4>
+                                        <h4 class="routing-heading">Appointment Details</h4>
                                         
                                         <!-- Date Display -->
                                         <div class="form-group">
@@ -139,7 +139,7 @@
 
                                         <hr>
 
-                                        <h4>Signatures</h4>
+                                        <h4 class="routing-heading">Signatures</h4>
 
                                         <!-- Adviser Signature -->
                                         <div class="form-group">
@@ -185,7 +185,7 @@
                         <div class="container-fluid">
                             <div class="card shadow mb-4">
                                 <div class="card-body">
-                                    <h4>Consultation Dates and Adviser Endorsement</h4>
+                                    <h4 class="routing-heading">Consultation Dates and Adviser Endorsement</h4>
 
                                     <!-- Display Consultation Dates -->
                                     <div class="form-group">
@@ -230,14 +230,18 @@
     @else
         <div class="container-fluid">
             <div class="card shadow mb-4">
-                <h3>Similarity Check</h3>
+                <h3 class="routing-heading" style="font-size: 60px; text-align:center;">Similarity Check</h3>
                 <div class="card-body">
-                    <h4>Uploaded Similarity Manuscript</h4>
+                    <h4 class="routing-heading"> Uploaded Similarity Manuscript</h4>
 
                     @if($appointment->similarity_manuscript)
                     <div class="form-group">
                         <label for="manuscript">Uploaded Manuscript:</label>
+
+                        <i class="fa-solid fa-download"></i>
+                        
                         <input type="text" 
+                        
                             id="manuscript" 
                             class="form-control" 
                             value="{{ basename($appointment->similarity_manuscript) }}" 
@@ -260,12 +264,13 @@
 
             <div class="card shadow mb-4">
                 <div class="card-body">
-                    <h4>Similarity Check Results</h4>
+                    <h4 class="routing-heading">Similarity Check Results</h4>
                     
                     @if($appointment->similarity_certificate)
                     <!-- Read-only input to open certificate modal -->
                     <div class="form-group">
                         <label for="similarity_certificate">Uploaded Certificate:</label>
+                        <i class="fa-solid fa-download"></i>
                         <input type="text" 
                             id="similarity_certificate" 
                             class="form-control" 
@@ -359,11 +364,12 @@
 
             <!-- Instructions Section -->
             <div class="instructions-section ml-md-4">
-                <h4>Research Registration</h4>
+                <h4 class="routing-heading">Research Registration</h4>
                 <p>Adviser accomplishes the 
                     <a href="https://docs.google.com/forms/d/e/1FAIpQLSeT2G_Ap-A2PrFS-WW3E4GwP38SGaLbnvQBCtr4SniWo8YQlA/viewform" target="_blank" class="text-decoration-underline text-primary">
-                        Research Registration Form
-                    </a>. 
+                    <i class="fa-solid fa-link"></i>
+                    Research Registration Form. 
+                    </a>
                     Note that the primary author will be the student, and the adviser will be the co-author. A copy of the form responses will be sent to the adviser’s email.
                 </p>
                 <p>After completing the form, please forward the copy and the manuscript to the following emails:
@@ -391,15 +397,15 @@
     @elseif ($step === 5 && $isDrPH)
     @if ($appointment->ovpri_approval !== 'approved')
     <div class="container d-flex justify-content-center my-4">
-    <div style="width: 100%;">
-        <div class="card-body text-center">
-            <div class="alert alert-warning mb-0" role="alert">
-                <i class="fas fa-lock mr-2"></i>
-                <strong>Step Locked:</strong> Step 5 is locked. The OVPRI Approval must be completed in Step 4 to proceed.
+        <div style="width: 100%;">
+            <div class="card-body text-center">
+                <div class="alert alert-warning mb-0" role="alert">
+                    <i class="fas fa-lock mr-2"></i>
+                    <strong>Step Locked:</strong> Step 5 is locked. The OVPRI Approval must be completed in Step 4 to proceed.
+                </div>
             </div>
         </div>
     </div>
-</div>
 
                 @else
                 <div class="container my-4">
@@ -461,14 +467,24 @@
                 @if (($isDrPH && optional($appointment)->community_extension_approval !== 'approved') ||
          (!$isDrPH && optional($appointment)->ovpri_approval !== 'approved'))
         {{-- Display lock message based on the type of approval needed --}}
-        <p class="text-muted">
-            This step is locked. 
-            @if ($isDrPH)
-                Community Extension approval must be completed in Step 5 to proceed.
-            @else
-                OVPRI approval must be completed in Step 4 to proceed.
-            @endif
-        </p>
+        <div class="container d-flex justify-content-center my-4">
+                <div style="width: 100%;">
+                    <div class="card-body text-center">
+                        <div class="alert alert-warning mb-0" role="alert">
+                            <p>
+                            <i class="fas fa-lock mr-2"></i>
+                    This step is locked. 
+                    @if ($isDrPH)
+                        Community Extension approval must be completed in Step 5 to proceed.
+                    @else
+                        OVPRI approval must be completed in Step 4 to proceed.
+                    @endif
+                </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
     @else
                 <div class="container-fluid my-4">
     <div class="row">
@@ -476,10 +492,11 @@
         <div class="col-md-6 mb-4">
             <div class="card shadow">
                 <div class="card-body">
-                    <h4>File Uploads</h4>
+                    <h4 class="routing-heading">File Uploads</h4>
                     <!-- Signed Routing Form 1 -->
                     <div class="form-group mb-3">
                         <label for="signed_routing_form_1">Signed Routing Form 1</label>
+                        <i class="fa-solid fa-download"></i>
                         @if($appointment->signed_routing_form_1)
                             <input type="text" 
                                    class="form-control" 
@@ -495,6 +512,7 @@
                     <!-- Proposal Manuscript -->
                     <div class="form-group mb-3">
                         <label for="proposal_manuscript">Proposal Manuscript</label>
+                        <i class="fa-solid fa-download"></i>
                         @if($appointment->proposal_manuscript)
                             <input type="text" 
                                    class="form-control" 
@@ -510,6 +528,7 @@
                     <!-- Video Presentation -->
                     <div class="form-group">
                         <label for="proposal_video_presentation">Video Presentation</label>
+                        <i class="fa-solid fa-download"></i>
                         @if($appointment->proposal_video_presentation)
                             <input type="text" 
                                    class="form-control" 
@@ -529,10 +548,12 @@
         <div class="col-md-6 mb-4">
             <div class="card shadow">
                 <div class="card-body">
-                    <h4>Submission Files</h4>
+                    <h4 class="routing-heading">Submission Files</h4>
+                    
                     @if ($appointment->submission_files_link)
                     <p>
                         <a href="{{ $appointment->submission_files_link }}" target="_blank" class="text-primary" style="font-size: 1.25rem;">
+                        <i class="fa-solid fa-link"></i>
                             {{ $appointment->submission_files_link }}
                         </a>
                     </p>
@@ -589,13 +610,14 @@
                                 </div>
                             </div>
                             @endif
-                                                    <div class="card-footer footersaroute1"></div>
                         @endif
                     </div>
                 @endfor
             </div>
         </div>
+        <div class="card-footer footersaroute1"></div>
     </div>
+                </div>
 
     <!-- Modals for Uploaded Files -->
     <div class="modal fade" id="routingFormModal" tabindex="-1" aria-labelledby="routingFormModalLabel" aria-hidden="true">

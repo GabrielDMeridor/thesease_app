@@ -79,76 +79,92 @@
     <h2>Monitoring Form for {{ $appointment->student->name }}</h2>
     </div>
     <br>
-<div class="container-fluid">
-    <!-- Proposal Manuscript Section -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <h4>Proposal Manuscript</h4>
-            @if($appointment->proposal_manuscript)
-                <div>
-                    <a href="#" data-toggle="modal" data-target="#mainProposalManuscriptModal">
-                        {{ $appointment->original_proposal_manuscript }}
-                    </a>
-                </div>
+    <div class="container-fluid">
+    <div class="row">
+        
+        <!-- Proposal Manuscript Section -->
+        <div class="col-md-5">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="routing-heading">Proposal Manuscript</h4>
+                    <hr>
+                    <p>Main Proposal Manuscript:<i class="fa-solid fa-download"></i></p>
+                    @if($appointment->proposal_manuscript)
+                    <div>
+    <input type="text" 
+           class="form-control" 
+           value="{{ $appointment->original_proposal_manuscript }}" 
+           readonly 
+           onclick="$('#mainProposalManuscriptModal').modal('show')" 
+           style="cursor: pointer; color: #007bff; text-decoration: underline;">
+</div>
 
-                <!-- Modal for main proposal manuscript -->
-                <div class="modal fade" id="mainProposalManuscriptModal" tabindex="-1" aria-labelledby="mainProposalManuscriptModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">{{ $appointment->original_proposal_manuscript }}</h5>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <iframe src="{{ Storage::url($appointment->proposal_manuscript) }}" width="100%" height="500px"></iframe>
-                            </div>
-                            <div class="modal-footer">
-                                <a href="{{ Storage::url($appointment->proposal_manuscript) }}" download class="btn btn-primary">Download</a>
+                        <!-- Modal for Main Proposal Manuscript -->
+                        <div class="modal fade" id="mainProposalManuscriptModal" tabindex="-1" aria-labelledby="mainProposalManuscriptModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">{{ $appointment->original_proposal_manuscript }}</h5>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <iframe src="{{ Storage::url($appointment->proposal_manuscript) }}" width="100%" height="500px"></iframe>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="{{ Storage::url($appointment->proposal_manuscript) }}" download class="btn btn-primary">Download</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            @else
-                <p>No main proposal manuscript uploaded.</p>
-            @endif
-        </div>
-    </div>
-
-    <!-- Proposal Manuscript Updates Section -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <h4>Proposal Manuscript Updates</h4>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>File</th>
-                        <th>Last Updated</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if($appointment->proposal_manuscript_updates)
-                        @php
-                            $updates = json_decode($appointment->proposal_manuscript_updates, true);
-                        @endphp
-                        <tr>
-                            <td>
-                                <a href="#" data-toggle="modal" data-target="#manuscriptUpdateModal">
-                                    {{ $updates['original_name'] }}
-                                </a>
-                            </td>
-                            <td>{{ \Carbon\Carbon::parse($updates['uploaded_at'])->format('m/d/Y') }}</td>
-                            <td><a href="{{ Storage::url($updates['file_path']) }}" download class="btn btn-primary">Download</a></td>
-                        </tr>
                     @else
-                        <tr>
-                            <td colspan="3">No updates available.</td>
-                        </tr>
+                        <p>No main proposal manuscript uploaded.</p>
                     @endif
-                </tbody>
-            </table>
+                </div>
+            </div>
         </div>
+
+        <!-- Proposal Manuscript Updates Section -->
+        <div class="col-md-7">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="routing-heading">Proposal Manuscript Updates</h4>
+                    <table class="table table-bordered table-hover table-striped custom-table">
+                        <thead class="table-dark">
+                            <tr>
+                                <th style="text-align:center;">File</th>
+                                <th style="text-align:center;">Last Updated</th>
+                                <th style="text-align:center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if($appointment->proposal_manuscript_updates)
+                                @php
+                                    $updates = json_decode($appointment->proposal_manuscript_updates, true);
+                                @endphp
+                                <tr>
+                                    <td class="text-center">
+                                        <a href="#" data-toggle="modal" data-target="#manuscriptUpdateModal">
+                                            {{ $updates['original_name'] }}
+                                        </a>
+                                    </td>
+                                    <td class="text-center">{{ \Carbon\Carbon::parse($updates['uploaded_at'])->format('m/d/Y') }}</td>
+                                    <td class="text-center">
+                                        <a href="{{ Storage::url($updates['file_path']) }}" download class="btn btn-primary">Download</a>
+                                    </td>
+                                </tr>
+                            @else
+                                <tr>
+                                    <td colspan="3" class="text-center">No updates available.</td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
+</div>
 
     <!-- Modal for proposal manuscript update -->
     <div class="modal fade" id="manuscriptUpdateModal" tabindex="-1" aria-labelledby="manuscriptUpdateModalLabel" aria-hidden="true">
@@ -168,10 +184,12 @@
         </div>
     </div>
 
+    <br>
+
     <!-- Panel Review Section -->
     <div class="card mb-4">
         <div class="card-body">
-            <h4>Panel Review</h4>
+            <h4 class="routing-heading">Panel Review</h4>
             @foreach ($appointment->panel_members as $panelistId)
                 @php
                     // Retrieve panelist information
