@@ -7,7 +7,8 @@ use App\Models\User;
 use App\Models\AdviserAppointment;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-
+use App\Notifications\StudentScheduledNotification;
+use App\Notifications\PanelistAssignedNotification;
 class SACalendarController extends Controller
 {
     public function index()
@@ -29,7 +30,7 @@ class SACalendarController extends Controller
 
         // Define title and retrieve SuperAdmin user data
         $data = [
-            'title' => 'Set Schedules and Account Profile',
+            'title' => 'Set Schedules',
             'user' => auth()->user(),
             'students' => $students,
             'advisers' => $advisers,
@@ -54,7 +55,7 @@ class SACalendarController extends Controller
     
         if ($request->schedule_type === 'Proposal Defense') {
             // Save schedule type and other data only if schedule type is "Proposal Defense"
-            AdviserAppointment::updateOrCreate(
+            $appointment = AdviserAppointment::updateOrCreate(
                 ['student_id' => $request->student_id],
                 [
                     'proposal_defense_date' => $request->proposal_defense_date,
@@ -63,10 +64,33 @@ class SACalendarController extends Controller
                     'panel_members' => $panelMembers, // Save decoded array
                 ]
             );
+    
+            // Only notify the student once
+            $student = User::find($request->student_id);
+            $student->notify(new StudentScheduledNotification(
+                $request->schedule_type,
+                $request->proposal_defense_date,
+                $request->proposal_defense_time
+            ));
+    
+            // Notify each panel member once
+            foreach ($panelMembers as $panelMemberId) {
+                $panelMember = User::find($panelMemberId);
+                if ($panelMember) {
+                    $panelMember->notify(new PanelistAssignedNotification(
+                        $student->name,
+                        $request->schedule_type,
+                        $request->proposal_defense_date,
+                        $request->proposal_defense_time
+                    ));
+                }
+            }
         }
     
         return redirect()->route('superadmin.calendar')->with('success', 'Schedule successfully created');
     }
+    
+    
     
     public function getEvents()
     {
