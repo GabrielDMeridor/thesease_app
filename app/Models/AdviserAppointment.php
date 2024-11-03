@@ -42,13 +42,24 @@ class AdviserAppointment extends Model
         'proposal_defense_time',
         'panel_members', // Add panel_members to fillable
         'schedule_type',
+        'proposal_manuscript_updates',
+        'panel_comments',
+        'student_replies',
+        'panel_remarks',
+        'panel_signatures',
+        'dean_monitoring_signature',
     ];
 
     // Casts for specific fields
     protected $casts = [
         'completed_at' => 'datetime',
         'consultation_dates' => 'array',
-        'panel_members' => 'array', // Cast panel_members as an array
+        'panel_members' => 'array',
+        'proposal_manuscript_updates' => 'array',
+        'panel_comments' => 'array',
+        'student_replies' => 'array',
+        'panel_remarks' => 'array',
+        'panel_signatures' => 'array'
     ];
 
     // Relationship: The appointment belongs to a student

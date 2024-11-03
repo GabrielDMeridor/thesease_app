@@ -234,5 +234,45 @@ class GSSRoute1Controller extends Controller
         return redirect()->route('gsstudent.route1')
                          ->with('success', 'Your response has been recorded, and the approval status for submission files is now pending.');
     }
+    public function uploadProposalManuscriptUpdate(Request $request)
+    {
+        $user = Auth::user();
+        $appointment = AdviserAppointment::where('student_id', $user->id)->first();
+
+        // Check if all panel signatures are completed
+        if ($appointment->panel_signatures && count(array_filter($appointment->panel_signatures)) == count($appointment->panel_signatures)) {
+            return redirect()->route('gsstudent.route1')->with('error', 'Panelist signatures are complete. No further uploads allowed.');
+        }
+
+        $request->validate([
+            'proposal_manuscript_update' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        $file = $request->file('proposal_manuscript_update');
+        $originalFileName = $file->getClientOriginalName();
+        $storedFileName = $file->storeAs('public/proposal_manuscript_updates', time() . '_' . $originalFileName);
+
+        $appointment->proposal_manuscript_updates = json_encode([
+            'file_path' => $storedFileName,
+            'original_name' => $originalFileName,
+            'uploaded_at' => now(),
+        ]);
+        
+        $appointment->save();
+
+        return redirect()->route('gsstudent.route1')->with('success', 'Proposal manuscript update uploaded successfully!');
+    }
+
+    public function addStudentReply(Request $request, $panelistId)
+    {
+        $appointment = AdviserAppointment::where('student_id', Auth::id())->first();
+        $replies = $appointment->student_replies ? json_decode($appointment->student_replies, true) : [];
+        $replies[$panelistId] = $request->reply;
+        $appointment->student_replies = json_encode($replies);
+        $appointment->save();
+
+        return back()->with('success', 'Reply added successfully!');
+    }
+
     
 }

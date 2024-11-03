@@ -42,6 +42,8 @@
     use App\Http\Controllers\TDProfessor\TDPRoute1Controller;
     use App\Http\Controllers\TDProfessor\TDPAccountController;
     use App\Http\Controllers\TDProfessor\TDPCalendarController;
+    use App\Http\Controllers\TDProfessor\TDPProposalMonitoringController;
+
 
     
 
@@ -387,6 +389,22 @@
 
        Route::get('/tdprofessor/calendar', [TDPCalendarController::class, 'showTDProfessorCalendar'])->name('tdprofessor.calendar');
        Route::get('/tdprofessor/calendar/events', [TDPCalendarController::class, 'getTDEvents'])->name('tdprofessor.calendar.events');
+
+
+
+
+
+       // Student routes in GSSRoute1Controller
+Route::post('/gsstudent/upload-proposal-manuscript-update', [GSSRoute1Controller::class, 'uploadProposalManuscriptUpdate'])->name('gsstudent.uploadProposalManuscriptUpdate');
+Route::post('/gsstudent/add-student-reply/{panelistId}', [GSSRoute1Controller::class, 'addStudentReply'])->name('gsstudent.addStudentReply');
+
+// Panel routes in TDPProposalMonitoringController
+Route::get('/tdprofessorpanel/monitoring', [TDPProposalMonitoringController::class, 'index'])->name('panel.monitoring');
+Route::get('/tdprofessorpanel/monitoring/{studentId}', [TDPProposalMonitoringController::class, 'showStudentMonitoringForm'])->name('panel.showStudentMonitoringForm');
+Route::post('/tdprofessorpanel/monitoring/comment/{studentId}', [TDPProposalMonitoringController::class, 'addComment'])->name('panel.addComment');
+Route::post('/tdprofessorpanel/monitoring/remark/{studentId}', [TDPProposalMonitoringController::class, 'addRemark'])->name('panel.addRemark');
+Route::post('/tdprofessorpanel/monitoring/signature/{studentId}', [TDPProposalMonitoringController::class, 'affixSignature'])->name('panel.affixSignature');
+
 
 
 

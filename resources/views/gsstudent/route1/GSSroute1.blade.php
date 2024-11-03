@@ -656,7 +656,145 @@
 </div>
 
                 @endif
-                @endif
+                @elseif (($step === 6 && !$isDrPH) || ($step === 7 && $isDrPH))
+                <div class="container-fluid">
+    <h4>Proposal Manuscript</h4>
+    
+    <!-- Display the main proposal manuscript with a modal -->
+    @if($appointment->proposal_manuscript)
+    <div class="card mb-4">
+        <div class="card-body">
+            <p><strong>Main Proposal Manuscript:</strong></p>
+            <a href="#" data-toggle="modal" data-target="#mainProposalManuscriptModal">
+                {{ $appointment->original_proposal_manuscript }}
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal for main proposal manuscript -->
+    <div class="modal fade" id="mainProposalManuscriptModal" tabindex="-1" aria-labelledby="mainProposalManuscriptModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ $appointment->original_proposal_manuscript }}</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <iframe src="{{ Storage::url($appointment->proposal_manuscript) }}" width="100%" height="500px"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ Storage::url($appointment->proposal_manuscript) }}" download class="btn btn-primary">Download</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @else
+    <p>No main proposal manuscript uploaded.</p>
+    @endif
+
+    <hr>
+
+    <!-- Proposal Manuscript Updates Section -->
+    <h4>Proposal Manuscript Updates</h4>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Last Updated</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if($appointment->proposal_manuscript_updates)
+                        @php
+                            $updates = json_decode($appointment->proposal_manuscript_updates, true);
+                        @endphp
+                        <tr>
+                            <td>
+                                <a href="#" data-toggle="modal" data-target="#manuscriptUpdateModal">
+                                    {{ $updates['original_name'] }}
+                                </a>
+                            </td>
+                            <td>{{ \Carbon\Carbon::parse($updates['uploaded_at'])->format('m/d/Y') }}</td>
+                            <td><a href="{{ Storage::url($updates['file_path']) }}" download class="btn btn-primary">Download</a></td>
+                        </tr>
+                    @endif
+                    <tr>
+                        <form action="{{ route('gsstudent.uploadProposalManuscriptUpdate') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <td>
+                                <input type="file" name="proposal_manuscript_update" class="form-control" required>
+                            </td>
+                            <td>{{ \Carbon\Carbon::now()->format('m/d/Y') }}</td>
+                            <td><button type="submit" class="btn btn-primary">Save</button></td>
+                        </form>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal for proposal manuscript update -->
+    <div class="modal fade" id="manuscriptUpdateModal" tabindex="-1" aria-labelledby="manuscriptUpdateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ $updates['original_name'] ?? 'Update File' }}</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <iframe src="{{ Storage::url($updates['file_path'] ?? '') }}" width="100%" height="500px"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ Storage::url($updates['file_path'] ?? '') }}" download class="btn btn-primary">Download</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Panel Review Section -->
+    <h4>Panel Review</h4>
+    @foreach ($appointment->panel_members as $panelistId)
+        @php
+            // Retrieve panelist information
+            $panelist = \App\Models\User::find($panelistId);
+            $panelistName = $panelist ? $panelist->name : "Unknown Panelist";
+            $comments = json_decode($appointment->panel_comments, true) ?? [];
+            $replies = json_decode($appointment->student_replies, true) ?? [];
+            $remarks = json_decode($appointment->panel_remarks, true) ?? [];
+            $signatures = json_decode($appointment->panel_signatures, true) ?? [];
+        @endphp
+
+        <div class="card mb-3">
+            <div class="card-header">{{ $panelistName }}</div>
+            <div class="card-body">
+                <p><strong>Comment:</strong> {{ $comments[$panelistId] ?? 'No comment yet' }}</p>
+                <p><strong>Student Reply:</strong> {{ $replies[$panelistId] ?? 'No reply yet' }}</p>
+
+                <form action="{{ route('gsstudent.addStudentReply', $panelistId) }}" method="POST">
+                    @csrf
+                    <div class="form-group">
+                        <label for="reply">Your Reply</label>
+                        <textarea name="reply" class="form-control">{{ $replies[$panelistId] ?? '' }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Reply</button>
+                </form>
+
+                <p><strong>Remarks:</strong> {{ $remarks[$panelistId] ?? 'No remarks yet' }}</p>
+                <p><strong>Signature:</strong> {{ $signatures[$panelistId] ?? 'Not signed yet' }}</p>
+            </div>
+        </div>
+    @endforeach
+    </div>
+</div>
+@endif
+
+                
             </div>
         @endfor
     </div>
