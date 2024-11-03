@@ -94,26 +94,38 @@
     </div>
 
     <!-- Student's Schedule Display -->
-    <div style="flex: 1; border: 1px solid #000; padding: 20px;">
-        <h2>Your Schedule</h2>
+<!-- Student's Schedule Display -->
+<div style="flex: 1; border: 1px solid #000; padding: 20px;">
+    <h2>Your Schedule</h2>
+    
+    @if($appointment)
+        <p><strong>Schedule Type:</strong> {{ $appointment->schedule_type ?? 'Not available' }}</p>
         
-        @if($appointment)
-            <p><strong>Schedule Type:</strong> {{ $appointment->schedule_type }}</p>
+        @if($appointment->proposal_defense_date)
             <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($appointment->proposal_defense_date)->format('m/d/y') }}</p>
-            <p><strong>Time:</strong> {{ \Carbon\Carbon::parse($appointment->proposal_defense_time)->format('g:i A') }}</p>
-            <p><strong>Panel Members:</strong></p>
-            <ul>
-                @forelse ($panelMembers as $panelMember)
-                    <li>{{ $panelMember->name }}</li>
-                @empty
-                    <li>No panel members assigned.</li>
-                @endforelse
-            </ul>
         @else
-            <p>No schedule assigned yet.</p>
+            <p><strong>Date:</strong> Not scheduled</p>
         @endif
-    </div>
+        
+        @if($appointment->proposal_defense_time)
+            <p><strong>Time:</strong> {{ \Carbon\Carbon::parse($appointment->proposal_defense_time)->format('g:i A') }}</p>
+        @else
+            <p><strong>Time:</strong> Not scheduled</p>
+        @endif
+
+        <p><strong>Panel Members:</strong></p>
+        <ul>
+            @forelse ($panelMembers as $panelMember)
+                <li>{{ $panelMember->name }}</li>
+            @empty
+                <li>No panel members assigned.</li>
+            @endforelse
+        </ul>
+    @else
+        <p>No schedule assigned yet.</p>
+    @endif
 </div>
+
 
 <!-- FullCalendar Initialization -->
 <script>

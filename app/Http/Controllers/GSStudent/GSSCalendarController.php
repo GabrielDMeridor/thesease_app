@@ -26,7 +26,8 @@ class GSSCalendarController extends Controller
             ->first();
     
         // Fetch panel member details
-        $panelMembers = $appointment ? User::whereIn('id', $appointment->panel_members)->get() : [];
+// Fetch panel member details
+        $panelMembers = $appointment ? User::whereIn('id', $appointment->panel_members ?? [])->get() : [];
     
         // Define title for the page
         $title = 'Calendar';
