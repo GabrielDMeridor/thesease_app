@@ -20,6 +20,7 @@ class AProposalMonitoringController extends Controller
             return redirect()->route('getSALogin')->with('error', 'You must be logged in as an admin to access this page.');
         }
         $appointments = AdviserAppointment::with('student')
+            ->whereNotNull('proposal_defense_date') // Only fetch records with a non-null proposal_defense_date
             ->get()
             ->map(function ($appointment) {
                 $appointment->formatted_defense_date = Carbon::parse($appointment->proposal_defense_date)->format('m/d/Y');

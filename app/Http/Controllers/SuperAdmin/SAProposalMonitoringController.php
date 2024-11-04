@@ -14,29 +14,30 @@ use Carbon\Carbon;
 class SAProposalMonitoringController extends Controller
 {
     // Method to display the main monitoring form view
-    public function index()
-    {
-        if (!auth()->check() || auth()->user()->account_type !== User::SuperAdmin) {
-            return redirect()->route('getSALogin')->with('error', 'You must be logged in as a superadmin to access this page.');
-        }
-
-        $appointments = AdviserAppointment::with('student')
-            ->get()
-            ->map(function ($appointment) {
-                $appointment->formatted_defense_date = Carbon::parse($appointment->proposal_defense_date)->format('m/d/Y');
-                $appointment->formatted_defense_time = Carbon::parse($appointment->proposal_defense_time)->format('h:i A');
-                $appointment->status = $appointment->dean_monitoring_signature ? 'Done' : 'Pending';
-                return $appointment;
-            });
-
-        return view('superadmin.monitoringform.SAmonitoringform', [
-            'appointments' => $appointments,
-            'title' => 'Monitoring Form',
-            'search' => '', // No search term initially
-            'user' => auth()->user(),
-
-        ]);
+public function index()
+{
+    if (!auth()->check() || auth()->user()->account_type !== User::SuperAdmin) {
+        return redirect()->route('getSALogin')->with('error', 'You must be logged in as a superadmin to access this page.');
     }
+
+    $appointments = AdviserAppointment::with('student')
+        ->whereNotNull('proposal_defense_date') // Only fetch records with a non-null proposal_defense_date
+        ->get()
+        ->map(function ($appointment) {
+            $appointment->formatted_defense_date = Carbon::parse($appointment->proposal_defense_date)->format('m/d/Y');
+            $appointment->formatted_defense_time = Carbon::parse($appointment->proposal_defense_time)->format('h:i A');
+            $appointment->status = $appointment->dean_monitoring_signature ? 'Done' : 'Pending';
+            return $appointment;
+        });
+
+    return view('superadmin.monitoringform.SAmonitoringform', [
+        'appointments' => $appointments,
+        'title' => 'Monitoring Form',
+        'search' => '', // No search term initially
+        'user' => auth()->user(),
+    ]);
+}
+
 
     // Separate search method to handle form submission for search functionality
     public function search(Request $request)
