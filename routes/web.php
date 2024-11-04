@@ -7,7 +7,7 @@
     use App\Http\Controllers\SuperAdmin\SAArchiveController;
     use App\Http\Controllers\SuperAdmin\SARoute1Controller;
     use App\Http\Controllers\SuperAdmin\SACalendarController;
-
+    use App\Http\Controllers\SuperAdmin\SAProposalMonitoringController;
 
 
     use App\Http\Controllers\Admin\AProfileController;
@@ -16,6 +16,8 @@
     use App\Http\Controllers\Admin\ARoute1Controller;
     use App\Http\Controllers\Admin\AArchiveController;
     use App\Http\Controllers\Admin\ACalendarController;
+    use App\Http\Controllers\Admin\AProposalMonitoringController;
+
 
 
 
@@ -27,6 +29,7 @@
     use App\Http\Controllers\GraduateSchool\GSRoute1Controller;
     use App\Http\Controllers\GraduateSchool\GSArchiveController;
     use App\Http\Controllers\GraduateSchool\GSCalendarController;
+    use App\Http\Controllers\GraduateSchool\GSProposalMonitoringController;
 
 
 
@@ -404,10 +407,26 @@ Route::get('/tdprofessorpanel/monitoring/{studentId}', [TDPProposalMonitoringCon
 Route::post('/tdprofessorpanel/monitoring/comment/{studentId}', [TDPProposalMonitoringController::class, 'addComment'])->name('panel.addComment');
 Route::post('/tdprofessorpanel/monitoring/remark/{studentId}', [TDPProposalMonitoringController::class, 'addRemark'])->name('panel.addRemark');
 Route::post('/tdprofessorpanel/monitoring/signature/{studentId}', [TDPProposalMonitoringController::class, 'affixSignature'])->name('panel.affixSignature');
+Route::get('/tdprofessor/monitoring/search', [TDPProposalMonitoringController::class, 'search'])->name('tdprofessor.monitoring.search');
 
 
 
+// SuperAdmin routes for SAProposalMonitoringController
+// Routes in web.php
+Route::get('/superadmin/monitoring', [SAProposalMonitoringController::class, 'index'])->name('superadmin.monitoring');
+Route::get('/superadmin/monitoring/search', action: [SAProposalMonitoringController::class, 'search'])->name('superadmin.monitoring.search');
+Route::get('/superadmin/monitoring/{studentId}', [SAProposalMonitoringController::class, 'showStudentMonitoringForm'])->name('superadmin.showStudentMonitoringForm');
+Route::post('/superadmin/monitoring/signature/{studentId}', [SAProposalMonitoringController::class, 'affixDeanSignature'])->name('superadmin.affixDeanSignature');
 
+// Admin
+Route::get('/admin/monitoring', [AProposalMonitoringController::class, 'index'])->name('admin.monitoring');
+Route::get('/admin/monitoring/search', action: [AProposalMonitoringController::class, 'search'])->name('admin.monitoring.search');
+Route::get('/admin/monitoring/{studentId}', [AProposalMonitoringController::class, 'showStudentMonitoringForm'])->name('admin.showStudentMonitoringForm');
+
+// GraudateSchool
+Route::get('/graduateschool/monitoring', [GSProposalMonitoringController::class, 'index'])->name('graduateschool.monitoring');
+Route::get('/graduateschool/monitoring/search', action: [GSProposalMonitoringController::class, 'search'])->name('graduateschool.monitoring.search');
+Route::get('/graduateschool/monitoring/{studentId}', [GSProposalMonitoringController::class, 'showStudentMonitoringForm'])->name('graduateschool.showStudentMonitoringForm');
 
 
 

@@ -76,28 +76,28 @@
 @section('body')
 <div class="container-fluid">
     <div class="sagreet">
-    <h2>Monitoring Form for {{ $appointment->student->name }}</h2>
+        <h2>Monitoring Form for {{ $appointment->student->name }}</h2>
     </div>
     <br>
     <div class="container-fluid">
-    <div class="row">
-        
-        <!-- Proposal Manuscript Section -->
-        <div class="col-md-5">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h4 class="routing-heading">Proposal Manuscript</h4>
-                    <hr>
-                    <p>Main Proposal Manuscript:<i class="fa-solid fa-download"></i></p>
-                    @if($appointment->proposal_manuscript)
-                    <div>
-    <input type="text" 
-           class="form-control" 
-           value="{{ $appointment->original_proposal_manuscript }}" 
-           readonly 
-           onclick="$('#mainProposalManuscriptModal').modal('show')" 
-           style="cursor: pointer; color: #007bff; text-decoration: underline;">
-</div>
+        <div class="row">
+            
+            <!-- Proposal Manuscript Section -->
+            <div class="col-md-5">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="routing-heading">Proposal Manuscript</h4>
+                        <hr>
+                        <p>Main Proposal Manuscript:<i class="fa-solid fa-download"></i></p>
+                        @if($appointment->proposal_manuscript)
+                        <div>
+                            <input type="text" 
+                                   class="form-control" 
+                                   value="{{ $appointment->original_proposal_manuscript }}" 
+                                   readonly 
+                                   onclick="$('#mainProposalManuscriptModal').modal('show')" 
+                                   style="cursor: pointer; color: #007bff; text-decoration: underline;">
+                        </div>
 
                         <!-- Modal for Main Proposal Manuscript -->
                         <div class="modal fade" id="mainProposalManuscriptModal" tabindex="-1" aria-labelledby="mainProposalManuscriptModalLabel" aria-hidden="true">
@@ -116,75 +116,55 @@
                                 </div>
                             </div>
                         </div>
-                    @else
-                        <p>No main proposal manuscript uploaded.</p>
-                    @endif
+                        @else
+                            <p>No main proposal manuscript uploaded.</p>
+                        @endif
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Proposal Manuscript Updates Section -->
-        <div class="col-md-7">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h4 class="routing-heading">Proposal Manuscript Updates</h4>
-                    <table class="table table-bordered table-hover table-striped custom-table">
-                        <thead class="table-dark">
-                            <tr>
-                                <th style="text-align:center;">File</th>
-                                <th style="text-align:center;">Last Updated</th>
-                                <th style="text-align:center;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if($appointment->proposal_manuscript_updates)
-                                @php
-                                    $updates = json_decode($appointment->proposal_manuscript_updates, true);
-                                @endphp
+            <!-- Proposal Manuscript Updates Section -->
+            <div class="col-md-7">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="routing-heading">Proposal Manuscript Updates</h4>
+                        <table class="table table-bordered table-hover table-striped custom-table">
+                            <thead class="table-dark">
                                 <tr>
-                                    <td class="text-center">
-                                        <a href="#" data-toggle="modal" data-target="#manuscriptUpdateModal">
-                                            {{ $updates['original_name'] }}
-                                        </a>
-                                    </td>
-                                    <td class="text-center">{{ \Carbon\Carbon::parse($updates['uploaded_at'])->format('m/d/Y') }}</td>
-                                    <td class="text-center">
-                                        <a href="{{ Storage::url($updates['file_path']) }}" download class="btn btn-primary">Download</a>
-                                    </td>
+                                    <th style="text-align:center;">File</th>
+                                    <th style="text-align:center;">Last Updated</th>
+                                    <th style="text-align:center;">Action</th>
                                 </tr>
-                            @else
-                                <tr>
-                                    <td colspan="3" class="text-center">No updates available.</td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @if($appointment->proposal_manuscript_updates)
+                                    @php
+                                        $updates = json_decode($appointment->proposal_manuscript_updates, true);
+                                    @endphp
+                                    <tr>
+                                        <td class="text-center">
+                                            <a href="#" data-toggle="modal" data-target="#manuscriptUpdateModal">
+                                                {{ $updates['original_name'] }}
+                                            </a>
+                                        </td>
+                                        <td class="text-center">{{ \Carbon\Carbon::parse($updates['uploaded_at'])->format('m/d/Y') }}</td>
+                                        <td class="text-center">
+                                            <a href="{{ Storage::url($updates['file_path']) }}" download class="btn btn-primary">Download</a>
+                                        </td>
+                                    </tr>
+                                @else
+                                    <tr>
+                                        <td colspan="3" class="text-center">No updates available.</td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
 
-    </div>
-</div>
-
-    <!-- Modal for proposal manuscript update -->
-    <div class="modal fade" id="manuscriptUpdateModal" tabindex="-1" aria-labelledby="manuscriptUpdateModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{ $updates['original_name'] ?? 'Update File' }}</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <iframe src="{{ Storage::url($updates['file_path'] ?? '') }}" width="100%" height="500px"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <a href="{{ Storage::url($updates['file_path'] ?? '') }}" download class="btn btn-primary">Download</a>
-                </div>
-            </div>
         </div>
     </div>
-
-    <br>
 
     <!-- Panel Review Section -->
     <div class="card mb-4">
@@ -246,6 +226,26 @@
                     </div>
                 </div>
             @endforeach
+        </div>
+    </div>
+
+    <!-- Dean's Signature Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4 class="routing-heading">Dean's Signature</h4>
+            @php
+                $allPanelSigned = count($appointment->panel_members) === count(array_filter($signatures));
+            @endphp
+
+            @if($allPanelSigned)
+                @if($appointment->dean_monitoring_signature)
+                    <p><strong>Dean's Signature:</strong> {{ $appointment->dean_monitoring_signature }}</p>
+                @else
+                    <p><strong>Status:</strong> Waiting for Dean’s Signature</p>
+                @endif
+            @else
+                <p><strong>Status:</strong> All panel members have not signed yet</p>
+            @endif
         </div>
     </div>
 </div>

@@ -46,6 +46,13 @@
         </a>
     </li>
 
+    <li class="nav-item {{ $current_route == 'admin.monitoring' ? 'active' : '' }}">
+        <a href="{{ route('admin.monitoring') }}" class="nav-link">
+            <i class="fas fa-fw fa-calendar"></i>
+            <span>Monitoring Form</span>
+        </a>
+    </li>
+
     <!-- Nav Item - Thesis Checking -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseThesisCheck"

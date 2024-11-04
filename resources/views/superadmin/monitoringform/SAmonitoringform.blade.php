@@ -1,4 +1,4 @@
-@extends('tdprofessor.TDPmain-layout')
+@extends('superadmin.SAmain-layout')
 
 @section('content-header')
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -77,28 +77,30 @@
         </div>
     </form>
 </div>
+
 <div class="container-fluid">
     <table class="table table-bordered table-hover table-striped custom-table">
         <thead class="table-dark">
             <tr>
                 <th class="text-center">Student Name</th>
+                <th class="text-center">Schedule Type</th>
                 <th class="text-center">Proposal Date & Time</th>
                 <th class="text-center">Status</th>
                 <th class="text-center">Action</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="appointmentsTableBody">
             @foreach($appointments as $appointment)
                 <tr>
                     <td class="text-center">{{ $appointment->student->name ?? 'Unknown' }}</td>
+                    <td class="text-center">{{ $appointment->schedule_type }}</td>
                     <td class="text-center">
-                        {{ $appointment->proposal_defense_date ? \Carbon\Carbon::parse($appointment->proposal_defense_date)->format('m/d/Y h:i A') : 'N/A' }}
+                        {{ $appointment->formatted_defense_date }} 
+                        {{ $appointment->formatted_defense_time }}
                     </td>
+                    <td class="text-center">{{ $appointment->status }}</td>
                     <td class="text-center">
-                        {{ $appointment->status ?? 'Pending' }}
-                    </td>
-                    <td class="text-center">
-                        <a href="{{ route('panel.showStudentMonitoringForm', $appointment->student_id) }}" class="btn btn-primary">View Monitoring Form</a>
+                        <a href="{{ route('superadmin.showStudentMonitoringForm', $appointment->student_id) }}" class="btn btn-primary">View Monitoring Form</a>
                     </td>
                 </tr>
             @endforeach

@@ -1,4 +1,4 @@
-@extends('tdprofessor.TDPmain-layout')
+@extends('graduateschool.GSmain-layout')
 
 @section('content-header')
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -70,7 +70,7 @@
 <div class="container-fluid">
     <div class="sagreet">{{ $title }}</div>
     <br>
-    <form method="GET" action="{{ route('tdprofessor.monitoring.search') }}"> <!-- Updated route name here -->
+    <form method="GET" action="{{ route('graduateschool.monitoring.search') }}"> <!-- Updated route name here -->
         <div class="input-group mb-3">
             <input type="text" name="search" id="searchInput" class="form-control" placeholder="Search Student Name..." value="{{ old('search', $search) }}">
             <button type="submit" class="btn btn-primary">Search</button>
@@ -82,23 +82,24 @@
         <thead class="table-dark">
             <tr>
                 <th class="text-center">Student Name</th>
+                <th class="text-center">Schedule Type</th>
                 <th class="text-center">Proposal Date & Time</th>
                 <th class="text-center">Status</th>
                 <th class="text-center">Action</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="appointmentsTableBody">
             @foreach($appointments as $appointment)
                 <tr>
                     <td class="text-center">{{ $appointment->student->name ?? 'Unknown' }}</td>
+                    <td class="text-center">{{ $appointment->schedule_type }}</td>
                     <td class="text-center">
-                        {{ $appointment->proposal_defense_date ? \Carbon\Carbon::parse($appointment->proposal_defense_date)->format('m/d/Y h:i A') : 'N/A' }}
+                        {{ $appointment->formatted_defense_date }} 
+                        {{ $appointment->formatted_defense_time }}
                     </td>
+                    <td class="text-center">{{ $appointment->status }}</td>
                     <td class="text-center">
-                        {{ $appointment->status ?? 'Pending' }}
-                    </td>
-                    <td class="text-center">
-                        <a href="{{ route('panel.showStudentMonitoringForm', $appointment->student_id) }}" class="btn btn-primary">View Monitoring Form</a>
+                        <a href="{{ route('graduateschool.showStudentMonitoringForm', $appointment->student_id) }}" class="btn btn-primary">View Monitoring Form</a>
                     </td>
                 </tr>
             @endforeach

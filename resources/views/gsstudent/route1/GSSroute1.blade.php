@@ -825,6 +825,22 @@
             </div>
         </div>
     @endforeach
+    @php
+                // Check if all panel members have signed
+                $allPanelSigned = count($appointment->panel_members ?? []) === count(array_filter(json_decode($appointment->panel_signatures, true) ?? []));
+            @endphp
+
+            @if ($allPanelSigned)
+                <!-- Dean Signature Status Check -->
+                @if ($appointment->dean_monitoring_signature)
+                    <p><strong>Dean's Signature:</strong> {{ $appointment->dean_monitoring_signature }}</p>
+                @else
+                    <p><strong>Dean's Signature Status:</strong> Awaiting Dean's Signature...</p>
+                @endif
+            @else
+                <!-- Show message if panel signatures are incomplete -->
+                <p><strong>Panel Signatures Incomplete:</strong> The dean’s approval will be requested once all panel members have signed.</p>
+            @endif
     </div>
 </div>
 <div class="card-footer footersaroute1"></div>
