@@ -170,61 +170,50 @@
     <div class="card mb-4">
         <div class="card-body">
             <h4 class="routing-heading">Panel Review</h4>
-            @foreach ($appointment->panel_members as $panelistId)
-    @php
-        // Ensure `panel_members`, `panel_comments`, `panel_remarks`, and `panel_signatures` are arrays
-        $panelMembers = is_string($appointment->panel_members) ? json_decode($appointment->panel_members, true) : $appointment->panel_members;
-        $comments = is_string($appointment->panel_comments) ? json_decode($appointment->panel_comments, true) : $appointment->panel_comments;
-        $replies = is_string($appointment->student_replies) ? json_decode($appointment->student_replies, true) : $appointment->student_replies;
-        $remarks = is_string($appointment->panel_remarks) ? json_decode($appointment->panel_remarks, true) : $appointment->panel_remarks;
-        $signatures = is_string($appointment->panel_signatures) ? json_decode($appointment->panel_signatures, true) : $appointment->panel_signatures;
+            @foreach ($panelMembers as $panelistId)
+                @php
+                    $panelist = \App\Models\User::find($panelistId);
+                    $panelistName = $panelist ? $panelist->name : "Unknown Panelist";
+                @endphp
 
-        $panelist = \App\Models\User::find($panelistId);
-        $panelistName = $panelist ? $panelist->name : "Unknown Panelist";
-    @endphp
+                <div class="card mb-3">
+                    <div class="card-header">{{ $panelistName }}</div>
+                    <div class="card-body">
+                        <p><strong>Comment:</strong> {{ $comments[$panelistId] ?? 'No comment yet' }}</p>
+                        <p><strong>Student Reply:</strong> {{ $replies[$panelistId] ?? 'No reply yet' }}</p>
+                        <p><strong>Remarks:</strong> {{ $remarks[$panelistId] ?? 'No remarks yet' }}</p>
 
-    <div class="card mb-3">
-        <div class="card-header">{{ $panelistName }}</div>
-        <div class="card-body">
-            <p><strong>Comment:</strong> {{ $comments[$panelistId] ?? 'No comment yet' }}</p>
-            <p><strong>Student Reply:</strong> {{ $replies[$panelistId] ?? 'No reply yet' }}</p>
-            <p><strong>Remarks:</strong> {{ $remarks[$panelistId] ?? 'No remarks yet' }}</p>
+                        @if (Auth::id() == $panelistId)
+                            <form action="{{ route('panel.addComment', $appointment->student_id) }}" method="POST" class="mt-3">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="comment">Your Comment</label>
+                                    <textarea name="comment" class="form-control">{{ $comments[$panelistId] ?? '' }}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Comment</button>
+                            </form>
 
-            @if (Auth::id() == $panelistId)
-                <!-- Form for panelist to add a comment, remark, or signature -->
-                <form action="{{ route('panel.addComment', $appointment->student_id) }}" method="POST" class="mt-3">
-                    @csrf
-                    <div class="form-group">
-                        <label for="comment">Your Comment</label>
-                        <textarea name="comment" class="form-control">{{ $comments[$panelistId] ?? '' }}</textarea>
+                            <form action="{{ route('panel.addRemark', $appointment->student_id) }}" method="POST" class="mt-3">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="remark">Your Remark</label>
+                                    <textarea name="remark" class="form-control">{{ $remarks[$panelistId] ?? '' }}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Remark</button>
+                            </form>
+
+                            @if (empty($signatures[$panelistId]))
+                                <form action="{{ route('panel.affixSignature', $appointment->student_id) }}" method="POST" class="mt-3">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success">Affix Signature</button>
+                                </form>
+                            @else
+                                <p><strong>Signature:</strong> {{ $signatures[$panelistId] }}</p>
+                            @endif
+                        @endif
                     </div>
-                    <button type="submit" class="btn btn-primary">Save Comment</button>
-                </form>
-
-                <form action="{{ route('panel.addRemark', $appointment->student_id) }}" method="POST" class="mt-3">
-                    @csrf
-                    <div class="form-group">
-                        <label for="remark">Your Remark</label>
-                        <textarea name="remark" class="form-control">{{ $remarks[$panelistId] ?? '' }}</textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save Remark</button>
-                </form>
-
-                @if (empty($signatures[$panelistId]))
-                    <form action="{{ route('panel.affixSignature', $appointment->student_id) }}" method="POST" class="mt-3">
-                        @csrf
-                        <button type="submit" class="btn btn-success">Affix Signature</button>
-                    </form>
-                @else
-                    <p><strong>Signature:</strong> {{ $signatures[$panelistId] }}</p>
-                @endif
-            @else
-                <p><strong>Remarks:</strong> {{ $remarks[$panelistId] ?? 'No remarks yet' }}</p>
-                <p><strong>Signature:</strong> {{ $signatures[$panelistId] ?? 'Not signed yet' }}</p>
-            @endif
-        </div>
-    </div>
-@endforeach
+                </div>
+            @endforeach
 
         </div>
     </div>
