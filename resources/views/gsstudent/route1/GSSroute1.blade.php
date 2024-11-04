@@ -659,7 +659,12 @@
 </div>
 
                 @endif
+                
                 @elseif (($step === 6 && !$isDrPH) || ($step === 7 && $isDrPH))
+                @if (optional($appointment)->proposal_defense_date === null)
+        <p class="text-muted">This step is locked. A proposal defense date must be set to proceed.</p>
+    @else
+
                 <div class="container-fluid">
     
                 <div>
@@ -843,12 +848,14 @@
             @endif
     </div>
 </div>
-<div class="card-footer footersaroute1"></div>
+@endif
 @endif
 
                 
             </div>
         @endfor
+        <div class="card-footer footersaroute1"></div>
+
     </div>
 </div>
 
