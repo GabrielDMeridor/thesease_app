@@ -111,37 +111,39 @@ class TDPProposalMonitoringController extends Controller
     }
 
     // Method to affix panelist's signature to a specific student's form
-    public function affixSignature(Request $request, $studentId)
-    {
-        $panelistId = Auth::id();
-        $appointment = AdviserAppointment::where('student_id', $studentId)->firstOrFail();
+// Method to affix panelist's signature to a specific student's form
+public function affixSignature(Request $request, $studentId)
+{
+    $panelistId = Auth::id();
+    $appointment = AdviserAppointment::where('student_id', $studentId)->firstOrFail();
+
+    // Retrieve or initialize the signatures array, checking if it's already an array
+    $signatures = is_string($appointment->panel_signatures) ? json_decode($appointment->panel_signatures, true) : $appointment->panel_signatures;
     
-        // Retrieve or initialize the signatures array
-        $signatures = json_decode($appointment->panel_signatures, true) ?? [];
-    
-        // Check if this panelist has already signed
-        if (!isset($signatures[$panelistId])) {
-            // Add the panelist's signature
-            $signatures[$panelistId] = Auth::user()->name;
-            $appointment->panel_signatures = json_encode($signatures);
-            $appointment->save();
-        }
-    
-        // Check if all panel members have signed
-        $panelMembers = json_decode($appointment->panel_members, true);
-    
-        if (count($panelMembers) === count($signatures)) {
-            // Fetch all superadmins with account_type 1
-            $superAdmins = User::where('account_type', 1)->get();
-    
-            // Send notification to all superadmins
-            Notification::send($superAdmins, new AllPanelSignaturesCompletedNotification($appointment));
-    
-            return back()->with('success', 'All panel members have signed. Superadmin has been notified to affix their signature.');
-        }
-    
-        return back()->with('success', 'Signature added successfully!');
+    // Check if this panelist has already signed
+    if (!isset($signatures[$panelistId])) {
+        // Add the panelist's signature
+        $signatures[$panelistId] = Auth::user()->name;
+        $appointment->panel_signatures = json_encode($signatures);
+        $appointment->save();
     }
+
+    // Check if all panel members have signed
+    $panelMembers = is_string($appointment->panel_members) ? json_decode($appointment->panel_members, true) : $appointment->panel_members;
+
+    if (count($panelMembers) === count($signatures)) {
+        // Fetch all superadmins with account_type 1
+        $superAdmins = User::where('account_type', 1)->get();
+
+        // Send notification to all superadmins
+        Notification::send($superAdmins, new AllPanelSignaturesCompletedNotification($appointment));
+
+        return back()->with('success', 'All panel members have signed. Superadmin has been notified to affix their signature.');
+    }
+
+    return back()->with('success', 'Signature added successfully!');
+}
+
 
     // Helper function to check if all panel signatures are completed
     protected function allPanelSignaturesCompleted($appointment)
