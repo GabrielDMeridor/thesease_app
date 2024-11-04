@@ -737,7 +737,7 @@
                                 <form action="{{ route('gsstudent.uploadProposalManuscriptUpdate') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <td class="text-center">
-                                        <input type="file" name="proposal_manuscript_update" class="form-control" required>
+                                    <input type="file" name="proposal_manuscript_update" class="form-control" accept=".pdf" required>
                                     </td>
                                     <td class="text-center">{{ \Carbon\Carbon::now()->format('m/d/Y') }}</td>
                                     <td class="text-center">
@@ -914,6 +914,7 @@
             $('#presentationVideo')[0].currentTime = 0;
         });
     });
+    
 </script>
 
 @endsection

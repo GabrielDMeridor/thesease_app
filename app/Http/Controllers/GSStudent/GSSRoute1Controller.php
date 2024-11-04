@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\CommunityExtensionRespondedNotification;
 use App\Notifications\ProposalSubmissionCompletedNotification; // Import the notification class
 use App\Notifications\SubmissionFilesRespondedNotification;
+use App\Notifications\ProposalManuscriptUpdateNotification;
+use App\Notifications\StudentReplyNotification;
 
 
 
@@ -211,9 +213,13 @@ class GSSRoute1Controller extends Controller
         }
         
         $user = User::find(auth()->id());
-
-        // Retrieve the authenticated user as a User instance
         $appointment = AdviserAppointment::findOrFail($appointmentId);
+    
+        // Check if submission_files_link is null; if it is, do not proceed
+        if (is_null($appointment->submission_files_link)) {
+            return redirect()->route('gsstudent.route1')
+                             ->with('error', 'Submission files link is not available. Please try again later.');
+        }
     
         // Check if submission_files_response has not been set
         if (!$appointment->submission_files_response) {
@@ -221,8 +227,7 @@ class GSSRoute1Controller extends Controller
             $appointment->submission_files_response = 1;
             $appointment->submission_files_approval = 'pending';
             $appointment->save();
-
-
+    
             $superAdmins = User::where('account_type', User::SuperAdmin)->get();
             $admins = User::where('account_type', User::Admin)->get();
             $graduateSchoolUsers = User::where('account_type', User::GraduateSchool)->get();
@@ -234,34 +239,45 @@ class GSSRoute1Controller extends Controller
         return redirect()->route('gsstudent.route1')
                          ->with('success', 'Your response has been recorded, and the approval status for submission files is now pending.');
     }
+    
     public function uploadProposalManuscriptUpdate(Request $request)
     {
         $user = Auth::user();
         $appointment = AdviserAppointment::where('student_id', $user->id)->first();
-
+    
         // Check if all panel signatures are completed
         if ($appointment->panel_signatures && count(array_filter($appointment->panel_signatures)) == count($appointment->panel_signatures)) {
             return redirect()->route('gsstudent.route1')->with('error', 'Panelist signatures are complete. No further uploads allowed.');
         }
-
+    
         $request->validate([
             'proposal_manuscript_update' => 'required|file|mimes:pdf|max:2048',
         ]);
-
+    
         $file = $request->file('proposal_manuscript_update');
         $originalFileName = $file->getClientOriginalName();
         $storedFileName = $file->storeAs('public/proposal_manuscript_updates', time() . '_' . $originalFileName);
-
+    
         $appointment->proposal_manuscript_updates = json_encode([
             'file_path' => $storedFileName,
             'original_name' => $originalFileName,
             'uploaded_at' => now(),
         ]);
-        
+    
         $appointment->save();
-
+    
+        // Notify all panel members
+        $panelMembersIds = is_string($appointment->panel_members) 
+        ? json_decode($appointment->panel_members, true) 
+        : $appointment->panel_members;
+    
+    // Now retrieve the users with those IDs
+    $panelMembers = User::whereIn('id', $panelMembersIds)->get();
+            Notification::send($panelMembers, new ProposalManuscriptUpdateNotification($user));
+    
         return redirect()->route('gsstudent.route1')->with('success', 'Proposal manuscript update uploaded successfully!');
     }
+    
 
     public function addStudentReply(Request $request, $panelistId)
     {
@@ -270,9 +286,16 @@ class GSSRoute1Controller extends Controller
         $replies[$panelistId] = $request->reply;
         $appointment->student_replies = json_encode($replies);
         $appointment->save();
-
+    
+        // Notify the specific panelist
+        $panelist = User::find($panelistId);
+        if ($panelist) {
+            Notification::send($panelist, new StudentReplyNotification(Auth::user()));
+        }
+    
         return back()->with('success', 'Reply added successfully!');
     }
+    
 
     
 }
