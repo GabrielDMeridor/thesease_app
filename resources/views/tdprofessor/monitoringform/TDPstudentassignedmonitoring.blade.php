@@ -73,11 +73,9 @@
 <!-- /.content-header -->
 @endsection
 
-@section('body')
+@section ('body')
 <div class="container-fluid">
-    <div class="sagreet">
-        <h2>Monitoring Form for {{ $appointment->student->name }}</h2>
-    </div>
+    <div class="sagreet">{{ $title }}</div>
     <br>
     <div class="container-fluid">
         <div class="row">

@@ -248,7 +248,9 @@ class GSSRoute1Controller extends Controller
         $appointment = AdviserAppointment::where('student_id', $user->id)->first();
     
         // Check if all panel signatures are completed
-        if ($appointment->panel_signatures && count(array_filter($appointment->panel_signatures)) == count($appointment->panel_signatures)) {
+        $panelSignatures = is_string($appointment->panel_signatures) ? json_decode($appointment->panel_signatures, true) : $appointment->panel_signatures ?? [];
+
+        if ($panelSignatures && count(array_filter($panelSignatures)) == count($panelSignatures)) {
             return redirect()->route('gsstudent.route1')->with('error', 'Panelist signatures are complete. No further uploads allowed.');
         }
     
