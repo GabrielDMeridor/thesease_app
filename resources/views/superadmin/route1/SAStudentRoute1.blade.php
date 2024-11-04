@@ -379,11 +379,11 @@
                 <!-- Display Status for OVPRI Approval -->
                 <p><strong>Status:</strong> 
                     @if ($appointment->ovpri_approval === 'approved')
-                        <span class="text-success">Already approved by OVPRI.</span>
+                        <span class="badge badge-success">Already approved by OVPRI.</span>
                     @elseif ($appointment->ovpri_approval === 'pending')
-                        <span class="text-warning">Pending OVPRI approval.</span>
+                        <span class="badge badge-warning">Pending OVPRI approval.</span>
                     @else
-                        <span class="text-muted">Not yet responded.</span>
+                        <span class="badge badge-secondary">Not yet responded.</span>
                     @endif
                 </p>
             </div>
@@ -435,19 +435,19 @@
 
                 @if ($appointment->community_extension_response)
                     <p><strong>Status:</strong> 
-                        Responded on {{ optional($appointment->community_extension_response_date)->format('F j, Y') }}
+                        Responded
                     </p>
                 @else
-                    <p class="text-muted">Student has not responded yet.</p>
+                    <p class="badge badge-secondary">Student has not responded yet.</p>
                 @endif
 
                 <p><strong>Approval Status:</strong> 
                     @if ($appointment->community_extension_approval === 'approved')
-                        <span class="text-success">Approved</span>
+                        <span class="badge badge-success">Approved</span>
                     @elseif ($appointment->community_extension_approval === 'pending')
-                        <span class="text-warning">Pending</span>
+                        <span class="badge badge-warning">Pending</span>
                     @else
-                        <span class="text-muted">Not yet responded.</span>
+                        <span class="badge badge-secondary">Not yet responded.</span>
                     @endif
                 </p>
 
@@ -583,11 +583,11 @@
                     <!-- Display approval status for submission files -->
                     <p><strong>Approval Status:</strong> 
                         @if ($appointment->submission_files_approval === 'approved')
-                            <span class="text-success">Approved</span>
+                            <span class="badge badge-success">Approved</span>
                         @elseif ($appointment->submission_files_approval === 'pending')
-                            <span class="text-warning">Pending</span>
+                            <span class="badge badge-warning">Pending</span>
                         @else
-                            <span class="text-muted">Not yet responded.</span>
+                            <span class="badge badge-secondary">Not yet responded.</span>
                         @endif
                     </p>
 
@@ -617,14 +617,13 @@
             </div>
         </div>
     @else
-        <div class="container-fluid d-flex justify-content-center align-items-center" style="height: 100%;">
-            <div class="card" style="width: 50%; text-align: center;">
-                <div class="card-body">
-                    <p class="text-muted" style="font-size: 1.25rem;">Please look for the student in the monitoring form page
-                    </p>
+    <div class="card shadow mb-4">
+            <div class="card-body text-center">
+                <div class="alert alert-warning mb-0" role="alert">
+                    <strong>Please look for the student in the monitoring form page</strong>
                 </div>
             </div>
-        </div>   
+        </div>  
     @endif
 
     @elseif (($step === 7 && !$isDrPH) || ($step === 8 && $isDrPH))
@@ -641,37 +640,54 @@
         </div>
     @elseif (optional($appointment)->dean_monitoring_signature)
         <!-- Consultation with Statistician Content -->
-        <div class="card shadow mb-4">
-            <div class="card-body">
-                <h4 class="routing-heading">Consultation with Statistician</h4>
-                <div class="d-flex align-items-start">
-                    <!-- QR Code Image -->
-                    <div class="qr-code mr-3">
-                        <img src="{{ asset('img/cdaic_qr.png') }}" alt="QR Code" style="width: 100px; height: 100px;">
+        <div class="container my-4">
+            <div class="card shadow mb-4">
+                <div class="card-body d-flex flex-column flex-md-row align-items-center">
+                    <!-- QR Code Section -->
+                    <div class="qr-code-section text-center mb-4 mb-md-0 d-flex flex-column align-items-center">
+                        <img src="{{ asset('img/cdaic_qr.png') }}" alt="QR Code for CDAIC Service Request" class="qr-code-image rounded" style="width: 150px; border: 2px solid #ddd;">
+                        <p class="mt-2 text-muted" style="font-size: 0.9rem;">Scan for Service Request Form</p>
                     </div>
-                    <!-- Instructions -->
-                    <div class="form-group">
-                        <p>Accomplish the 
-                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSezh_2LK83Yh435RFQ879axmNE7B761ifHd1ML4vZz54j8GSw/viewform" target="_blank">CDAIC Service Request Form</a>.
-                            Send your manuscript to 
-                            <strong>cdaic@auf.edu.ph</strong>, cc: 
-                            <strong>calibio.mylene@auf.edu.ph</strong>, <strong>ovpri@auf.edu.ph</strong>.
+
+                    <!-- Instructions Section -->
+                    <div class="instructions-section ml-md-4">
+                        <h4 class="routing-heading mb-3">Consultation with Statistician</h4>
+                        <p>Please complete the 
+                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSezh_2LK83Yh435RFQ879axmNE7B761ifHd1ML4vZz54j8GSw/viewform" target="_blank" class="text-decoration-underline text-primary">
+                                <i class="fa-solid fa-link"></i> CDAIC Service Request Form.
+                            </a>
                         </p>
+                        <p>Then, send your manuscript to: 
+                            <strong>cdaic@auf.edu.ph</strong>, with cc to:
+                        </p>
+                        <ul class="mb-3" style="list-style: none; padding-left: 0;">
+                            <li><strong>calibio.mylene@auf.edu.ph</strong></li>
+                            <li><strong>ovpri@auf.edu.ph</strong></li>
+                        </ul>
+
+                        <!-- Display Status -->
+                        <p><strong>Status:</strong> 
+                            @if (optional($appointment)->statistician_approval === 'approved')
+                                <span class="badge badge-success">Approved</span>
+                            @elseif (optional($appointment)->student_statistician_response === 'responded')
+                                <span class="badge badge-warning">Pending</span>
+                            @else
+                                <span class="badge badge-secondary">Not responded yet</span>
+                            @endif
+                        </p>
+
+                        <!-- Respond Button for Student -->
+                        @if (is_null($appointment->student_statistician_response))
+                            <form action="{{ route('gsstudent.respondToStatistician') }}" method="POST" class="mt-3">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">Mark as Responded</button>
+                            </form>
+                        @endif
                     </div>
                 </div>
-                
-                <!-- Display the student's response status -->
-                <p><strong>Status:</strong>
-                    @if (optional($appointment)->statistician_approval === 'approved')
-                        <span class="text-success">Approved</span>
-                    @elseif (optional($appointment)->student_statistician_response === 'responded')
-                        <span class="text-warning">Pending</span>
-                    @else
-                        <span class="text-muted">Not responded yet</span>
-                    @endif
-                </p>
             </div>
         </div>
+
     @endif
     </div>
 @endif

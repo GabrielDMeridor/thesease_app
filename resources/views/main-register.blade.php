@@ -1,6 +1,9 @@
 @extends('guest-layout')
 
 @section('content-header1')
+<title>ThesEase - Register
+</title>
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-lg-5">

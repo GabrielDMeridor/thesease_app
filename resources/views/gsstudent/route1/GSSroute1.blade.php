@@ -375,11 +375,11 @@
                                 <!-- Display Status for OVPRI Approval -->
                                 <p><strong>Status:</strong> 
                                     @if ($appointment->ovpri_approval === 'approved')
-                                    <span class="text-success">Already approved by OVPRI.</span>
+                                    <span class="badge badge-success">Already approved by OVPRI.</span>
                                     @elseif ($appointment->ovpri_approval === 'pending')
-                                    <span class="text-warning">Pending OVPRI approval.</span>
+                                    <span lass="badge badge-warning">Pending OVPRI approval.</span>
                                     @else
-                                    <span class="text-muted">Not yet responded.</span>
+                                    <span class="badge badge-secondary">Not yet responded.</span>
                                     @endif
                                 </p>
                             </div>
@@ -390,7 +390,14 @@
             @endif
             @elseif ($step === 5 && $isDrPH)
             @if (optional($appointment)->ovpri_approval !== 'approved')
-            <p class="text-muted">Step 5 is locked. The OVPRI Approval must be completed in Step 4 to proceed.</p>
+            <div class="card shadow mb-4">
+                <div class="card-body text-center">
+                    <div class="alert alert-warning mb-0" role="alert">
+                        <i class="fas fa-lock mr-2"></i>
+                        <strong>Step Locked:</strong> The OVPRI Approval must be completed in Step 4 to proceed.
+                    </div>
+                </div>
+            </div>
             @else
             <!-- Step 5 for DrPH students: Community Extension Registration -->
             <div class="container-fluid">
@@ -439,14 +446,19 @@
             @if (($isDrPH && optional($appointment)->community_extension_approval !== 'approved') ||
             (!$isDrPH && optional($appointment)->ovpri_approval !== 'approved'))
             {{-- Display lock message based on the type of approval needed --}}
-            <p class="text-muted">
-                This step is locked. 
-                @if ($isDrPH)
-                Community Extension approval must be completed in Step 5 to proceed.
-                @else
-                OVPRI approval must be completed in Step 4 to proceed.
-                @endif
-            </p>
+            <div class="card shadow mb-4">
+                <div class="card-body text-center">
+                    <div class="alert alert-warning mb-0" role="alert">
+                        <i class="fas fa-lock mr-2"></i>
+                        <strong>Step Locked:</strong>   This step is locked. 
+                                                        @if ($isDrPH)
+                                                        Community Extension approval must be completed in Step 5 to proceed.
+                                                        @else
+                                                        OVPRI approval must be completed in Step 4 to proceed.
+                                                        @endif
+                    </div>
+                </div>
+            </div>
             @else
             <!-- Step 5 for non-DrPH or Step 6 for DrPH - File Uploads -->
             <!-- Additional Section for Submission Files, shown if proposal_submission_completed is true -->
@@ -471,19 +483,19 @@
                             <!-- Display the student's response status -->
                             <p>Your Response:
                                 @if ($appointment->submission_files_response === 1)
-                                <span class="text-success">Responded</span>
+                                <span class="badge badge-success">Responded</span>
                                 @else
-                                <span class="text-muted">Not responded yet.</span>
+                                <span class="badge badge-warning">Not responded yet.</span>
                                 @endif
                             </p>
                             <!-- Display approval status -->
                             <p>Approval Status:
                                 @if ($appointment->submission_files_approval === 'approved')
-                                <span class="text-success">Approved</span>
+                                <span class="badge badge-success">Approved</span>
                                 @elseif ($appointment->submission_files_approval === 'pending')
-                                <span class="text-warning">Pending Approval</span>
+                                <span class="badge badge-warning">Pending Approval</span>
                                 @else
-                                <span class="text-muted">Not yet responded.</span>
+                                <span class="badge badge-secondary">Not yet responded.</span>
                                 @endif
                             </p>
                             <!-- Button to respond to submission files, if not responded yet -->
@@ -600,7 +612,14 @@
             @endif
             @elseif (($step === 6 && !$isDrPH) || ($step === 7 && $isDrPH))
             @if (optional($appointment)->proposal_defense_date === null)
-            <p class="text-muted">This step is locked. A proposal defense date must be set to proceed.</p>
+            <div class="card shadow mb-4">
+                <div class="card-body text-center">
+                    <div class="alert alert-warning mb-0" role="alert">
+                        <i class="fas fa-lock mr-2"></i>
+                        <strong>Step Locked:</strong>This step is locked. A proposal defense date must be set to proceed.
+                    </div>
+                </div>
+            </div>
             @else
             <div class="container-fluid">
                 <div>
@@ -645,7 +664,7 @@
                         <!-- Proposal Manuscript Updates Section -->
                         <div class="col-md-7">
                             <div class="card mb-4">
-                                <div class="card-body">
+                                <div class="card-body table-responsive">
                                     <h4 class="routing-heading">Proposal Manuscript Updates</h4>
                                     <table class="table table-bordered table-hover table-striped custom-table">
                                         <thead class="table-dark">
@@ -788,43 +807,49 @@
             </div>
         @else
             <!-- Consultation with Statistician Content -->
-            <div class="card shadow mb-4">
-                <div class="card-body">
-                    <h4 class="routing-heading">Consultation with Statistician</h4>
-                    <div class="d-flex align-items-start">
-                        <!-- QR Code Image -->
-                        <div class="qr-code mr-3">
-                            <img src="{{ asset('img/cdaic_qr.png') }}" alt="QR Code" style="width: 100px; height: 100px;">
+            <div class="container my-4">
+                <div class="card shadow mb-4">
+                    <div class="card-body d-flex flex-column flex-md-row align-items-center">
+                        <!-- QR Code Section -->
+                        <div class="qr-code-section text-center mb-4 mb-md-0 align-items-center ">
+                            <img src="{{ asset('img/cdaic_qr.png') }}" alt="QR Code for CDAIC Service Request" class="qr-code-image rounded" style="width: 180px; border: 2px solid #ddd;">
+                            <p class="mt-2 text-muted" style="font-size: 0.9rem;">Scan for Service Request Form</p>
                         </div>
-                        <!-- Instructions -->
-                        <div class="form-group">
-                            <p>Accomplish the 
-                                <a href="https://docs.google.com/forms/d/e/1FAIpQLSezh_2LK83Yh435RFQ879axmNE7B761ifHd1ML4vZz54j8GSw/viewform" target="_blank">CDAIC Service Request Form</a>.
-                                Send your manuscript to 
-                                <strong>cdaic@auf.edu.ph</strong>, cc: 
-                                <strong>calibio.mylene@auf.edu.ph</strong>, <strong>ovpri@auf.edu.ph</strong>.
+
+                        <!-- Instructions Section -->
+                        <div class="instructions-section ml-md-4">
+                            <h4 class="routing-heading">Consultation with Statistician</h4>
+                            <p>Please complete the 
+                                <a href="https://docs.google.com/forms/d/e/1FAIpQLSezh_2LK83Yh435RFQ879axmNE7B761ifHd1ML4vZz54j8GSw/viewform" target="_blank" class="text-decoration-underline text-primary">
+                                    <i class="fa-solid fa-link"></i> CDAIC Service Request Form. 
+                                </a>
+                                Send your manuscript to:
                             </p>
+                            <ul class="mb-3" style="list-style: none; padding-left: 0;">
+                                <li><strong>cdaic@auf.edu.ph</strong></li>
+                                <li>cc: <strong>calibio.mylene@auf.edu.ph</strong>, <strong>ovpri@auf.edu.ph</strong></li>
+                            </ul>
+
+                            <!-- Display Status -->
+                            <p><strong>Status:</strong> 
+                                @if ($appointment->statistician_approval === 'approved')
+                                    <span class="badge badge-success">Approved</span>
+                                @elseif ($appointment->student_statistician_response === 'responded')
+                                    <span class="badge badge-warning">Pending</span>
+                                @else
+                                    <span class="badge badge-secondary">Not responded yet</span>
+                                @endif
+                            </p>
+
+                            <!-- Respond Button for Student -->
+                            @if (is_null($appointment->student_statistician_response))
+                                <form action="{{ route('gsstudent.respondToStatistician') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-primary">Mark as Responded</button>
+                                </form>
+                            @endif
                         </div>
                     </div>
-                    
-                    <!-- Display the student's response status -->
-                    <p><strong>Status:</strong>
-                        @if ($appointment->statistician_approval === 'approved')
-                            <span class="text-success">Approved</span>
-                        @elseif ($appointment->student_statistician_response === 'responded')
-                            <span class="text-warning">Pending</span>
-                        @else
-                            <span class="text-muted">Not responded yet</span>
-                        @endif
-                    </p>
-
-                    <!-- Button for student to mark as responded -->
-                    @if (is_null($appointment->student_statistician_response))
-                        <form action="{{ route('gsstudent.respondToStatistician') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-primary">Mark as Responded</button>
-                        </form>
-                    @endif
                 </div>
             </div>
         @endif

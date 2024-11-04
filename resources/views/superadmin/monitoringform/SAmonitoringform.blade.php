@@ -70,41 +70,58 @@
 <div class="container-fluid">
     <div class="sagreet">{{ $title }}</div>
     <br>
-    <form method="GET" action="{{ route('tdprofessor.monitoring.search') }}"> <!-- Updated route name here -->
-        <div class="input-group mb-3">
-            <input type="text" name="search" id="searchInput" class="form-control" placeholder="Search Student Name..." value="{{ old('search', $search) }}">
-            <button type="submit" class="btn btn-primary">Search</button>
+    
+    <div class="card">
+        <div class="card-body">
+            <form action="{{ route('superadmin.monitoring.search') }}" method="GET">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm">
+                            <!-- Keyword search input -->
+                            <div class="input-group mb-3">
+                                <input type="text" name="search" class="form-control" placeholder="Search students by name" value="{{ request('search') }}">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
+
 </div>
 
-<div class="container-fluid">
-    <table class="table table-bordered table-hover table-striped custom-table">
-        <thead class="table-dark">
-            <tr>
-                <th class="text-center">Student Name</th>
-                <th class="text-center">Schedule Type</th>
-                <th class="text-center">Proposal Date & Time</th>
-                <th class="text-center">Status</th>
-                <th class="text-center">Action</th>
-            </tr>
-        </thead>
-        <tbody id="appointmentsTableBody">
-            @foreach($appointments as $appointment)
+<br>
+
+    <div class="container-fluid">
+        <table class="table table-bordered table-hover table-striped custom-table">
+            <thead class="table-dark">
                 <tr>
-                    <td class="text-center">{{ $appointment->student->name ?? 'Unknown' }}</td>
-                    <td class="text-center">{{ $appointment->schedule_type }}</td>
-                    <td class="text-center">
-                        {{ $appointment->formatted_defense_date }} 
-                        {{ $appointment->formatted_defense_time }}
-                    </td>
-                    <td class="text-center">{{ $appointment->status }}</td>
-                    <td class="text-center">
-                        <a href="{{ route('superadmin.showStudentMonitoringForm', $appointment->student_id) }}" class="btn btn-primary">View Monitoring Form</a>
-                    </td>
+                    <th class="text-center">Student Name</th>
+                    <th class="text-center">Schedule Type</th>
+                    <th class="text-center">Proposal Date & Time</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Action</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody id="appointmentsTableBody">
+                @foreach($appointments as $appointment)
+                    <tr>
+                        <td class="text-center">{{ $appointment->student->name ?? 'Unknown' }}</td>
+                        <td class="text-center">{{ $appointment->schedule_type }}</td>
+                        <td class="text-center">
+                            {{ $appointment->formatted_defense_date }} 
+                            {{ $appointment->formatted_defense_time }}
+                        </td>
+                        <td class="text-center">{{ $appointment->status }}</td>
+                        <td class="text-center">
+                            <a href="{{ route('superadmin.showStudentMonitoringForm', $appointment->student_id) }}" class="btn btn-primary">View Monitoring Form</a>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 @endsection

@@ -9721,7 +9721,7 @@ span::after {
 
 
     .profile-name{
-        font-size: 50px;
+        font-size: 35px;
     }
 
     .profile-info-email {
@@ -10056,6 +10056,167 @@ span::after {
     font-weight: lighter;
     font-size: 40px;
 }
+
+/* Main Review Panel Container */
+.review-panel {
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Panelist Card */
+.panelist-card {
+    background: #ffffff;
+    margin-bottom: 15px;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+}
+
+/* Panelist Header with Signature Status */
+.panelist-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.panelist-name {
+    
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #505464;
+}
+
+.signature-status {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.signature-status.signed {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.signature-status.unsigned {
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* Panelist Content */
+.panelist-content {
+    padding: 10px 0;
+    color: #34495e;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Form Section Styling */
+.panelist-forms {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+    margin-top: 10px;
+}
+
+.form-section {
+    background: #F4F4F2;
+    padding: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.form-control {
+    border: 1px solid #ddd;
+    padding: 8px;
+    background-color: white;
+}
+
+/* Signatures Gallery Container */
+.signatures-gallery {
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+/* Section Header */
+.signatures-heading {
+    font-size: 40px;
+    color: #495464;
+    font-weight: lighter;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Signatures Grid Styling */
+.signatures-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    justify-items: center;
+}
+
+/* Signature Card Styling */
+.signature-card {
+    background: #ffffff;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Name and Signature Text */
+.signature-info {
+    margin-top: 10px;
+}
+
+.signature-name {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #495464;
+    margin-bottom: 5px;
+}
+
+.signature-text {
+    font-size: 0.85rem;
+    color: #2c3e50;
+    font-style: italic;
+}
+
+
+/* Dean's Signature Section Styling */
+.dean-signature-section {
+    background: white;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.dean-signature-heading {
+    font-size: 40px;
+    color: #495464;
+    font-weight: lighter;
+    margin-bottom: 10px;
+}
+
+.dean-signature-section p {
+    font-size: 1rem;
+    color: #2c3e50;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+/* Styling for Status Messages */
+.dean-signature-section p strong {
+    color: #495464;
+}
+
+
 
 
 

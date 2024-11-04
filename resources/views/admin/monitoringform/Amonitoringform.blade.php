@@ -70,13 +70,28 @@
 <div class="container-fluid">
     <div class="sagreet">{{ $title }}</div>
     <br>
-    <form method="GET" action="{{ route('tdprofessor.monitoring.search') }}"> <!-- Updated route name here -->
-        <div class="input-group mb-3">
-            <input type="text" name="search" id="searchInput" class="form-control" placeholder="Search Student Name..." value="{{ old('search', $search) }}">
-            <button type="submit" class="btn btn-primary">Search</button>
+    <div class="card">
+        <div class="card-body">
+            <form action="{{ route('admin.monitoring.search') }}" method="GET">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm">
+                            <!-- Keyword search input -->
+                            <div class="input-group mb-3">
+                                <input type="text" name="search" class="form-control" placeholder="Search students by name" value="{{ request('search') }}">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
+
+<bR>
 <div class="container-fluid">
     <table class="table table-bordered table-hover table-striped custom-table">
         <thead class="table-dark">

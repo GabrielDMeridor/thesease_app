@@ -332,11 +332,11 @@
                            <!-- Display Status for OVPRI Approval -->
                            <p class="mt-3"><strong>Status:</strong> 
                               @if ($appointment->ovpri_approval === 'approved')
-                              <span class="text-success font-weight-bold">Already approved by OVPRI.</span>
+                              <span class="badge badge-success">Already approved by OVPRI.</span>
                               @elseif ($appointment->ovpri_approval === 'pending')
-                              <span class="text-warning font-weight-bold">Pending OVPRI approval.</span>
+                              <span class="badge badge-warning">Pending OVPRI approval.</span>
                               @else
-                              <span class="text-muted font-italic">Not yet responded.</span>
+                              <span class="badge badge-secondary">Not yet responded.</span>
                               @endif
                            </p>
                         </div>
@@ -356,6 +356,7 @@
                      </div>
                   </div>
                </div>
+               
                @else
                <!-- Step 5 Content specifically for DrPH students -->
                <div class="container-fluid">
@@ -387,11 +388,11 @@
                         @endif
                         <p><strong>Approval Status:</strong> 
                            @if ($appointment->community_extension_approval === 'approved')
-                           <span class="text-success">Approved</span>
+                           <span class="badge badge-success">Approved</span>
                            @elseif ($appointment->community_extension_approval === 'pending')
-                           <span class="text-warning">Pending</span>
+                           <span class="badge badge-warning">Pending</span>
                            @else
-                           <span class="text-muted">Not yet responded.</span>
+                           <span class="badge badge-secondary">Not yet responded.</span>
                            @endif
                         </p>
                         <!-- SuperAdmin Approval Button (only if approval is pending) -->
@@ -414,7 +415,10 @@
                      <div class="card-body text-center">
                         <div class="alert alert-warning mb-0" role="alert">
                            <p>
+                              <strong>
                               <i class="fas fa-lock mr-2"></i>
+                              Step Locked:
+                              </strong>
                               This step is locked. 
                               @if ($isDrPH)
                               Community Extension approval must be completed in Step 5 to proceed.
@@ -517,11 +521,11 @@
                               <!-- Display approval status for submission files -->
                               <p><strong>Approval Status:</strong> 
                                  @if ($appointment->submission_files_approval === 'approved')
-                                 <span class="text-success">Approved</span>
+                                 <span class="badge badge-success">Approved</span>
                                  @elseif ($appointment->submission_files_approval === 'pending')
-                                 <span class="text-warning">Pending</span>
+                                 <span class="badge badge-warning">Pending</span>
                                  @else
-                                 <span class="text-muted">Not yet responded.</span>
+                                 <span class="badge badge-secondary">Not yet responded.</span>
                                  @endif
                               </p>
                               <!-- SuperAdmin Approval Button (only if approval is pending) -->
@@ -541,22 +545,22 @@
       @elseif (($step === 6 && !$isDrPH) || ($step === 7 && $isDrPH))
     @if (optional($appointment)->proposal_defense_date === null)
         <!-- Step Locked Message in a Centered Card -->
-        <div class="container-fluid d-flex justify-content-center align-items-center" style="height: 100%;">
-            <div class="card" style="width: 50%; text-align: center;">
-                <div class="card-body">
-                    <p class="text-muted" style="font-size: 1.25rem;">This step is locked. A proposal defense date must be set to proceed.</p>
+        <div class="card shadow mb-4">
+            <div class="card-body text-center">
+                <div class="alert alert-warning mb-0" role="alert">
+                    <i class="fas fa-lock mr-2"></i>
+                    <strong>Step Locked:</strong> This step is locked. A proposal defense date must be set to proceed.
                 </div>
             </div>
         </div>
     @else
-        <div class="container-fluid d-flex justify-content-center align-items-center" style="height: 100%;">
-            <div class="card" style="width: 50%; text-align: center;">
-                <div class="card-body">
-                    <p class="text-muted" style="font-size: 1.25rem;">Please look for the student in the monitoring form page
-                    </p>
+    <div class="card shadow mb-4">
+            <div class="card-body text-center">
+                <div class="alert alert-warning mb-0" role="alert">
+                    <strong>Please look for the student in the monitoring form page</strong>
                 </div>
             </div>
-        </div>   
+        </div>
     @endif
     @elseif (($step === 7 && !$isDrPH) || ($step === 8 && $isDrPH))
     <div class="container-fluid">
@@ -594,11 +598,11 @@
                 <!-- Display the student's response status -->
                 <p><strong>Status:</strong>
                     @if (optional($appointment)->statistician_approval === 'approved')
-                        <span class="text-success">Approved</span>
+                        <span class="badge badge-success">Approved</span>
                     @elseif (optional($appointment)->student_statistician_response === 'responded')
-                        <span class="text-warning">Pending</span>
+                        <span class="badge badge-warning">Pending</span>
                     @else
-                        <span class="text-muted">Not responded yet</span>
+                        <span class="badge badge-secondary">Not responded yet</span>
                     @endif
                 </p>
             </div>
