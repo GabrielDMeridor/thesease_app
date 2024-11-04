@@ -887,11 +887,12 @@
                 </button>
             </div>
             <div class="modal-body">
-                <video controls width="100%">
-                <iframe src="{{ Storage::url(optional($appointment)->proposal_video_presentation) }}" width="100%" height="600px"></iframe>
-                Your browser does not support the video tag.
+                <video id="presentationVideo" controls width="100%">
+                    <source src="{{ Storage::url(optional($appointment)->proposal_video_presentation) }}" type="video/mp4">
+                    Your browser does not support the video tag.
                 </video>
             </div>
+
             <div class="modal-footer">
             <a href="{{ Storage::url(optional($appointment)->proposal_video_presentation) }}" target="_blank" class="btn btn-primary" download>Download</a>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -899,4 +900,20 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('#videoPresentationModal').on('shown.bs.modal', function () {
+            // Play video when modal opens
+            $('#presentationVideo')[0].play();
+        });
+
+        $('#videoPresentationModal').on('hidden.bs.modal', function () {
+            // Pause video and reset time when modal closes
+            $('#presentationVideo')[0].pause();
+            $('#presentationVideo')[0].currentTime = 0;
+        });
+    });
+</script>
+
 @endsection
