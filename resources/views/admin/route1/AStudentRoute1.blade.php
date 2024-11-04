@@ -564,8 +564,8 @@
     @endif
     @elseif (($step === 7 && !$isDrPH) || ($step === 8 && $isDrPH))
     <div class="container-fluid">
-    @if (($appointment) || is_null(optional($appointment)->dean_monitoring_signature))
-        <!-- Step Locked Message -->
+    @if (is_null(optional($appointment)->dean_monitoring_signature))
+    <!-- Step Locked Message -->
         <div class="card shadow mb-4">
             <div class="card-body text-center">
                 <div class="alert alert-warning mb-0" role="alert">
