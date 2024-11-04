@@ -48,6 +48,8 @@ class AdviserAppointment extends Model
         'panel_remarks',
         'panel_signatures',
         'dean_monitoring_signature',
+        'student_statistician_response',
+
     ];
 
     // Casts for specific fields

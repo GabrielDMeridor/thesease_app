@@ -14,6 +14,8 @@ use App\Notifications\ProposalSubmissionCompletedNotification; // Import the not
 use App\Notifications\SubmissionFilesRespondedNotification;
 use App\Notifications\ProposalManuscriptUpdateNotification;
 use App\Notifications\StudentReplyNotification;
+use App\Notifications\StatisticianResponseNotification;
+
 
 
 
@@ -295,6 +297,30 @@ class GSSRoute1Controller extends Controller
     
         return back()->with('success', 'Reply added successfully!');
     }
+    public function respondToStatistician(Request $request)
+    {
+        $user = Auth::user();
+        $appointment = AdviserAppointment::where('student_id', $user->id)->first();
+    
+        // Ensure the response is only recorded if not already responded
+        if (is_null($appointment->student_statistician_response)) {
+            $appointment->student_statistician_response = 'responded';
+            $appointment->save();
+    
+            // Find all users with account type 7 (Statisticians)
+            $statisticians = User::where('account_type', 7)->get();
+    
+            // Notify each statistician
+            foreach ($statisticians as $statistician) {
+                $statistician->notify(new StatisticianResponseNotification($user->name));
+            }
+        }
+    
+        return redirect()->route('gsstudent.route1')
+                         ->with('success', 'Your response to the consultation with the statistician has been recorded.');
+    }
+    
+
     
 
     

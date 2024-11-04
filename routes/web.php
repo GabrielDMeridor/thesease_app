@@ -53,6 +53,9 @@
     use App\Http\Controllers\AUFCommittee\AUFCProfileController;
 
     use App\Http\Controllers\Statistician\SProfileController;
+    use App\Http\Controllers\Statistician\SAccountController;
+    use App\Http\Controllers\Statistician\SRoute1Controller;
+
 
     use App\Http\Controllers\OVPRI\OVPRIProfileController;
     use App\Http\Controllers\OVPRI\OVPRIAccountController;
@@ -240,7 +243,17 @@
     Route::get('/aufcommittee/dashboard', [AUFCProfileController::class, 'AUFCdashboard'])->name('AUFCdashboard');
 
     //Statisctician Routes Dashboard and Sidebar
-    Route::get('/aufcommittee/dashboard', [SProfileController::class, 'Sdashboard'])->name('Sdashboard');
+    Route::get('/statistician/dashboard', [SProfileController::class, 'Sdashboard'])->name('Sdashboard');
+    // Statiscian Account
+    Route::get('/statistician/account',  [SAccountController::class, 'Saccount'])->name('statistician.account');
+    // Statistician Route 1
+    Route::get('statistician/route1', [SRoute1Controller::class, 'index'])->name('statistician.route1.index');
+    Route::post('statistician/route1/approve/{id}', [SRoute1Controller::class, 'approve'])->name('statistician.route1.approve');
+    Route::get('statistician/route1/ajaxSearch', [SRoute1Controller::class, 'ajaxSearch'])->name('statistician.route1.ajaxSearch');
+
+
+
+
 
     //OVPRI Routes Dashboard and Sidebar
     Route::get('/ovpri/dashboard', [OVPRIProfileController::class, 'OVPRIdashboard'])->name('OVPRIdashboard');
@@ -303,6 +316,8 @@
     Route::post('/gsstudent/upload-video-presentation', [GSSRoute1Controller::class, 'uploadVideoPresentation'])->name('gsstudent.uploadVideoPresentation');
 
     Route::post('/gsstudent/adviser_appointments/{id}/respond-community-extension', [GSSRoute1Controller::class, 'respondToSubmissionFiles'])->name('gsstudent.respondToSubmissionFiles');
+    // Step 8 : Step 7
+    Route::post('/gsstudent/respondToStatistician', [GSSRoute1Controller::class, 'respondToStatistician'])->name('gsstudent.respondToStatistician');
 
 
     //Notificaion Event Handler

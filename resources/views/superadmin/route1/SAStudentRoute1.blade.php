@@ -626,7 +626,56 @@
             </div>
         </div>   
     @endif
+
+    @elseif (($step === 7 && !$isDrPH) || ($step === 8 && $isDrPH))
+    <div class="container-fluid">
+    @if (is_null($appointment) || is_null(optional($appointment)->dean_monitoring_signature))
+        <!-- Step Locked Message -->
+        <div class="card shadow mb-4">
+            <div class="card-body text-center">
+                <div class="alert alert-warning mb-0" role="alert">
+                    <i class="fas fa-lock mr-2"></i>
+                    <strong>Step Locked:</strong> This step is locked. The Dean's signature in Monitoring Form must be completed to proceed.
+                </div>
+            </div>
+        </div>
+    @elseif (optional($appointment)->dean_monitoring_signature)
+        <!-- Consultation with Statistician Content -->
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h4 class="routing-heading">Consultation with Statistician</h4>
+                <div class="d-flex align-items-start">
+                    <!-- QR Code Image -->
+                    <div class="qr-code mr-3">
+                        <img src="{{ asset('img/cdaic_qr.png') }}" alt="QR Code" style="width: 100px; height: 100px;">
+                    </div>
+                    <!-- Instructions -->
+                    <div class="form-group">
+                        <p>Accomplish the 
+                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSezh_2LK83Yh435RFQ879axmNE7B761ifHd1ML4vZz54j8GSw/viewform" target="_blank">CDAIC Service Request Form</a>.
+                            Send your manuscript to 
+                            <strong>cdaic@auf.edu.ph</strong>, cc: 
+                            <strong>calibio.mylene@auf.edu.ph</strong>, <strong>ovpri@auf.edu.ph</strong>.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Display the student's response status -->
+                <p><strong>Status:</strong>
+                    @if (optional($appointment)->statistician_approval === 'approved')
+                        <span class="text-success">Approved</span>
+                    @elseif (optional($appointment)->student_statistician_response === 'responded')
+                        <span class="text-warning">Pending</span>
+                    @else
+                        <span class="text-muted">Not responded yet</span>
+                    @endif
+                </p>
+            </div>
+        </div>
+    @endif
+    </div>
 @endif
+
    </div>
                 @endfor
             </div>
