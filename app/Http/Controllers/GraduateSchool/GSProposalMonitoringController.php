@@ -4,6 +4,7 @@ namespace App\Http\Controllers\GraduateSchool;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdviserAppointment;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\DeanSignedMonitoringFormNotification;
@@ -15,6 +16,9 @@ class GSProposalMonitoringController extends Controller
     // Method to display the main monitoring form view
     public function index()
     {
+        if (!auth()->check() || auth()->user()->account_type !== User::GraduateSchool) {
+            return redirect()->route('getSALogin')->with('error', 'You must be logged in as an graduate school to access this page.');
+        }
         $appointments = AdviserAppointment::with('student')
             ->get()
             ->map(function ($appointment) {
@@ -28,6 +32,8 @@ class GSProposalMonitoringController extends Controller
             'appointments' => $appointments,
             'title' => 'Monitoring Form',
             'search' => '', // No search term initially
+            'user' => auth()->user(),
+
         ]);
     }
 

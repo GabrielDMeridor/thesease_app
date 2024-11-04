@@ -17,6 +17,9 @@ class TDPProposalMonitoringController extends Controller
     // Method to display appointments for the logged-in panelist
     public function index()
     {
+        if (!auth()->check() || auth()->user()->account_type !== User::Thesis_DissertationProfessor) {
+            return redirect()->route('getLogin')->with('error', 'You must be logged in as a Thesis/Dissertation Professor to access this page.');
+        }
         $panelistId = Auth::id();
         
         // Fetch only appointments where the authenticated panelist is in the panel_members array
@@ -28,6 +31,7 @@ class TDPProposalMonitoringController extends Controller
             'appointments' => $appointments,
             'title' => 'Monitoring Form', // Static title for index page
             'search' => '', // No search term initially
+            'user' => auth()->user()
         ]);
     }
 
