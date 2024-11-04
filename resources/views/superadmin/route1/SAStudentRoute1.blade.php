@@ -603,15 +603,31 @@
         </div>
     </div>
 </div>
+@endif
 
 
-
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
-                        @endif
-                    </div>
+@elseif (($step === 6 && !$isDrPH) || ($step === 7 && $isDrPH))
+    @if (optional($appointment)->proposal_defense_date === null)
+        <!-- Step Locked Message in a Centered Card -->
+        <div class="container-fluid d-flex justify-content-center align-items-center" style="height: 100%;">
+            <div class="card" style="width: 50%; text-align: center;">
+                <div class="card-body">
+                    <p class="text-muted" style="font-size: 1.25rem;">This step is locked. A proposal defense date must be set to proceed.</p>
+                </div>
+            </div>
+        </div>
+    @else
+        <div class="container-fluid d-flex justify-content-center align-items-center" style="height: 100%;">
+            <div class="card" style="width: 50%; text-align: center;">
+                <div class="card-body">
+                    <p class="text-muted" style="font-size: 1.25rem;">Please look for the student in the monitoring form page
+                    </p>
+                </div>
+            </div>
+        </div>   
+    @endif
+@endif
+   </div>
                 @endfor
             </div>
         </div>

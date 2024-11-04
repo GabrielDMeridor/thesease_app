@@ -702,38 +702,8 @@
                      <p><strong>Comment:</strong> {{ $comments[$panelistId] ?? 'No comment yet' }}</p>
                      <p><strong>Student Reply:</strong> {{ $replies[$panelistId] ?? 'No reply yet' }}</p>
                      <p><strong>Remarks:</strong> {{ $remarks[$panelistId] ?? 'No remarks yet' }}</p>
-                     <!-- Professor's Form for Adding Comments and Remarks -->
-                     @if (Auth::id() == $panelistId)
-                     <form action="{{ route('panel.addComment', $appointment->student_id) }}" method="POST" class="mt-3">
-                        @csrf
-                        <div class="form-group">
-                           <label for="comment">Your Comment</label>
-                           <textarea name="comment" class="form-control">{{ $comments[$panelistId] ?? '' }}</textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save Comment</button>
-                     </form>
-                     <form action="{{ route('panel.addRemark', $appointment->student_id) }}" method="POST" class="mt-3">
-                        @csrf
-                        <div class="form-group">
-                           <label for="remark">Your Remark</label>
-                           <textarea name="remark" class="form-control">{{ $remarks[$panelistId] ?? '' }}</textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save Remark</button>
-                     </form>
-                     <!-- Affix Signature -->
-                     @if (empty($signatures[$panelistId]))
-                     <form action="{{ route('panel.affixSignature', $appointment->student_id) }}" method="POST" class="mt-3">
-                        @csrf
-                        <button type="submit" class="btn btn-success">Affix Signature</button>
-                     </form>
-                     @else
-                     <p><strong>Signature:</strong> {{ $signatures[$panelistId] }}</p>
-                     @endif
-                     @else
-                     <!-- Show remarks and signatures for other panelists -->
                      <p><strong>Remarks:</strong> {{ $remarks[$panelistId] ?? 'No remarks yet' }}</p>
                      <p><strong>Signature:</strong> {{ $signatures[$panelistId] ?? 'Not signed yet' }}</p>
-                     @endif
                   </div>
                </div>
                @endforeach
@@ -759,6 +729,9 @@
          </div>
          @endif
          @endif
+
+
+
       </div>
       @endfor
    </div>
