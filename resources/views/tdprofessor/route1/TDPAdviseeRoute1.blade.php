@@ -754,7 +754,223 @@
             </div>
          </div>
          @endif
-         @endif
+         @elseif (($step === 7 && !$isDrPH) || ($step === 8 && $isDrPH))
+    <div class="container-fluid">
+    @if (is_null($appointment) || is_null(optional($appointment)->dean_monitoring_signature))
+        <!-- Step Locked Message -->
+        <div class="card shadow mb-4">
+            <div class="card-body text-center">
+                <div class="alert alert-warning mb-0" role="alert">
+                    <i class="fas fa-lock mr-2"></i>
+                    <strong>Step Locked:</strong> This step is locked. The Dean's signature in Monitoring Form must be completed to proceed.
+                </div>
+            </div>
+        </div>
+    @elseif (optional($appointment)->dean_monitoring_signature)
+        <!-- Consultation with Statistician Content -->
+        <div class="container my-4">
+            <div class="card shadow mb-4">
+                <div class="card-body d-flex flex-column flex-md-row align-items-center">
+                    <!-- QR Code Section -->
+                    <div class="qr-code-section text-center mb-4 mb-md-0 d-flex flex-column align-items-center">
+                        <img src="{{ asset('img/cdaic_qr.png') }}" alt="QR Code for CDAIC Service Request" class="qr-code-image rounded" style="width: 150px; border: 2px solid #ddd;">
+                        <p class="mt-2 text-muted" style="font-size: 0.9rem;">Scan for Service Request Form</p>
+                    </div>
+
+                    <!-- Instructions Section -->
+                    <div class="instructions-section ml-md-4">
+                        <h4 class="routing-heading mb-3">Consultation with Statistician</h4>
+                        <p>Please complete the 
+                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSezh_2LK83Yh435RFQ879axmNE7B761ifHd1ML4vZz54j8GSw/viewform" target="_blank" class="text-decoration-underline text-primary">
+                                <i class="fa-solid fa-link"></i> CDAIC Service Request Form.
+                            </a>
+                        </p>
+                        <p>Then, send your manuscript to: 
+                            <strong>cdaic@auf.edu.ph</strong>, with cc to:
+                        </p>
+                        <ul class="mb-3" style="list-style: none; padding-left: 0;">
+                            <li><strong>calibio.mylene@auf.edu.ph</strong></li>
+                            <li><strong>ovpri@auf.edu.ph</strong></li>
+                        </ul>
+
+                        <!-- Display Status -->
+                        <p><strong>Status:</strong> 
+                            @if (optional($appointment)->statistician_approval === 'approved')
+                                <span class="badge badge-success">Approved</span>
+                            @elseif (optional($appointment)->student_statistician_response === 'responded')
+                                <span class="badge badge-warning">Pending</span>
+                            @else
+                                <span class="badge badge-secondary">Not responded yet</span>
+                            @endif
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    @endif
+    </div>
+    @elseif (($step === 8 && !$isDrPH) || ($step === 9 && $isDrPH))
+
+<!-- Check if the Statistician Approval is "approved" -->
+@if (optional($appointment)->statistician_approval !== 'approved')
+    <!-- Step Locked Message -->
+    <div class="card shadow mb-4">
+        <div class="card-body text-center">
+            <div class="alert alert-warning mb-0" role="alert">
+                <i class="fas fa-lock mr-2"></i>
+                <strong>Step Locked:</strong> This step is locked. Statistician approval must be completed to proceed.
+            </div>
+        </div>
+    </div>
+@else
+    <!-- Display Content for Step 8 or 9 without Upload Options -->
+    <div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h4 class="routing-heading">Ethics Review</h4>
+            <p>Here is the current status of the student's submissions for the Ethics Review:</p>
+
+            <!-- Ethics Review Document Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered custom-table">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Document</th>
+                            <th class="text-center">Form Link</th>
+                            <th class="text-center">Submission Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Approved Proposal Manuscript -->
+                        <tr>
+                            <td>Approved Proposal Manuscript</td>
+                            <td class="text-center">
+                                @php
+                                    $updates = $appointment->proposal_manuscript_updates ? json_decode($appointment->proposal_manuscript_updates, true) : null;
+                                @endphp
+                                @if($updates && isset($updates['original_name']))
+                                    <a href="#" data-toggle="modal" data-target="#approvedProposalModal">{{ $updates['original_name'] }}</a>
+                                @else
+                                    <span class="text-muted">Not uploaded yet</span>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <span class="badge {{ $updates ? 'badge-success' : 'badge-secondary' }}">
+                                    {{ $updates ? 'Uploaded' : 'Not Uploaded' }}
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- Proof of Payment for Ethics Review -->
+                        <tr>
+                            <td>Proof of Payment for Ethics Review</td>
+                            <td class="text-center">
+                                @if($appointment->ethics_proof_of_payment)
+                                    <a href="#" data-toggle="modal" data-target="#ethicsProofOfPaymentModal">{{ $appointment->ethics_proof_of_payment_filename }}</a>
+                                @else
+                                    <span class="text-muted">Not uploaded yet</span>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <span class="badge {{ $appointment->ethics_proof_of_payment ? 'badge-success' : 'badge-secondary' }}">
+                                    {{ $appointment->ethics_proof_of_payment ? 'Uploaded' : 'Not Uploaded' }}
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- Curriculum Vitae -->
+                        <tr>
+                            <td>Curriculum Vitae</td>
+                            <td class="text-center">
+                                @if($appointment->ethics_curriculum_vitae)
+                                    <a href="#" data-toggle="modal" data-target="#ethicsCurriculumVitaeModal">{{ $appointment->ethics_curriculum_vitae_filename }}</a>
+                                @else
+                                    <span class="text-muted">Not uploaded yet</span>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <span class="badge {{ $appointment->ethics_curriculum_vitae ? 'badge-success' : 'badge-secondary' }}">
+                                    {{ $appointment->ethics_curriculum_vitae ? 'Uploaded' : 'Not Uploaded' }}
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- Dynamic Rows for Document Types with External Links -->
+                        @php
+                            $documents = [
+                                'Research Services Form' => [
+                                    'filename' => 'ethics_research_services_form_filename',
+                                    'modal' => '#researchServicesFormModal',
+                                    'upload_field' => 'ethics_research_services_form',
+                                    'download_url' => 'https://docs.google.com/document/d/1F_R6DuTVo9nAf511_p27pjDUiWxcNg8G/edit',
+                                ],
+                                'Application for Ethics Review Form' => [
+                                    'filename' => 'ethics_application_form_filename',
+                                    'modal' => '#ethicsApplicationFormModal',
+                                    'upload_field' => 'ethics_application_form',
+                                    'download_url' => 'https://docs.google.com/document/d/1GejrV-uzjxxcGzrMAB3Hd3lrsKUgm5If/edit',
+                                ],
+                                'Study Protocol Assessment Form' => [
+                                    'filename' => 'ethics_study_protocol_form_filename',
+                                    'modal' => '#studyProtocolFormModal',
+                                    'upload_field' => 'ethics_study_protocol_form',
+                                    'download_url' => 'https://docs.google.com/document/d/10USbYR70sEOJVqMlU--XJCRNRdJF49cV/edit',
+                                ],
+                                'Informed Consent Assessment Form' => [
+                                    'filename' => 'ethics_informed_consent_form_filename',
+                                    'modal' => '#informedConsentFormModal',
+                                    'upload_field' => 'ethics_informed_consent_form',
+                                    'download_url' => 'https://docs.google.com/document/d/1ZIMShedZvcomR61CRjIN5yN0AAuLf2Jr/edit?rtpof=true&sd=true',
+                                ],
+                                'Sample Informed Consent' => [
+                                    'filename' => 'ethics_sample_informed_consent_filename',
+                                    'modal' => '#sampleInformedConsentModal',
+                                    'upload_field' => 'ethics_sample_informed_consent',
+                                    'download_url' => 'https://docs.google.com/document/d/1b0d-RdVu0iierQVoPoyLslKISQo0z6Ds/edit',
+                                ],
+                            ];
+                        @endphp
+
+                        @foreach($documents as $doc => $data)
+                            <tr>
+                                <td>{{ $doc }}</td>
+                                <td class="text-center">
+                                    <a href="{{ $data['download_url'] }}" target="_blank">Download Form</a>
+                                    @if($appointment->{$data['upload_field']})
+                                        <a href="#" data-toggle="modal" data-target="{{ $data['modal'] }}">
+                                            {{ $appointment->{$data['filename']} }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Not uploaded yet</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge {{ $appointment->{$data['upload_field']} ? 'badge-success' : 'badge-secondary' }}">
+                                        {{ $appointment->{$data['upload_field']} ? 'Uploaded' : 'Not Uploaded' }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- AUFC Status -->
+            <p><strong>AUFC Status:</strong> 
+                <span class="badge {{ $appointment->aufc_status === 'approved' ? 'badge-success' : ($appointment->aufc_status === 'pending' ? 'badge-warning' : 'badge-secondary') }}">
+                    {{ $appointment->aufc_status === 'approved' ? 'Approved' : ($appointment->aufc_status === 'pending' ? 'Pending' : 'Not Sent') }}
+                </span>
+            </p>
+        </div>
+    </div>
+</div>
+<div>
+   
+</div>
+@endif
+@endif
       </div>
       @endfor
    </div>

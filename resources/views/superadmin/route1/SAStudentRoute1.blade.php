@@ -676,13 +676,6 @@
                             @endif
                         </p>
 
-                        <!-- Respond Button for Student -->
-                        @if (is_null($appointment->student_statistician_response))
-                            <form action="{{ route('gsstudent.respondToStatistician') }}" method="POST" class="mt-3">
-                                @csrf
-                                <button type="submit" class="btn btn-primary">Mark as Responded</button>
-                            </form>
-                        @endif
                     </div>
                 </div>
             </div>
