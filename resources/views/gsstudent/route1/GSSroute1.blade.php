@@ -855,7 +855,158 @@
                 </div>
             </div>
         @endif
+        </div>
+
+        @elseif (($step === 8 && !$isDrPH) || ($step === 9 && $isDrPH))
+
+<!-- Check if the Statistician Approval is "approved" -->
+@if (optional($appointment)->statistician_approval !== 'approved')
+    <!-- Step Locked Message -->
+    <div class="card shadow mb-4">
+        <div class="card-body text-center">
+            <div class="alert alert-warning mb-0" role="alert">
+                <i class="fas fa-lock mr-2"></i>
+                <strong>Step Locked:</strong> This step is locked. Statistician approval must be completed to proceed.
+            </div>
+        </div>
     </div>
+@else
+    <!-- Content for Step 8 or 9 -->
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h4 class="routing-heading">Ethics Review</h4>
+                <p>Download and complete the following forms and send them to the Ethics Committee along with the approved proposal manuscript, proof of payment for Ethics Review, and Curriculum Vitae:</p>
+                
+                <ul>
+                    <!-- Approved Proposal Manuscript -->
+                    <li>Approved Proposal Manuscript:
+                        @php
+                            $updates = $appointment->proposal_manuscript_updates ? json_decode($appointment->proposal_manuscript_updates, true) : null;
+                        @endphp
+                        @if($updates && isset($updates['original_name']))
+                            <a href="#" data-toggle="modal" data-target="#approvedProposalModal">{{ $updates['original_name'] }}</a>
+                        @else
+                            <span class="text-muted">No manuscript uploaded</span>
+                        @endif
+                    </li>
+
+                    <!-- Proof of Payment for Ethics Review -->
+                    <li>Proof of Payment for Ethics Review:
+                        @if($appointment->ethics_proof_of_payment)
+                            <a href="#" data-toggle="modal" data-target="#ethicsProofOfPaymentModal">{{ $appointment->ethics_proof_of_payment_filename }}</a>
+                        @else
+                            <form action="{{ route('gsstudent.uploadEthicsFile', 'ethics_proof_of_payment') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="file" name="ethics_proof_of_payment" class="form-control" accept=".pdf,.png,.jpg,.jpeg" required>
+                                <button type="submit" class="btn btn-primary mt-2">Upload</button>
+                            </form>
+                        @endif
+                    </li>
+
+                    <!-- Curriculum Vitae -->
+                    <li>Curriculum Vitae:
+                        @if($appointment->ethics_curriculum_vitae)
+                            <a href="#" data-toggle="modal" data-target="#ethicsCurriculumVitaeModal">{{ $appointment->ethics_curriculum_vitae_filename }}</a>
+                        @else
+                            <form action="{{ route('gsstudent.uploadEthicsFile', 'ethics_curriculum_vitae') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="file" name="ethics_curriculum_vitae" class="form-control" accept=".pdf,.png,.jpg,.jpeg" required>
+                                <button type="submit" class="btn btn-primary mt-2">Upload</button>
+                            </form>
+                        @endif
+                    </li>
+
+                    <!-- Research Services Form -->
+                    <li>Research Services Form:
+                        <a href="https://docs.google.com/document/d/1F_R6DuTVo9nAf511_p27pjDUiWxcNg8G/edit" target="_blank">Download Form</a>
+                        @if($appointment->ethics_research_services_form)
+                            <a href="#" data-toggle="modal" data-target="#researchServicesFormModal">{{ $appointment->ethics_research_services_form_filename }}</a>
+                        @else
+                            <form action="{{ route('gsstudent.uploadEthicsFile', 'ethics_research_services_form') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="file" name="ethics_research_services_form" class="form-control" accept=".pdf" required>
+                                <button type="submit" class="btn btn-primary mt-2">Upload</button>
+                            </form>
+                        @endif
+                    </li>
+
+                    <!-- Application for Ethics Review Form -->
+                    <li>Application for Ethics Review Form:
+                        <a href="https://docs.google.com/document/d/1GejrV-uzjxxcGzrMAB3Hd3lrsKUgm5If/edit" target="_blank">Download Form</a>
+                        @if($appointment->ethics_application_form)
+                            <a href="#" data-toggle="modal" data-target="#ethicsApplicationFormModal">{{ $appointment->ethics_application_form_filename }}</a>
+                        @else
+                            <form action="{{ route('gsstudent.uploadEthicsFile', 'ethics_application_form') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="file" name="ethics_application_form" class="form-control" accept=".pdf" required>
+                                <button type="submit" class="btn btn-primary mt-2">Upload</button>
+                            </form>
+                        @endif
+                    </li>
+
+                    <!-- Study Protocol Assessment Form -->
+                    <li>Study Protocol Assessment Form:
+                        <a href="https://docs.google.com/document/d/10USbYR70sEOJVqMlU--XJCRNRdJF49cV/edit" target="_blank">Download Form</a>
+                        @if($appointment->ethics_study_protocol_form)
+                            <a href="#" data-toggle="modal" data-target="#studyProtocolFormModal">{{ $appointment->ethics_study_protocol_form_filename }}</a>
+                        @else
+                            <form action="{{ route('gsstudent.uploadEthicsFile', 'ethics_study_protocol_form') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="file" name="ethics_study_protocol_form" class="form-control" accept=".pdf" required>
+                                <button type="submit" class="btn btn-primary mt-2">Upload</button>
+                            </form>
+                        @endif
+                    </li>
+
+                    <!-- Informed Consent Assessment Form -->
+                    <li>Informed Consent Assessment Form:
+                        <a href="https://docs.google.com/document/d/1ZIMShedZvcomR61CRjIN5yN0AAuLf2Jr/edit?rtpof=true&sd=true" target="_blank">Download Form</a>
+                        @if($appointment->ethics_informed_consent_form)
+                            <a href="#" data-toggle="modal" data-target="#informedConsentFormModal">{{ $appointment->ethics_informed_consent_form_filename }}</a>
+                        @else
+                            <form action="{{ route('gsstudent.uploadEthicsFile', 'ethics_informed_consent_form') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="file" name="ethics_informed_consent_form" class="form-control" accept=".pdf" required>
+                                <button type="submit" class="btn btn-primary mt-2">Upload</button>
+                            </form>
+                        @endif
+                    </li>
+
+                    <!-- Sample Informed Consent -->
+                    <li>Sample Informed Consent:
+                        <a href="https://docs.google.com/document/d/1b0d-RdVu0iierQVoPoyLslKISQo0z6Ds/edit" target="_blank">Download Form</a>
+                        @if($appointment->ethics_sample_informed_consent)
+                            <a href="#" data-toggle="modal" data-target="#sampleInformedConsentModal">{{ $appointment->ethics_sample_informed_consent_filename }}</a>
+                        @else
+                            <form action="{{ route('gsstudent.uploadEthicsFile', 'ethics_sample_informed_consent') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="file" name="ethics_sample_informed_consent" class="form-control" accept=".pdf" required>
+                                <button type="submit" class="btn btn-primary mt-2">Upload</button>
+                            </form>
+                        @endif
+                    </li>
+                </ul>
+
+                <p><strong>AUFC Status:</strong> 
+                    @if($appointment->aufc_status === 'pending')
+                        <span class="badge badge-warning">Pending</span>
+                    @elseif($appointment->aufc_status === 'approved')
+                        <span class="badge badge-success">Approved</span>
+                    @else
+                        <span class="badge badge-secondary">Not Sent</span>
+                    @endif
+                </p>
+
+                <!-- Send Button -->
+                <button type="button" class="btn btn-primary mt-3" onclick="document.getElementById('sendDataForm').submit();">Send</button>
+                <form id="sendDataForm" action="{{ route('gsstudent.sendDataToAUFC') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+            </div>
+        </div>
+    </div>
+@endif
 @endif
 
     </div>
@@ -924,6 +1075,218 @@
         </div>
     </div>
 </div>
+
+<!-- Inline Modals for Viewing Uploaded Files -->
+<!-- Approved Proposal Manuscript Modal -->
+<!-- Approved Proposal Manuscript Modal -->
+<div class="modal fade" id="approvedProposalModal" tabindex="-1" aria-labelledby="approvedProposalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Approved Proposal Manuscript</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @php
+                    // Decode the JSON data here within the modal
+                    $updates = $appointment->proposal_manuscript_updates ? json_decode($appointment->proposal_manuscript_updates, true) : null;
+                @endphp
+                
+                @if($updates && !empty($updates['file_path']))
+                    <iframe src="{{ Storage::url($updates['file_path']) }}" width="100%" height="600px"></iframe>
+                @else
+                    <p>No manuscript uploaded.</p>
+                @endif
+            </div>
+            <div class="modal-footer">
+                @if($updates && !empty($updates['file_path']))
+                    <a href="{{ Storage::url($updates['file_path']) }}" download class="btn btn-primary">Download</a>
+                @endif
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Proof of Payment Modal -->
+<div class="modal fade" id="ethicsProofOfPaymentModal" tabindex="-1" aria-labelledby="ethicsProofOfPaymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Proof of Payment for Ethics Review</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @if($appointment->ethics_proof_of_payment)
+                    <iframe src="{{ Storage::url($appointment->ethics_proof_of_payment) }}" width="100%" height="600px"></iframe>
+                @else
+                    <p>No proof of payment uploaded.</p>
+                @endif
+            </div>
+            <div class="modal-footer">
+                @if($appointment->ethics_proof_of_payment)
+                    <a href="{{ Storage::url($appointment->ethics_proof_of_payment) }}" download class="btn btn-primary">Download</a>
+                @endif
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Curriculum Vitae Modal -->
+<div class="modal fade" id="ethicsCurriculumVitaeModal" tabindex="-1" aria-labelledby="ethicsCurriculumVitaeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Curriculum Vitae</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @if($appointment->ethics_curriculum_vitae)
+                    <iframe src="{{ Storage::url($appointment->ethics_curriculum_vitae) }}" width="100%" height="600px"></iframe>
+                @else
+                    <p>No Curriculum Vitae uploaded.</p>
+                @endif
+            </div>
+            <div class="modal-footer">
+                @if($appointment->ethics_curriculum_vitae)
+                    <a href="{{ Storage::url($appointment->ethics_curriculum_vitae) }}" download class="btn btn-primary">Download</a>
+                @endif
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Research Services Form Modal -->
+<div class="modal fade" id="researchServicesFormModal" tabindex="-1" aria-labelledby="researchServicesFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Research Services Form</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @if($appointment->ethics_research_services_form)
+                    <iframe src="{{ Storage::url($appointment->ethics_research_services_form) }}" width="100%" height="600px"></iframe>
+                @else
+                    <p>No Research Services Form uploaded.</p>
+                @endif
+            </div>
+            <div class="modal-footer">
+                @if($appointment->ethics_research_services_form)
+                    <a href="{{ Storage::url($appointment->ethics_research_services_form) }}" download class="btn btn-primary">Download</a>
+                @endif
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Application Form Modal -->
+<div class="modal fade" id="ethicsApplicationFormModal" tabindex="-1" aria-labelledby="ethicsApplicationFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Application for Ethics Review Form</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @if($appointment->ethics_application_form)
+                    <iframe src="{{ Storage::url($appointment->ethics_application_form) }}" width="100%" height="600px"></iframe>
+                @else
+                    <p>No Application for Ethics Review Form uploaded.</p>
+                @endif
+            </div>
+            <div class="modal-footer">
+                @if($appointment->ethics_application_form)
+                    <a href="{{ Storage::url($appointment->ethics_application_form) }}" download class="btn btn-primary">Download</a>
+                @endif
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Study Protocol Assessment Form Modal -->
+<div class="modal fade" id="studyProtocolFormModal" tabindex="-1" aria-labelledby="studyProtocolFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Study Protocol Assessment Form</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @if($appointment->ethics_study_protocol_form)
+                    <iframe src="{{ Storage::url($appointment->ethics_study_protocol_form) }}" width="100%" height="600px"></iframe>
+                @else
+                    <p>No Study Protocol Assessment Form uploaded.</p>
+                @endif
+            </div>
+            <div class="modal-footer">
+                @if($appointment->ethics_study_protocol_form)
+                    <a href="{{ Storage::url($appointment->ethics_study_protocol_form) }}" download class="btn btn-primary">Download</a>
+                @endif
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Informed Consent Assessment Form Modal -->
+<div class="modal fade" id="informedConsentFormModal" tabindex="-1" aria-labelledby="informedConsentFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Informed Consent Assessment Form</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @if($appointment->ethics_informed_consent_form)
+                    <iframe src="{{ Storage::url($appointment->ethics_informed_consent_form) }}" width="100%" height="600px"></iframe>
+                @else
+                    <p>No Informed Consent Assessment Form uploaded.</p>
+                @endif
+            </div>
+            <div class="modal-footer">
+                @if($appointment->ethics_informed_consent_form)
+                    <a href="{{ Storage::url($appointment->ethics_informed_consent_form) }}" download class="btn btn-primary">Download</a>
+                @endif
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sample Informed Consent Modal -->
+<div class="modal fade" id="sampleInformedConsentModal" tabindex="-1" aria-labelledby="sampleInformedConsentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sampleInformedConsentModalLabel">Sample Informed Consent</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @if($appointment->ethics_sample_informed_consent)
+                    <iframe src="{{ Storage::url($appointment->ethics_sample_informed_consent) }}" width="100%" height="600px"></iframe>
+                @else
+                    <p>No Sample Informed Consent uploaded.</p>
+                @endif
+            </div>
+            <div class="modal-footer">
+                @if($appointment->ethics_sample_informed_consent)
+                    <a href="{{ Storage::url($appointment->ethics_sample_informed_consent) }}" download class="btn btn-primary">Download</a>
+                @endif
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
     $(document).ready(function() {
         $('#videoPresentationModal').on('shown.bs.modal', function () {

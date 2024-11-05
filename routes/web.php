@@ -51,6 +51,9 @@
     
 
     use App\Http\Controllers\AUFCommittee\AUFCProfileController;
+    use App\Http\Controllers\AUFCommittee\AUFCAccountController;
+    use App\Http\Controllers\AUFCommittee\AUFCRoute1Controller;
+
 
     use App\Http\Controllers\Statistician\SProfileController;
     use App\Http\Controllers\Statistician\SAccountController;
@@ -241,6 +244,13 @@
 
     //AUFCommittee Routes Dashboard and Sidebar
     Route::get('/aufcommittee/dashboard', [AUFCProfileController::class, 'AUFCdashboard'])->name('AUFCdashboard');
+    //AUFCommittee Account
+    Route::get('/aufcommittee/account',  [AUFCAccountController::class, 'AUFCaccount'])->name('aufcommittee.account');
+    
+    //AUFCommittee Route 1
+    Route::get('aufcommittee/route1', [AUFCRoute1Controller::class, 'index'])->name('aufcommittee.route1.index');
+    Route::post('aufcommittee/route1/approve/{id}', [AUFCRoute1Controller::class, 'approve'])->name('aufcommittee.route1.approve');
+    Route::get('aufcommittee/route1/ajaxSearch', [AUFCRoute1Controller::class, 'ajaxSearch'])->name('aufcommittee.route1.ajaxSearch');
 
     //Statisctician Routes Dashboard and Sidebar
     Route::get('/statistician/dashboard', [SProfileController::class, 'Sdashboard'])->name('Sdashboard');
@@ -443,6 +453,13 @@ Route::get('/graduateschool/monitoring', [GSProposalMonitoringController::class,
 Route::get('/graduateschool/monitoring/search', action: [GSProposalMonitoringController::class, 'search'])->name('graduateschool.monitoring.search');
 Route::get('/graduateschool/monitoring/{studentId}', [GSProposalMonitoringController::class, 'showStudentMonitoringForm'])->name('graduateschool.showStudentMonitoringForm');
 
+
+Route::post('/gsstudent/upload-ethics-file/{fileType}', [GSSRoute1Controller::class, 'uploadEthicsFile'])
+     ->name('gsstudent.uploadEthicsFile');
+
+// Route for marking the Ethics Review data as sent to AUFC
+Route::post('/gsstudent/send-data-to-aufc', [GSSRoute1Controller::class, 'sendDataToAUFC'])
+     ->name('gsstudent.sendDataToAUFC');
 
 
 

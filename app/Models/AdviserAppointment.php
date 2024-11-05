@@ -50,8 +50,23 @@ class AdviserAppointment extends Model
         'dean_monitoring_signature',
         'student_statistician_response',
         'statistician_approval',
-        'update_date_saved'
-
+        'update_date_saved',
+        'ethics_proof_of_payment',
+        'ethics_proof_of_payment_filename',
+        'ethics_curriculum_vitae',
+        'ethics_curriculum_vitae_filename',
+        'ethics_research_services_form',
+        'ethics_research_services_form_filename',
+        'ethics_application_form',
+        'ethics_application_form_filename',
+        'ethics_study_protocol_form',
+        'ethics_study_protocol_form_filename',
+        'ethics_informed_consent_form',
+        'ethics_informed_consent_form_filename',
+        'ethics_send_data_to_aufc',
+        'ethics_sample_informed_consent',
+        'ethics_sample_informed_consent_filename',
+        'aufc_status'
     ];
 
     // Casts for specific fields

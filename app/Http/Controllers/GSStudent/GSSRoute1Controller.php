@@ -15,6 +15,7 @@ use App\Notifications\SubmissionFilesRespondedNotification;
 use App\Notifications\ProposalManuscriptUpdateNotification;
 use App\Notifications\StudentReplyNotification;
 use App\Notifications\StatisticianResponseNotification;
+use App\Notifications\AUFCFileSubmissionNotification;
 
 
 
@@ -328,7 +329,87 @@ class GSSRoute1Controller extends Controller
         return redirect()->route('gsstudent.route1')
                          ->with('success', 'Your response to the consultation with the statistician has been recorded.');
     }
-    
+    public function uploadEthicsFile(Request $request, $fileType)
+{
+    $user = Auth::user();
+    $appointment = AdviserAppointment::where('student_id', $user->id)->first();
+
+    // Define validation rules based on the file type
+    $validationRules = [
+        'ethics_proof_of_payment' => 'file|mimes:pdf,png,jpg,jpeg|max:2048',
+        'ethics_curriculum_vitae' => 'file|mimes:pdf,png,jpg,jpeg|max:2048',
+        'ethics_research_services_form' => 'file|mimes:pdf|max:2048',
+        'ethics_application_form' => 'file|mimes:pdf|max:2048',
+        'ethics_study_protocol_form' => 'file|mimes:pdf|max:2048',
+        'ethics_informed_consent_form' => 'file|mimes:pdf|max:2048',
+        'ethics_sample_informed_consent' => 'file|mimes:pdf|max:2048',
+
+    ];
+
+    // Validate the request
+    $request->validate([$fileType => $validationRules[$fileType]]);
+
+    // Upload the file
+    if ($file = $request->file($fileType)) {
+        $originalFileName = $file->getClientOriginalName();
+        $uniqueFileName = time() . '_' . $originalFileName;
+        $storedFilePath = $file->storeAs('public/ethics_files', $uniqueFileName);
+
+        // Save the file path and original file name in the appointment model
+        $appointment->$fileType = $storedFilePath;
+        $appointment->{$fileType . '_filename'} = $originalFileName;
+        $appointment->save();
+    }
+
+    return redirect()->route('gsstudent.route1')->with('success', ucfirst(str_replace('_', ' ', $fileType)) . ' uploaded successfully!');
+}
+
+public function sendDataToAUFC(Request $request)
+{
+    $user = Auth::user();
+    $appointment = AdviserAppointment::where('student_id', $user->id)->first();
+
+    // Check if all required files are uploaded
+    $requiredFiles = [
+        'ethics_proof_of_payment',
+        'ethics_curriculum_vitae',
+        'ethics_research_services_form',
+        'ethics_application_form',
+        'ethics_study_protocol_form',
+        'ethics_informed_consent_form',
+        'ethics_sample_informed_consent',
+    ];
+
+    foreach ($requiredFiles as $fileField) {
+        if (empty($appointment->$fileField)) {
+            return redirect()->back()->with('error', 'Please upload all required files before sending the data.');
+        }
+    }
+
+    // If all required files are present, mark data as sent and set aufc_status to "pending"
+    $appointment->ethics_send_data_to_aufc = true;
+    $appointment->aufc_status = 'pending'; // Set aufc_status to "pending"
+    $appointment->save();
+
+    // Send notifications to account types 1, 2, and 3 (Superadmin, Admin, and Graduate School)
+    $notifiableRoles = [1, 2, 3];
+    $notifiableUsers = User::whereIn('account_type', $notifiableRoles)->get();
+
+    foreach ($notifiableUsers as $notifiableUser) {
+        $notifiableUser->notify(new AUFCFileSubmissionNotification($user->name, $notifiableUser->account_type));
+    }
+
+    // Send notification to account type 6 (AUF Ethics Review Committee)
+    $committeeUsers = User::where('account_type', 6)->get();
+
+    foreach ($committeeUsers as $committeeUser) {
+        $committeeUser->notify(new AUFCFileSubmissionNotification($user->name, $committeeUser->account_type));
+    }
+
+    return redirect()->route('gsstudent.route1')->with('success', 'Data has been sent to AUFC and status set to pending.');
+}
+
+
 
     
 
