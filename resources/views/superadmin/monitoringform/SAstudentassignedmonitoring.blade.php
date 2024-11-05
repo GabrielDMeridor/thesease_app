@@ -137,23 +137,49 @@
          </div>
       </div>
    </div>
-   <!-- Modal for Main Proposal Manuscript -->
-   <div class="modal fade" id="mainProposalManuscriptModal" tabindex="-1" aria-labelledby="mainProposalManuscriptModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-         <div class="modal-content">
+<!-- Modal for Main Proposal Manuscript -->
+<div class="modal fade" id="mainProposalManuscriptModal" tabindex="-1" aria-labelledby="mainProposalManuscriptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
             <div class="modal-header">
-               <h5 class="modal-title">{{ $appointment->original_proposal_manuscript }}</h5>
-               <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">{{ $appointment->original_proposal_manuscript ?? 'No Manuscript Available' }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
-               <iframe src="{{ Storage::url($appointment->proposal_manuscript) }}" width="100%" height="500px"></iframe>
+                @if(Storage::exists($appointment->proposal_manuscript))
+                    <iframe src="{{ Storage::url($appointment->proposal_manuscript) }}" width="100%" height="500px"></iframe>
+                @else
+                    <p>File not found or inaccessible.</p>
+                @endif
             </div>
             <div class="modal-footer">
-               <a href="{{ Storage::url($appointment->proposal_manuscript) }}" download class="btn btn-primary">Download</a>
+                @if(Storage::exists($appointment->proposal_manuscript))
+                    <a href="{{ Storage::url($appointment->proposal_manuscript) }}" download class="btn btn-primary">Download</a>
+                @endif
             </div>
-         </div>
-      </div>
-   </div>
+        </div>
+    </div>
+</div>
+
+              <!-- Modal for proposal manuscript update -->
+                <div class="modal fade" id="manuscriptUpdateModal" tabindex="-1" aria-labelledby="manuscriptUpdateModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{ $updates['original_name'] ?? 'Update File' }}</h5>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <iframe src="{{ Storage::url($updates['file_path'] ?? '') }}" width="100%" height="500px"></iframe>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="{{ Storage::url($updates['file_path'] ?? '') }}" download class="btn btn-primary">Download</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
    <!-- Panel Review Section -->
    <div class="card mb-4 review-panel">
       <h4 class="routing-heading">Panel Review</h4>
