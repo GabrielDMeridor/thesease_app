@@ -482,7 +482,8 @@ Route::post('/gsstudent/send-data-to-aufc', [GSSRoute1Controller::class, 'sendDa
 
 
 
-    
+     Route::post('/superadmin/analytics-data', [SAProfileController::class, 'getAnalyticsData'])->name('superadmin.analyticsData');
+
 
 
 
