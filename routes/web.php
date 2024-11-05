@@ -8,6 +8,8 @@
     use App\Http\Controllers\SuperAdmin\SARoute1Controller;
     use App\Http\Controllers\SuperAdmin\SACalendarController;
     use App\Http\Controllers\SuperAdmin\SAProposalMonitoringController;
+    use App\Http\Controllers\SuperAdmin\SARoute2Controller;
+
 
 
     use App\Http\Controllers\Admin\AProfileController;
@@ -17,6 +19,7 @@
     use App\Http\Controllers\Admin\AArchiveController;
     use App\Http\Controllers\Admin\ACalendarController;
     use App\Http\Controllers\Admin\AProposalMonitoringController;
+    use App\Http\Controllers\Admin\ARoute2Controller;
 
 
 
@@ -30,6 +33,7 @@
     use App\Http\Controllers\GraduateSchool\GSArchiveController;
     use App\Http\Controllers\GraduateSchool\GSCalendarController;
     use App\Http\Controllers\GraduateSchool\GSProposalMonitoringController;
+    use App\Http\Controllers\GraduateSchool\GSRoute2Controller;
 
 
 
@@ -39,6 +43,8 @@
     use App\Http\Controllers\ProgramChair\PCProfileController;
     use App\Http\Controllers\ProgramChair\PCAccountController;
     use App\Http\Controllers\ProgramChair\PCRoute1Controller;
+    use App\Http\Controllers\ProgramChair\PCRoute2Controller;
+
 
 
     use App\Http\Controllers\TDProfessor\TDPProfileController;
@@ -46,6 +52,8 @@
     use App\Http\Controllers\TDProfessor\TDPAccountController;
     use App\Http\Controllers\TDProfessor\TDPCalendarController;
     use App\Http\Controllers\TDProfessor\TDPProposalMonitoringController;
+    use App\Http\Controllers\TDProfessor\TDPRoute2Controller;
+
 
 
     
@@ -55,20 +63,26 @@
     use App\Http\Controllers\AUFCommittee\AUFCRoute1Controller;
 
 
+
     use App\Http\Controllers\Statistician\SProfileController;
     use App\Http\Controllers\Statistician\SAccountController;
     use App\Http\Controllers\Statistician\SRoute1Controller;
+    use App\Http\Controllers\Statistician\SRoute2Controller;
+
 
 
     use App\Http\Controllers\OVPRI\OVPRIProfileController;
     use App\Http\Controllers\OVPRI\OVPRIAccountController;
     use App\Http\Controllers\OVPRI\OVPRIRoute1Controller;
+    use App\Http\Controllers\OVPRI\OVPRIRoute2Controller;
 
 
 
     use App\Http\Controllers\Library\LProfileController;
     use App\Http\Controllers\Library\LAccountController;
     use App\Http\Controllers\Library\LRoute1Controller;
+    use App\Http\Controllers\Library\LRoute2Controller;
+
 
 
     use App\Http\Controllers\LanguageEditor\LEProfileController;
@@ -78,6 +92,7 @@
     use App\Http\Controllers\GSStudent\GSSFileUploadController;
     use App\Http\Controllers\GSStudent\GSSRoute1Controller;
     use App\Http\Controllers\GSStudent\GSSCalendarController;
+    use App\Http\Controllers\GSStudent\GSSRoute2Controller;
 
 
 
