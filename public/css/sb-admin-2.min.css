@@ -10132,7 +10132,6 @@ span::after {
 .form-control {
     border: 1px solid #ddd;
     padding: 8px;
-    background-color: white;
 }
 
 /* Signatures Gallery Container */
@@ -10215,6 +10214,8 @@ span::after {
 .dean-signature-section p strong {
     color: #495464;
 }
+
+
 
 
 

@@ -706,105 +706,146 @@
 @else
     <!-- Display Content for Step 8 or 9 without Upload Options -->
     <div class="container-fluid">
-        <div class="card shadow mb-4">
-            <div class="card-body">
-                <h4 class="routing-heading">Ethics Review</h4>
-                <p>Here is the current status of the student's submissions for the Ethics Review:</p>
-                
-                <ul>
-                    <!-- Approved Proposal Manuscript -->
-                    <li>Approved Proposal Manuscript:
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h4 class="routing-heading">Ethics Review</h4>
+            <p>Here is the current status of the student's submissions for the Ethics Review:</p>
+
+            <!-- Ethics Review Document Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered custom-table">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Document</th>
+                            <th class="text-center">Form Link</th>
+                            <th class="text-center">Submission Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Approved Proposal Manuscript -->
+                        <tr>
+                            <td>Approved Proposal Manuscript</td>
+                            <td class="text-center">
+                                @php
+                                    $updates = $appointment->proposal_manuscript_updates ? json_decode($appointment->proposal_manuscript_updates, true) : null;
+                                @endphp
+                                @if($updates && isset($updates['original_name']))
+                                    <a href="#" data-toggle="modal" data-target="#approvedProposalModal">{{ $updates['original_name'] }}</a>
+                                @else
+                                    <span class="text-muted">Not uploaded yet</span>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <span class="badge {{ $updates ? 'badge-success' : 'badge-secondary' }}">
+                                    {{ $updates ? 'Uploaded' : 'Not Uploaded' }}
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- Proof of Payment for Ethics Review -->
+                        <tr>
+                            <td>Proof of Payment for Ethics Review</td>
+                            <td class="text-center">
+                                @if($appointment->ethics_proof_of_payment)
+                                    <a href="#" data-toggle="modal" data-target="#ethicsProofOfPaymentModal">{{ $appointment->ethics_proof_of_payment_filename }}</a>
+                                @else
+                                    <span class="text-muted">Not uploaded yet</span>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <span class="badge {{ $appointment->ethics_proof_of_payment ? 'badge-success' : 'badge-secondary' }}">
+                                    {{ $appointment->ethics_proof_of_payment ? 'Uploaded' : 'Not Uploaded' }}
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- Curriculum Vitae -->
+                        <tr>
+                            <td>Curriculum Vitae</td>
+                            <td class="text-center">
+                                @if($appointment->ethics_curriculum_vitae)
+                                    <a href="#" data-toggle="modal" data-target="#ethicsCurriculumVitaeModal">{{ $appointment->ethics_curriculum_vitae_filename }}</a>
+                                @else
+                                    <span class="text-muted">Not uploaded yet</span>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <span class="badge {{ $appointment->ethics_curriculum_vitae ? 'badge-success' : 'badge-secondary' }}">
+                                    {{ $appointment->ethics_curriculum_vitae ? 'Uploaded' : 'Not Uploaded' }}
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- Dynamic Rows for Document Types with External Links -->
                         @php
-                            $updates = $appointment->proposal_manuscript_updates ? json_decode($appointment->proposal_manuscript_updates, true) : null;
+                            $documents = [
+                                'Research Services Form' => [
+                                    'filename' => 'ethics_research_services_form_filename',
+                                    'modal' => '#researchServicesFormModal',
+                                    'upload_field' => 'ethics_research_services_form',
+                                    'download_url' => 'https://docs.google.com/document/d/1F_R6DuTVo9nAf511_p27pjDUiWxcNg8G/edit',
+                                ],
+                                'Application for Ethics Review Form' => [
+                                    'filename' => 'ethics_application_form_filename',
+                                    'modal' => '#ethicsApplicationFormModal',
+                                    'upload_field' => 'ethics_application_form',
+                                    'download_url' => 'https://docs.google.com/document/d/1GejrV-uzjxxcGzrMAB3Hd3lrsKUgm5If/edit',
+                                ],
+                                'Study Protocol Assessment Form' => [
+                                    'filename' => 'ethics_study_protocol_form_filename',
+                                    'modal' => '#studyProtocolFormModal',
+                                    'upload_field' => 'ethics_study_protocol_form',
+                                    'download_url' => 'https://docs.google.com/document/d/10USbYR70sEOJVqMlU--XJCRNRdJF49cV/edit',
+                                ],
+                                'Informed Consent Assessment Form' => [
+                                    'filename' => 'ethics_informed_consent_form_filename',
+                                    'modal' => '#informedConsentFormModal',
+                                    'upload_field' => 'ethics_informed_consent_form',
+                                    'download_url' => 'https://docs.google.com/document/d/1ZIMShedZvcomR61CRjIN5yN0AAuLf2Jr/edit?rtpof=true&sd=true',
+                                ],
+                                'Sample Informed Consent' => [
+                                    'filename' => 'ethics_sample_informed_consent_filename',
+                                    'modal' => '#sampleInformedConsentModal',
+                                    'upload_field' => 'ethics_sample_informed_consent',
+                                    'download_url' => 'https://docs.google.com/document/d/1b0d-RdVu0iierQVoPoyLslKISQo0z6Ds/edit',
+                                ],
+                            ];
                         @endphp
-                        @if($updates && isset($updates['original_name']))
-                            <a href="#" data-toggle="modal" data-target="#approvedProposalModal">{{ $updates['original_name'] }}</a>
-                        @else
-                            <span class="text-muted">Not uploaded yet</span>
-                        @endif
-                    </li>
 
-                    <!-- Proof of Payment for Ethics Review -->
-                    <li>Proof of Payment for Ethics Review:
-                        @if($appointment->ethics_proof_of_payment)
-                            <a href="#" data-toggle="modal" data-target="#ethicsProofOfPaymentModal">{{ $appointment->ethics_proof_of_payment_filename }}</a>
-                        @else
-                            <span class="text-muted">Not uploaded yet</span>
-                        @endif
-                    </li>
-
-                    <!-- Curriculum Vitae -->
-                    <li>Curriculum Vitae:
-                        @if($appointment->ethics_curriculum_vitae)
-                            <a href="#" data-toggle="modal" data-target="#ethicsCurriculumVitaeModal">{{ $appointment->ethics_curriculum_vitae_filename }}</a>
-                        @else
-                            <span class="text-muted">Not uploaded yet</span>
-                        @endif
-                    </li>
-
-                    <!-- Research Services Form -->
-                    <li>Research Services Form:
-                        <a href="https://docs.google.com/document/d/1F_R6DuTVo9nAf511_p27pjDUiWxcNg8G/edit" target="_blank">Download Form</a>
-                        @if($appointment->ethics_research_services_form)
-                            <a href="#" data-toggle="modal" data-target="#researchServicesFormModal">{{ $appointment->ethics_research_services_form_filename }}</a>
-                        @else
-                            <span class="text-muted">Not uploaded yet</span>
-                        @endif
-                    </li>
-
-                    <!-- Application for Ethics Review Form -->
-                    <li>Application for Ethics Review Form:
-                        <a href="https://docs.google.com/document/d/1GejrV-uzjxxcGzrMAB3Hd3lrsKUgm5If/edit" target="_blank">Download Form</a>
-                        @if($appointment->ethics_application_form)
-                            <a href="#" data-toggle="modal" data-target="#ethicsApplicationFormModal">{{ $appointment->ethics_application_form_filename }}</a>
-                        @else
-                            <span class="text-muted">Not uploaded yet</span>
-                        @endif
-                    </li>
-
-                    <!-- Study Protocol Assessment Form -->
-                    <li>Study Protocol Assessment Form:
-                        <a href="https://docs.google.com/document/d/10USbYR70sEOJVqMlU--XJCRNRdJF49cV/edit" target="_blank">Download Form</a>
-                        @if($appointment->ethics_study_protocol_form)
-                            <a href="#" data-toggle="modal" data-target="#studyProtocolFormModal">{{ $appointment->ethics_study_protocol_form_filename }}</a>
-                        @else
-                            <span class="text-muted">Not uploaded yet</span>
-                        @endif
-                    </li>
-
-                    <!-- Informed Consent Assessment Form -->
-                    <li>Informed Consent Assessment Form:
-                        <a href="https://docs.google.com/document/d/1ZIMShedZvcomR61CRjIN5yN0AAuLf2Jr/edit?rtpof=true&sd=true" target="_blank">Download Form</a>
-                        @if($appointment->ethics_informed_consent_form)
-                            <a href="#" data-toggle="modal" data-target="#informedConsentFormModal">{{ $appointment->ethics_informed_consent_form_filename }}</a>
-                        @else
-                            <span class="text-muted">Not uploaded yet</span>
-                        @endif
-                    </li>
-
-                    <!-- Sample Informed Consent -->
-                    <li>Sample Informed Consent:
-                        <a href="https://docs.google.com/document/d/1b0d-RdVu0iierQVoPoyLslKISQo0z6Ds/edit" target="_blank">Download Form</a>
-                        @if($appointment->ethics_sample_informed_consent)
-                            <a href="#" data-toggle="modal" data-target="#sampleInformedConsentModal">{{ $appointment->ethics_sample_informed_consent_filename }}</a>
-                        @else
-                            <span class="text-muted">Not uploaded yet</span>
-                        @endif
-                    </li>
-                </ul>
-
-                <p><strong>AUFC Status:</strong> 
-                    @if($appointment->aufc_status === 'pending')
-                        <span class="badge badge-warning">Pending</span>
-                    @elseif($appointment->aufc_status === 'approved')
-                        <span class="badge badge-success">Approved</span>
-                    @else
-                        <span class="badge badge-secondary">Not Sent</span>
-                    @endif
-                </p>
+                        @foreach($documents as $doc => $data)
+                            <tr>
+                                <td>{{ $doc }}</td>
+                                <td class="text-center">
+                                    <a href="{{ $data['download_url'] }}" target="_blank">Download Form</a>
+                                    @if($appointment->{$data['upload_field']})
+                                        <a href="#" data-toggle="modal" data-target="{{ $data['modal'] }}">
+                                            {{ $appointment->{$data['filename']} }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Not uploaded yet</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge {{ $appointment->{$data['upload_field']} ? 'badge-success' : 'badge-secondary' }}">
+                                        {{ $appointment->{$data['upload_field']} ? 'Uploaded' : 'Not Uploaded' }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
+
+            <!-- AUFC Status -->
+            <p><strong>AUFC Status:</strong> 
+                <span class="badge {{ $appointment->aufc_status === 'approved' ? 'badge-success' : ($appointment->aufc_status === 'pending' ? 'badge-warning' : 'badge-secondary') }}">
+                    {{ $appointment->aufc_status === 'approved' ? 'Approved' : ($appointment->aufc_status === 'pending' ? 'Pending' : 'Not Sent') }}
+                </span>
+            </p>
         </div>
     </div>
+</div>
+
 @endif
 @endif
 

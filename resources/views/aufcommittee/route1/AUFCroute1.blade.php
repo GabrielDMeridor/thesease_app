@@ -71,33 +71,53 @@
     <br>
 
     <!-- Search Input -->
-    <div class="mb-3">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search by student name...">
+    <div class="card">
+        <div class="card-body">
+        <form action="{{ route('graduateschool.route1') }}" method="GET">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm">
+                        <!-- Keyword search input -->
+                        <div class="input-group mb-3">
+                            <input type="text" name="search" class="form-control" placeholder="Search students by name" value="{{ request('search') }}">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 
+</div>
+
+<br>
+
     <!-- Table of Students Awaiting AUFC Approval -->
+<div class="table-responsive">
     <table class="table table-bordered">
         <thead class="table-dark">
             <tr>
-                <th>Student Name</th>
-                <th>Program</th>
-                <th>Last Updated</th>
-                <th>Status</th>
-                <th>Action</th>
+                <th style="text-align:center;">Student Name</th>
+                <th style="text-align:center;">Program</th>
+                <th style="text-align:center;">Last Updated</th>
+                <th style="text-align:center;">Status</th>
+                <th style="text-align:center;">Action</th>
             </tr>
         </thead>
         <tbody id="appointmentsTable">
             @foreach ($appointments as $appointment)
             <tr>
-                <td>{{ $appointment->student->name ?? 'N/A' }}</td>
-                <td>{{ $appointment->student->program ?? 'N/A' }}</td>
-                <td>{{ $appointment->updated_at->format('m/d/Y') }}</td>
-                <td>{{ $appointment->aufc_status == 'approved' ? 'Approved' : 'Pending' }}</td>
-                <td>
+                <td class="text-center">{{ $appointment->student->name ?? 'N/A' }}</td>
+                <td class="text-center">{{ $appointment->student->program ?? 'N/A' }}</td>
+                <td class="text-center">{{ $appointment->updated_at->format('m/d/Y') }}</td>
+                <td class="text-center">{{ $appointment->aufc_status == 'approved' ? 'Approved' : 'Pending' }}</td>
+                <td class="text-center">
                     @if ($appointment->aufc_status !== 'approved')
                         <form action="{{ route('aufcommittee.route1.approve', $appointment->id) }}" method="POST" style="display:inline;">
                             @csrf
-                            <button type="submit" class="btn btn-success">Approve</button>
+                            <button type="submit" class="btn btn-affix" style="color:white;">Approve</button>
                         </form>
                     @else
                         <button class="btn btn-secondary" disabled>Approved</button>
@@ -107,13 +127,12 @@
             @endforeach
         </tbody>
     </table>
+</div>
 
     <!-- Pagination Links -->
     <div class="mt-3" id="pagination-links">
         {{ $appointments->links() }}
     </div>
-</div>
-
 <script>
     $(document).ready(function () {
         $('#searchInput').on('input', function () {
