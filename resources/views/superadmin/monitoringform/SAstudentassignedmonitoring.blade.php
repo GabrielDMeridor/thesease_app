@@ -72,7 +72,9 @@
                                                 {{ $updates['original_name'] }}
                                             </a>
                                         </td>
-                                        <td class="text-center">{{ \Carbon\Carbon::parse($updates['uploaded_at'])->format('m/d/Y') }}</td>
+                                        <td class="text-center">
+                                                    {{ isset($updates['uploaded_at']) ? \Carbon\Carbon::parse($updates['uploaded_at'])->format('m/d/Y h:i A') : 'Not available' }}
+                                        </td>
                                         <td class="text-center">
                                             <a href="{{ Storage::url($updates['file_path']) }}" download class="btn btn-primary">Download</a>
                                         </td>

@@ -249,38 +249,45 @@ class GSSRoute1Controller extends Controller
     
         // Check if all panel signatures are completed
         $panelSignatures = is_string($appointment->panel_signatures) ? json_decode($appointment->panel_signatures, true) : $appointment->panel_signatures ?? [];
-
+    
         if ($panelSignatures && count(array_filter($panelSignatures)) == count($panelSignatures)) {
             return redirect()->route('gsstudent.route1')->with('error', 'Panelist signatures are complete. No further uploads allowed.');
         }
     
+        // Validate the uploaded file
         $request->validate([
             'proposal_manuscript_update' => 'required|file|mimes:pdf|max:2048',
         ]);
     
+        // Handle the file upload
         $file = $request->file('proposal_manuscript_update');
         $originalFileName = $file->getClientOriginalName();
         $storedFileName = $file->storeAs('public/proposal_manuscript_updates', time() . '_' . $originalFileName);
     
+        // Store file details and exact upload timestamp
         $appointment->proposal_manuscript_updates = json_encode([
             'file_path' => $storedFileName,
             'original_name' => $originalFileName,
-            'uploaded_at' => now(),
+            'uploaded_at' => \Carbon\Carbon::now()->toDateTimeString(), // Store full date and time of the upload
         ]);
+    
+        // Update the exact date and time of the upload in `update_date_saved`
+        $appointment->update_date_saved = \Carbon\Carbon::now(); // Stores full date and time
     
         $appointment->save();
     
         // Notify all panel members
         $panelMembersIds = is_string($appointment->panel_members) 
-        ? json_decode($appointment->panel_members, true) 
-        : $appointment->panel_members;
+            ? json_decode($appointment->panel_members, true) 
+            : $appointment->panel_members;
     
-    // Now retrieve the users with those IDs
-    $panelMembers = User::whereIn('id', $panelMembersIds)->get();
-            Notification::send($panelMembers, new ProposalManuscriptUpdateNotification($user));
+        // Retrieve users with those IDs and send notifications
+        $panelMembers = User::whereIn('id', $panelMembersIds)->get();
+        Notification::send($panelMembers, new ProposalManuscriptUpdateNotification($user));
     
         return redirect()->route('gsstudent.route1')->with('success', 'Proposal manuscript update uploaded successfully!');
     }
+    
     
 
     public function addStudentReply(Request $request, $panelistId)
