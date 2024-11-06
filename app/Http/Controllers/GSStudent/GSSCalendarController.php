@@ -33,7 +33,7 @@ class GSSCalendarController extends Controller
         $title = 'Calendar';
     
         // Pass data to the view
-        return view('gsstudent.calendar.GSSCalendar', compact('appointment', 'panelMembers', 'title'));
+        return view('gsstudent.calendar.GSScalendar', compact('appointment', 'panelMembers', 'title'));
     }
     
 
