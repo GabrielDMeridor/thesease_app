@@ -1137,10 +1137,11 @@
             <button type="button" class="close" data-dismiss="modal">&times;</button>
          </div>
          <div class="modal-body">
-            @php
-            // Decode the JSON data here within the modal
-            $updates = $appointment->proposal_manuscript_updates ? json_decode($appointment->proposal_manuscript_updates, true) : null;
-            @endphp
+         @if(isset($appointment) && $appointment->proposal_manuscript_updates)
+               @php
+                   // Decode the JSON data here within the modal
+                   $updates = json_decode($appointment->proposal_manuscript_updates, true);
+               @endphp
             @if($updates && !empty($updates['file_path']))
             <iframe src="{{ Storage::url($updates['file_path']) }}" width="100%" height="600px"></iframe>
             @else
@@ -1151,6 +1152,8 @@
             @if($updates && !empty($updates['file_path']))
             <a href="{{ Storage::url($updates['file_path']) }}" download class="btn btn-primary">Download</a>
             @endif
+            @endif
+
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
       </div>
@@ -1165,14 +1168,15 @@
             <button type="button" class="close" data-dismiss="modal">&times;</button>
          </div>
          <div class="modal-body">
-            @if($appointment->ethics_proof_of_payment)
-            <iframe src="{{ Storage::url($appointment->ethics_proof_of_payment) }}" width="100%" height="600px"></iframe>
+         @if(isset($appointment) && $appointment->ethics_proof_of_payment)
+                <iframe src="{{ Storage::url($appointment->ethics_proof_of_payment) }}" width="100%" height="600px"></iframe>
             @else
-            <p>No proof of payment uploaded.</p>
+                <p>No proof of payment uploaded.</p>
             @endif
+
          </div>
          <div class="modal-footer">
-            @if($appointment->ethics_proof_of_payment)
+            @if(isset($appointment) && $appointment->ethics_proof_of_payment)
             <a href="{{ Storage::url($appointment->ethics_proof_of_payment) }}" download class="btn btn-primary">Download</a>
             @endif
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -1189,15 +1193,16 @@
             <button type="button" class="close" data-dismiss="modal">&times;</button>
          </div>
          <div class="modal-body">
-            @if($appointment->ethics_curriculum_vitae)
+            @if(isset($appointment) && $appointment->ethics_curriculum_vitae)
+
             <iframe src="{{ Storage::url($appointment->ethics_curriculum_vitae) }}" width="100%" height="600px"></iframe>
             @else
             <p>No Curriculum Vitae uploaded.</p>
             @endif
          </div>
          <div class="modal-footer">
-            @if($appointment->ethics_curriculum_vitae)
-            <a href="{{ Storage::url($appointment->ethics_curriculum_vitae) }}" download class="btn btn-primary">Download</a>
+         @if(isset($appointment) && $appointment->ethics_curriculum_vitae)
+         <a href="{{ Storage::url($appointment->ethics_curriculum_vitae) }}" download class="btn btn-primary">Download</a>
             @endif
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
@@ -1213,15 +1218,15 @@
             <button type="button" class="close" data-dismiss="modal">&times;</button>
          </div>
          <div class="modal-body">
-            @if($appointment->ethics_research_services_form)
+            @if(isset($appointment) && $appointment->ethics_research_services_form)
             <iframe src="{{ Storage::url($appointment->ethics_research_services_form) }}" width="100%" height="600px"></iframe>
             @else
             <p>No Research Services Form uploaded.</p>
             @endif
          </div>
          <div class="modal-footer">
-            @if($appointment->ethics_research_services_form)
-            <a href="{{ Storage::url($appointment->ethics_research_services_form) }}" download class="btn btn-primary">Download</a>
+         @if(isset($appointment) && $appointment->ethics_research_services_form)
+         <a href="{{ Storage::url($appointment->ethics_research_services_form) }}" download class="btn btn-primary">Download</a>
             @endif
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
@@ -1237,15 +1242,15 @@
             <button type="button" class="close" data-dismiss="modal">&times;</button>
          </div>
          <div class="modal-body">
-            @if($appointment->ethics_application_form)
+            @if(isset($appointment) && $appointment->ethics_application_form)
             <iframe src="{{ Storage::url($appointment->ethics_application_form) }}" width="100%" height="600px"></iframe>
             @else
             <p>No Application for Ethics Review Form uploaded.</p>
             @endif
          </div>
          <div class="modal-footer">
-            @if($appointment->ethics_application_form)
-            <a href="{{ Storage::url($appointment->ethics_application_form) }}" download class="btn btn-primary">Download</a>
+         @if(isset($appointment) && $appointment->ethics_application_form)
+         <a href="{{ Storage::url($appointment->ethics_application_form) }}" download class="btn btn-primary">Download</a>
             @endif
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
@@ -1261,15 +1266,15 @@
             <button type="button" class="close" data-dismiss="modal">&times;</button>
          </div>
          <div class="modal-body">
-            @if($appointment->ethics_study_protocol_form)
+            @if(isset($appointment) && $appointment->ethics_study_protocol_form)
             <iframe src="{{ Storage::url($appointment->ethics_study_protocol_form) }}" width="100%" height="600px"></iframe>
             @else
             <p>No Study Protocol Assessment Form uploaded.</p>
             @endif
          </div>
          <div class="modal-footer">
-            @if($appointment->ethics_study_protocol_form)
-            <a href="{{ Storage::url($appointment->ethics_study_protocol_form) }}" download class="btn btn-primary">Download</a>
+         @if(isset($appointment) && $appointment->ethics_study_protocol_form)
+         <a href="{{ Storage::url($appointment->ethics_study_protocol_form) }}" download class="btn btn-primary">Download</a>
             @endif
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
@@ -1285,15 +1290,15 @@
             <button type="button" class="close" data-dismiss="modal">&times;</button>
          </div>
          <div class="modal-body">
-            @if($appointment->ethics_informed_consent_form)
+            @if(isset($appointment) && $appointment->ethics_informed_consent_form)
             <iframe src="{{ Storage::url($appointment->ethics_informed_consent_form) }}" width="100%" height="600px"></iframe>
             @else
             <p>No Informed Consent Assessment Form uploaded.</p>
             @endif
          </div>
          <div class="modal-footer">
-            @if($appointment->ethics_informed_consent_form)
-            <a href="{{ Storage::url($appointment->ethics_informed_consent_form) }}" download class="btn btn-primary">Download</a>
+         @if(isset($appointment) && $appointment->ethics_informed_consent_form)
+         <a href="{{ Storage::url($appointment->ethics_informed_consent_form) }}" download class="btn btn-primary">Download</a>
             @endif
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
@@ -1311,15 +1316,15 @@
             </button>
          </div>
          <div class="modal-body">
-            @if($appointment->ethics_sample_informed_consent)
+            @if(isset($appointment) && $appointment->ethics_sample_informed_consent)
             <iframe src="{{ Storage::url($appointment->ethics_sample_informed_consent) }}" width="100%" height="600px"></iframe>
             @else
             <p>No Sample Informed Consent uploaded.</p>
             @endif
          </div>
          <div class="modal-footer">
-            @if($appointment->ethics_sample_informed_consent)
-            <a href="{{ Storage::url($appointment->ethics_sample_informed_consent) }}" download class="btn btn-primary">Download</a>
+         @if(isset($appointment) && $appointment->ethics_sample_informed_consent)
+         <a href="{{ Storage::url($appointment->ethics_sample_informed_consent) }}" download class="btn btn-primary">Download</a>
             @endif
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
