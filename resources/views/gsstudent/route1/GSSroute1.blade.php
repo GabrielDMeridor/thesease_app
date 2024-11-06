@@ -95,9 +95,8 @@
    <div class="card-header"></div>
    <br>
    @php
-   // Determine the total number of steps
-   $totalSteps = $isDrPH ? 9 : 8; // 9 steps for DrPH, 8 for others
-   @endphp
+            $totalSteps = $isDrPH ? 9 : 8; // 9 steps for DrPH, 8 for others
+        @endphp
    <!-- Multi-Step Navigation -->
    <div class="container-fluid">
       <div class="steps">

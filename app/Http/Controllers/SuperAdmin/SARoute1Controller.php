@@ -52,7 +52,7 @@ public function showRoutingForm($studentId)
     $appointment = AdviserAppointment::where('student_id', $student->id)->first();
     
     // Determine if the student is in the DrPH program
-    $isDrPH = $student->program === 'DrPH';
+    $isDrPH = $student->program === 'DRPH-HPE';
     
     // Define the title for the view
     $title = 'Routing Form 1 for ' . $student->name;

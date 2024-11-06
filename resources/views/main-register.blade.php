@@ -249,7 +249,7 @@
     // Define programs for Masteral and Doctorate degrees
     const programs = {
         'Masteral': ['MAEd', 'MA-Psych-CP', 'MBA', 'MS-CJ-Crim', 'MDS', 'MIT', 'MSPH', 'MPH', 'MS-MLS', 'MAN', 'MN'],
-        'Doctorate': ['PhD-CI-ELT', 'PhD-Ed-EM', 'PhD-Mgmt', 'DBA', 'DIT', 'DrPH-HPE']
+        'Doctorate': ['PhD-CI-ELT', 'PhD-Ed-EM', 'PhD-Mgmt', 'DBA', 'DIT', 'DRPH-HPE']
     };
         // Initialize form fields based on old values
         window.addEventListener('DOMContentLoaded', function () {

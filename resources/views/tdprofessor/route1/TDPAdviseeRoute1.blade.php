@@ -601,8 +601,15 @@
          @endif
          @elseif (($step === 6 && !$isDrPH) || ($step === 7 && $isDrPH))
          @if (optional($appointment)->proposal_defense_date === null)
-         <p class="text-muted">This step is locked. A proposal defense date must be set to proceed.</p>
-         @else
+         <div class="card shadow mb-4">
+               <div class="card-body text-center">
+                  <div class="alert alert-warning mb-0" role="alert">
+                     <i class="fas fa-lock mr-2"></i>
+                     <strong>Step Locked:</strong> This step is locked. A proposal defense date must be set to proceed.
+                  </div>
+               </div>
+            </div>
+            @else
          <div class="container-fluid">
             <div class="container-flex">
                <!-- Main Proposal Manuscript Section -->

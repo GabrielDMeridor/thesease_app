@@ -37,7 +37,7 @@ class GSSRoute1Controller extends Controller
         $allSignaturesFilled = $appointment && $appointment->adviser_signature && $appointment->chair_signature && $appointment->dean_signature;
     
         // Check if the student is in the DrPH program
-        $isDrPH = $user->program === 'DrPH';
+        $isDrPH = $user->program === 'DRPH-HPE';
     
         $data = [
             'title' => 'Routing Form 1',

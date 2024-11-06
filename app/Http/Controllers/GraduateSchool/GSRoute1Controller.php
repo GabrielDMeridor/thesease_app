@@ -47,7 +47,7 @@ class GSRoute1Controller extends Controller
         $student = User::findOrFail($studentId);
         $appointment = AdviserAppointment::where('student_id', $student->id)->first();
         
-        $isDrPH = $student->program === 'DrPH';
+        $isDrPH = $student->program === 'DRPH-HPE';
 
         // Define the title for the view
         $title = 'Routing Form 1 for ' . $student->name;
