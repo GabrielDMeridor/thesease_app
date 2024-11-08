@@ -366,6 +366,17 @@
         return response()->json(['status' => 'success']);
     })->name('notifications.markOneAsRead');
 
+    Route::delete('/notifications/{id}', function ($id) {
+        $notification = Auth::user()->notifications()->find($id);
+    
+        if ($notification) {
+            $notification->delete();
+            return response()->json(['status' => 'success', 'message' => 'Notification deleted successfully']);
+        }
+    
+        return response()->json(['status' => 'error', 'message' => 'Notification not found'], 404);
+    })->name('notifications.destroy');
+
     //Password Reset
 
     Route::get('/password-reset', [PasswordResetController::class, 'showResetForm'])->name('password.request');
