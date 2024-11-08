@@ -205,25 +205,6 @@
                         </tr>
                         @endif
 
-                        <!-- Routing Form One -->
-                        <tr>
-                            <td>Routing Form One:</td>
-                            <td>
-                                @if ($routingFormOneFile)
-                                    <a href="#" data-toggle="modal" data-target="#fileModal" 
-                                        onclick="openFileModal('{{ asset('storage/routing_forms/' . $routingFormOneFile) }}', '{{ $routingFormOneFile }}')">{{ $routingFormOneFile }}</a>
-                                @else
-                                    Not Uploaded
-                                @endif
-                            </td>
-                            <td>
-                                <input type="file" name="file[routing_form_one]" accept=".pdf">
-                                <input type="hidden" name="file_type" value="routing_form_one">
-                            </td>
-                            <td>
-                                <button type="submit" name="upload_type" value="routing_form_one" class="btn btn-primary">Save</button>
-                            </td>
-                        </tr>
 
                         <!-- Manuscript -->
                         <tr>
@@ -245,26 +226,6 @@
                             </td>
                         </tr>
 
-                        <!-- Adviser Appointment Form -->
-                        <tr>
-                            <td>Adviser Appointment Form:</td>
-                            <td>
-                                @if ($adviserAppointmentFile)
-                                    <a href="#" data-toggle="modal" data-target="#fileModal" 
-                                        onclick="openFileModal('{{ asset('storage/adviser_appointments/' . $adviserAppointmentFile) }}', '{{ $adviserAppointmentFile }}')">{{ $adviserAppointmentFile }}</a>
-                                @else
-                                    Not Uploaded
-                                @endif
-                            </td>
-                            <td>
-                                <input type="file" name="file[adviser_appointment_form]" accept=".pdf">
-                                <input type="hidden" name="file_type" value="adviser_appointment_form">
-                            </td>
-                            <td>
-                                <button type="submit" name="upload_type" value="adviser_appointment_form" class="btn btn-primary">Save</button>
-                            </td>
-                        </tr>
-                    </tbody>
                 </table>
             </form>
         </div>
@@ -313,9 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 case 'immigration_or_studentvisa':
                     acceptTypes = '.jpeg, .jpg, .png';
                     break;
-                case 'routing_form_one':
                 case 'manuscript':
-                case 'adviser_appointment_form':
                     acceptTypes = '.pdf';
                     break;
             }

@@ -308,18 +308,14 @@
             // For Graduate School Student (Account Type 11)
             degreeContainer.style.display = 'block';
             nationalityContainer.style.display = 'block';
-            routingFormContainer.style.display = 'block';
             manuscriptContainer.style.display = 'block';
-            adviserAppointmentFormContainer.style.display = 'block';
             degreeLabel.textContent = 'Degree'; // Set label to 'Degree'
             loadNationalities(); // Load nationalities only when account_type is 11
         } else if (accountType.value == '5' || accountType.value == '4') {
             // For Thesis/Dissertation Professor (Account Type 5) and Program Chair (Account Type 4)
             degreeContainer.style.display = 'block';
             nationalityContainer.style.display = 'none';
-            routingFormContainer.style.display = 'none';
             manuscriptContainer.style.display = 'none';
-            adviserAppointmentFormContainer.style.display = 'none';
             immigrationContainer.style.display = 'none';
             degreeLabel.textContent = accountType.value == '5' ? 'What degree are you teaching?' : 'Degree'; // Set custom label
         } else {
@@ -327,9 +323,7 @@
             degreeContainer.style.display = 'none';
             programContainer.style.display = 'none';
             nationalityContainer.style.display = 'none';
-            routingFormContainer.style.display = 'none';
             manuscriptContainer.style.display = 'none';
-            adviserAppointmentFormContainer.style.display = 'none';
             immigrationContainer.style.display = 'none';
         }
     });
@@ -356,9 +350,7 @@
         if (accountType.value == '11') {
             degreeContainer.style.display = 'block';
             nationalityContainer.style.display = 'block';
-            routingFormContainer.style.display = 'block';
             manuscriptContainer.style.display = 'block';
-            adviserAppointmentFormContainer.style.display = 'block';
             loadNationalities();
         } else if (accountType.value == '5' || accountType.value == '4') {
             degreeContainer.style.display = 'block';
@@ -415,9 +407,7 @@
         if (accountType.value == '11') {
             degreeContainer.style.display = 'block';
             nationalityContainer.style.display = 'block';
-            routingFormContainer.style.display = 'block';
             manuscriptContainer.style.display = 'block';
-            adviserAppointmentFormContainer.style.display = 'block';
             loadNationalities();
         }
     });

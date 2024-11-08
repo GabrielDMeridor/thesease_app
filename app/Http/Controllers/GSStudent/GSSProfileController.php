@@ -38,9 +38,7 @@ class GSSProfileController extends Controller
         $data = [
             'title' => 'Limited Access Dashboard',
             'immigrationFile' => $user->immigration_or_studentvisa,
-            'routingFormOneFile' => $user->routing_form_one,
             'manuscriptFile' => $user->manuscript,
-            'adviserAppointmentFile' => $user->adviser_appointment_form,
         ];
     
         return view('gsstudent.GSSpartialdashboard', $data);

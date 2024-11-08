@@ -131,11 +131,6 @@
                             <input class="form-control" id="immigration_or_studentvisa" type="file" name="immigration_or_studentvisa" accept=".jpg,.jpeg,.png"/>
                         </div>
 
-                        <!-- Routing Form One Upload (only for account type 11) -->
-                        <div class="form-floating mb-3" id="routing-form-container" style="display: none;">
-                            <label for="routing_form_one" class="entries">Upload Routing Form One</label>
-                            <input class="form-control" id="routing_form_one" type="file" name="routing_form_one" accept=".pdf"/>
-                        </div>
 
                         <!-- Manuscript Upload (only for account type 11) -->
                         <div class="form-floating mb-3" id="manuscript-container" style="display: none;">
@@ -143,11 +138,7 @@
                             <input class="form-control" id="manuscript" type="file" name="manuscript" accept=".pdf"/>
                         </div>
 
-                        <!-- Adviser Appointment Form Upload (only for account type 11) -->
-                        <div class="form-floating mb-3" id="adviser-appointment-form-container" style="display: none;">
-                            <label for="adviser_appointment_form" class="entries">Upload Adviser Appointment Form</label>
-                            <input class="form-control" id="adviser_appointment_form" type="file" name="adviser_appointment_form" accept=".pdf"/>
-                        </div>
+
 
 
                         <hr class="lineborder">
@@ -311,18 +302,14 @@
             // For Graduate School Student (Account Type 11)
             degreeContainer.style.display = 'block';
             nationalityContainer.style.display = 'block';
-            routingFormContainer.style.display = 'block';
             manuscriptContainer.style.display = 'block';
-            adviserAppointmentFormContainer.style.display = 'block';
             degreeLabel.textContent = 'Degree'; // Set label to 'Degree'
             loadNationalities(); // Load nationalities only when account_type is 11
         } else if (accountType.value == '5' || accountType.value == '4') {
             // For Thesis/Dissertation Professor (Account Type 5) and Program Chair (Account Type 4)
             degreeContainer.style.display = 'block';
             nationalityContainer.style.display = 'none';
-            routingFormContainer.style.display = 'none';
             manuscriptContainer.style.display = 'none';
-            adviserAppointmentFormContainer.style.display = 'none';
             immigrationContainer.style.display = 'none';
             degreeLabel.textContent = accountType.value == '5' ? 'What degree are you teaching?' : 'Degree'; // Set custom label
         } else {
@@ -330,9 +317,7 @@
             degreeContainer.style.display = 'none';
             programContainer.style.display = 'none';
             nationalityContainer.style.display = 'none';
-            routingFormContainer.style.display = 'none';
             manuscriptContainer.style.display = 'none';
-            adviserAppointmentFormContainer.style.display = 'none';
             immigrationContainer.style.display = 'none';
         }
     });
@@ -359,9 +344,7 @@
         if (accountType.value == '11') {
             degreeContainer.style.display = 'block';
             nationalityContainer.style.display = 'block';
-            routingFormContainer.style.display = 'block';
             manuscriptContainer.style.display = 'block';
-            adviserAppointmentFormContainer.style.display = 'block';
             loadNationalities();
         } else if (accountType.value == '5' || accountType.value == '4') {
             degreeContainer.style.display = 'block';
@@ -418,9 +401,7 @@
         if (accountType.value == '11') {
             degreeContainer.style.display = 'block';
             nationalityContainer.style.display = 'block';
-            routingFormContainer.style.display = 'block';
             manuscriptContainer.style.display = 'block';
-            adviserAppointmentFormContainer.style.display = 'block';
             loadNationalities();
         }
     });
