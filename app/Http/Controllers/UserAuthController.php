@@ -141,22 +141,16 @@ class UserAuthController extends Controller
                     }
                 },
             ],
-            'routing_form_one' => 'nullable|mimes:pdf|max:25000',
             'manuscript' => 'nullable|mimes:pdf|max:25000',
-            'adviser_appointment_form' => 'nullable|mimes:pdf|max:25000',
         ]);
         
 
         // Handle file uploads
         $immigrationFileName = null;
-        $routingFormOneFileName = null;
         $manuscriptFileName = null;
-        $adviserAppointmentFileName = null;
         
         $originalImmigrationFileName = null;
-        $originalRoutingFormOneFileName = null;
         $originalManuscriptFileName = null;
-        $originalAdviserAppointmentFileName = null;
 
         // Handle immigration file upload
         if ($request->hasFile('immigration_or_studentvisa')) {
@@ -166,13 +160,6 @@ class UserAuthController extends Controller
             $file->storeAs('public/immigrations', $immigrationFileName); // Store the file
         }
 
-        // Handle routing form upload
-        if ($request->hasFile('routing_form_one')) {
-            $file = $request->file('routing_form_one');
-            $originalRoutingFormOneFileName = $file->getClientOriginalName(); // Get original filename
-            $routingFormOneFileName = $originalRoutingFormOneFileName; // Create unique filename
-            $file->storeAs('public/routing_forms', $routingFormOneFileName); // Store the file
-        }
 
         // Handle manuscript upload
         if ($request->hasFile('manuscript')) {
@@ -182,13 +169,7 @@ class UserAuthController extends Controller
             $file->storeAs('public/manuscripts', $manuscriptFileName); // Store the file
         }
 
-        // Handle adviser appointment form upload
-        if ($request->hasFile('adviser_appointment_form')) {
-            $file = $request->file('adviser_appointment_form');
-            $originalAdviserAppointmentFileName = $file->getClientOriginalName(); // Get original filename
-            $adviserAppointmentFileName =  $originalAdviserAppointmentFileName; // Create unique filename
-            $file->storeAs('public/adviser_appointments', $adviserAppointmentFileName); // Store the file
-        }
+
 
         // Create the user in the database
         User::create([
@@ -201,12 +182,8 @@ class UserAuthController extends Controller
             'nationality' => $request->nationality,
             'immigration_or_studentvisa' => $immigrationFileName, // Store unique file name
             'original_visa_filename' => $originalImmigrationFileName, // Store original file name
-            'routing_form_one' => $routingFormOneFileName, // Store unique file name
-            'original_routing_form_one_filename' => $originalRoutingFormOneFileName, // Store original file name
             'manuscript' => $manuscriptFileName, // Store unique file name
             'original_manuscript_filename' => $originalManuscriptFileName, // Store original file name
-            'adviser_appointment_form' => $adviserAppointmentFileName, // Store unique file name
-            'original_adviser_appointment_form_filename' => $originalAdviserAppointmentFileName, // Store original file name
         ]);
 
         // Redirect back to the registration page with a success message
