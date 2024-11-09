@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Notifications\SimilarityCertEXCStudent;
 use App\Notifications\SimilarityCertificateUploadedForStudent;
-
+use App\Notifications\SimilarityDenialNotification;
 
 
 class LRoute1Controller extends Controller
@@ -21,12 +21,13 @@ class LRoute1Controller extends Controller
         if (!auth()->check() || auth()->user()->account_type !== 9) {
             return redirect()->route('getLogin')->with('error', 'You must be logged in as a library user to access this page');
         }
-    
-        // Retrieve all students who have an uploaded similarity_manuscript
+
+        // Retrieve appointments with the hierarchical order: no certificate first
         $appointments = AdviserAppointment::whereNotNull('similarity_manuscript')
-                        ->with('student') // Assuming 'student' relationship on AdviserAppointment to User
-                        ->get();
-    
+            ->with('student')
+            ->orderByRaw('similarity_certificate IS NOT NULL') // NULL certificates come first
+            ->get();
+
         return view('library.route1.Lroute1', [
             'title' => 'Route1 Checking',
             'appointments' => $appointments
@@ -41,26 +42,27 @@ public function search(Request $request)
         return redirect()->route('getLogin')->with('error', 'You must be logged in as a library user to access this page');
     }
 
-    // Retrieve the search keyword
     $keyword = $request->input('query', '');
 
-    // If keyword is empty, retrieve all appointments
     $appointments = AdviserAppointment::whereNotNull('similarity_manuscript')
-                    ->when($keyword, function ($query) use ($keyword) {
-                        $query->whereHas('student', function ($q) use ($keyword) {
-                            $q->where('name', 'like', "{$keyword}%");
-                        });
-                    })
-                    ->with('student')
-                    ->get();
+        ->when($keyword, function ($query) use ($keyword) {
+            $query->whereHas('student', function ($q) use ($keyword) {
+                $q->where('name', 'like', "{$keyword}%");
+            });
+        })
+        ->with('student')
+        ->orderByRaw('similarity_certificate IS NOT NULL')
+        ->get();
 
     // Check if request is AJAX
     if ($request->ajax()) {
         $html = '';
         foreach ($appointments as $appointment) {
+            $formId = 'certificateUploadForm' . $appointment->student_id;
             $html .= '
                 <tr>
                     <td>' . $appointment->student->name . '</td>
+                    <td>' . $appointment->student->email . '</td>
                     <td>';
             if ($appointment->similarity_manuscript) {
                 $html .= '<a href="#" data-toggle="modal" data-target="#manuscriptModal' . $appointment->id . '">' . basename($appointment->similarity_manuscript) . '</a>';
@@ -69,7 +71,7 @@ public function search(Request $request)
             }
             $html .= '</td>
                     <td>
-                        <form action="' . route('library.uploadSimilarityCertificate') . '" method="POST" enctype="multipart/form-data" id="certificateUploadForm' . $appointment->student_id . '">
+                        <form action="' . route('library.uploadSimilarityCertificate') . '" method="POST" enctype="multipart/form-data" id="' . $formId . '">
                             ' . csrf_field() . '
                             <input type="hidden" name="student_id" value="' . $appointment->student_id . '">';
             if ($appointment->similarity_certificate) {
@@ -80,7 +82,10 @@ public function search(Request $request)
             $html .= '</form>
                     </td>
                     <td>
-                        <button type="submit" form="certificateUploadForm' . $appointment->student_id . '" class="btn btn-primary save-button">Save</button>
+                        <button type="submit" form="' . $formId . '" class="btn btn-primary save-button">Save</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#denyModal' . $appointment->id . '">Deny</button>
                     </td>
                 </tr>';
         }
@@ -90,9 +95,11 @@ public function search(Request $request)
     return view('library.route1.Lroute1', [
         'title' => 'Route1 Checking',
         'appointments' => $appointments,
-        'keyword' => $keyword // Pass the keyword to the view
+        'keyword' => $keyword
     ]);
 }
+
+
 
 
 
@@ -146,4 +153,21 @@ public function uploadSimilarityCertificate(Request $request)
     return redirect()->route('library.route1')->with('success', 'Similarity Certificate uploaded successfully!');
 }
     
+public function denyManuscript(Request $request, $appointmentId)
+{
+    // Validate the request to ensure a reason is provided
+    $request->validate([
+        'denialReason' => 'required|string|max:255',
+    ]);
+
+    // Find the appointment and the associated student
+    $appointment = AdviserAppointment::findOrFail($appointmentId);
+    $student = $appointment->student;
+
+    // Send a notification with the similarity denial reason
+    $student->notify(new SimilarityDenialNotification($request->denialReason));
+
+    return redirect()->route('library.route1')->with('success', 'Denial notification sent to student.');
+}
+
 }

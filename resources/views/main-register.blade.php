@@ -356,18 +356,42 @@
     degree.addEventListener('change', handleDegreeChange);
 
     // Handle nationality change event
-    nationalityDropdown.addEventListener('change', function () {
-        const nationality = nationalityDropdown.value;
-        const immigrationInput = document.querySelector('#immigration_or_studentvisa');
-    
-        if (nationality.toLowerCase() === 'filipino') {
-            immigrationContainer.style.display = 'none';
-            immigrationInput.removeAttribute('required'); // Remove required attribute
-        } else {
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const accountType = document.querySelector('#account_type');
+    const nationalityDropdown = document.querySelector('#nationality');
+    const immigrationContainer = document.querySelector('#immigration-container');
+    const immigrationInput = document.querySelector('#immigration_or_studentvisa');
+
+    // Function to update immigration field based on account type and nationality
+    function updateImmigrationField() {
+        const nationality = nationalityDropdown.value.toLowerCase();
+        const isGraduateStudent = accountType.value === '11';
+
+        if (isGraduateStudent && nationality !== 'filipino') {
+            // Show immigration field if Graduate School Student with a foreign nationality
             immigrationContainer.style.display = 'block';
-            immigrationInput.setAttribute('required', 'required'); // Add required attribute
+            immigrationInput.setAttribute('required', 'required');
+        } else {
+            // Hide immigration field otherwise
+            immigrationContainer.style.display = 'none';
+            immigrationInput.removeAttribute('required');
         }
+    }
+
+    // Initialize the visibility of the immigration field on page load
+    updateImmigrationField();
+
+    // Update immigration field visibility whenever account type changes
+    accountType.addEventListener('change', function () {
+        updateImmigrationField();
     });
+
+    // Update immigration field visibility whenever nationality changes
+    nationalityDropdown.addEventListener('change', function () {
+        updateImmigrationField();
+    });
+});
 
     // Load nationalities from API
     async function loadNationalities() {

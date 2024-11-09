@@ -10,7 +10,7 @@ use App\Notifications\AdviserResponseNotification; // Add this import to use you
 use App\Notifications\AdviserResponseNotificationToPCandD;
 use App\Notifications\AdviseeNotifStep2;
 use App\Notifications\SAAGSNotifyStep2;
-
+use App\Models\Setting;
 
 
 class TDPRoute1Controller extends Controller
@@ -131,12 +131,17 @@ public function showAdviseeForm($studentId)
     // Set the title with the student's name
     $title = 'Routing Form 1 for ' . $student->name;
 
+    $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
+
+
     return view('tdprofessor.route1.TDPAdviseeRoute1', [
         'appointment' => $appointment,
         'student' => $student,  // Pass the student explicitly
         'advisee' => $student,
         'title' => $title,
-        'isDrPH' => $isDrPH
+        'isDrPH' => $isDrPH,
+        'globalSubmissionLink' => $globalSubmissionLink
+
     ]);
 }
 
@@ -225,36 +230,6 @@ public function saveConsultationDate(Request $request)
     return response()->json(['success' => true]);
 }
 
-public function removeConsultationDate(Request $request)
-{
-    // Validate the request data
-    $request->validate([
-        'consultation_date' => 'required|date',
-        'appointment_id' => 'required|exists:adviser_appointments,id'
-    ]);
-
-    // Find the appointment
-    $appointment = AdviserAppointment::findOrFail($request->appointment_id);
-
-    // Ensure the logged-in user is the assigned adviser
-    if ($appointment->adviser_id !== auth()->user()->id) {
-        return response()->json(['success' => false, 'message' => 'Unauthorized action.'], 403);
-    }
-
-    // Get the existing consultation dates from the database
-    $existingDates = $appointment->consultation_dates ? json_decode($appointment->consultation_dates) : [];
-
-    // Remove the date from the array
-    $newDates = array_filter($existingDates, function ($date) use ($request) {
-        return $date !== $request->consultation_date;
-    });
-
-    // Update the consultation_dates field with the new array
-    $appointment->consultation_dates = json_encode(array_values($newDates)); // reindex the array
-    $appointment->save();
-
-    return response()->json(['success' => true]);
-}
 
 public function markRegistrationResponded($appointmentId)
 {

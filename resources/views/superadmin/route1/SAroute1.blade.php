@@ -84,6 +84,38 @@
     <div class="sagreet">{{ $title }}</div>
     <br>
 
+    <div class="container">
+    <h2>Manage Application Form Fee Link</h2>
+
+    <!-- Display Success Message -->
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <!-- Display Validation Errors -->
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Form for Creating or Updating the Submission Link -->
+    <form action="{{ route('superadmin.storeOrUpdateSubmissionLink') }}" method="POST">
+        @csrf
+        <div class="form-group mb-3">
+            <label for="submission_files_link">Application Form Fee Link:</label>
+            <input type="url" name="submission_files_link" class="form-control" value="{{ $submissionFilesLink->value }}" required placeholder="Enter the application form fee link">
+        </div>
+        <button type="submit" class="btn btn-primary">{{ $submissionFilesLink->value ? 'Update' : 'Upload' }} Link</button>
+    </form>
+</div>
+
 
     <!-- Search form -->
     <div class="card">
@@ -141,6 +173,8 @@
     {{ $students->links() }}
 
 </div>
+
+
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

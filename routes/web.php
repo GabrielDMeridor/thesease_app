@@ -498,8 +498,9 @@ Route::post('/gsstudent/send-data-to-aufc', [GSSRoute1Controller::class, 'sendDa
      Route::post('/graduateschool/analytics-data', [GSProfileController::class, 'getAnalyticsData'])->name('graduateschool.analyticsData');
 
 
-
-
-
+     Route::post('store-submission-link', [SARoute1Controller::class, 'storeOrUpdateSubmissionLink'])->name('superadmin.storeOrUpdateSubmissionLink');
+     Route::post('admin/store-submission-link', [ARoute1Controller::class, 'storeOrUpdateSubmissionLink'])->name('admin.storeOrUpdateSubmissionLink');
+     Route::post('graduateschool/store-submission-link', [SARoute1Controller::class, 'storeOrUpdateSubmissionLink'])->name('graduateschool.storeOrUpdateSubmissionLink');
+     Route::post('/library/deny-manuscript/{appointmentId}', [LRoute1Controller::class, 'denyManuscript'])->name('library.denyManuscript');
 
 

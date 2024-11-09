@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Notifications\CommunityExtensionApprovedNotification;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\SubmissionFilesApprovedNotification;
-
+use App\Models\Setting;
 
 class GSRoute1Controller extends Controller
 {
@@ -37,8 +37,13 @@ class GSRoute1Controller extends Controller
         // Define the title
         $title = "Routing Form 1 Checking";
 
+        $submissionFilesLink = Setting::firstOrCreate(
+            ['key' => 'submission_files_link'],
+            ['value' => null]
+        );
+
         // Pass $title and $students to the view
-        return view('graduateschool.route1.GSroute1', compact('students', 'title'));
+        return view('graduateschool.route1.GSroute1', compact('students', 'title', 'submissionFilesLink'));
     }
 
     public function showRoutingForm($studentId)
@@ -51,9 +56,12 @@ class GSRoute1Controller extends Controller
 
         // Define the title for the view
         $title = 'Routing Form 1 for ' . $student->name;
+
+        $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
+
     
         // Pass the title along with the other data to the view
-        return view('graduateschool.route1.GSStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH'));
+        return view('graduateschool.route1.GSStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 'globalSubmissionLink'));
     }
     public function sign(Request $request, $studentId)
     {

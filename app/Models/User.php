@@ -22,6 +22,7 @@ class User extends Authenticatable
     const Library = 9;
     const LanguageEditor = 10;
     const GraduateSchoolStudent = 11;
+    const ChristianPraxis = 12;
 
     // Add Thesis/Dissertation-related constants
 
@@ -63,6 +64,8 @@ class User extends Authenticatable
             self::LanguageEditor => 'Language Editor',
             self::GraduateSchool => 'Graduate School',
             self::GraduateSchoolStudent => 'Graduate School Student',
+            self::ChristianPraxis => 'Christian Praxis',
+
         ];
 
         return $types[$type] ?? 'Unknown';

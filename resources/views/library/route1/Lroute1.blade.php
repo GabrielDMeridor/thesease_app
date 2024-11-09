@@ -112,45 +112,54 @@
         <!-- Students Table -->
 <div class="table-responsive">
     <table class="table table-bordered table-hover table-striped custom-table">
-        <thead class="table-dark">
-            <tr>
-                <th style="text-align:center;">Student Name</th>
-                <th style="text-align:center;">Uploaded Manuscript</th>
-                <th style="text-align:center;">Uploaded Certificate</th>
-                <th style="text-align:center;">Action</th>
-            </tr>
-        </thead>
-        <tbody id="appointments-table">
-            @foreach($appointments as $appointment)
-                <tr>
-                    <td class="text-center">{{ $appointment->student->name }}</td>
-                    <td class="text-center">
-                        @if($appointment->similarity_manuscript)
-                            <a href="#" data-toggle="modal" data-target="#manuscriptModal{{ $appointment->id }}">
-                                {{ basename($appointment->similarity_manuscript) }}
-                            </a>
-                        @else
-                            <span>No manuscript uploaded</span>
-                        @endif
-                    </td>
-                    <td class="text-center">
-                        <form action="{{ route('library.uploadSimilarityCertificate') }}" method="POST" enctype="multipart/form-data" id="certificateUploadForm{{ $appointment->student_id }}">
-                            @csrf
-                            <input type="hidden" name="student_id" value="{{ $appointment->student_id }}">
-                            
-                            @if($appointment->similarity_certificate)
-                                <a href="#" data-toggle="modal" data-target="#certificateModal{{ $appointment->id }}">
-                                    {{ basename($appointment->similarity_certificate) }}
-                                </a>
-                            @else
-                                <input type="file" name="similarity_certificate" class="form-control" required accept=".pdf">
-                            @endif
-                        </form>
-                    </td>
-                    <td class="text-center">
-                        <button type="submit" form="certificateUploadForm{{ $appointment->student_id }}" class="btn btn-primary">Save</button>
-                    </td>
-                </tr>
+    <thead class="table-dark">
+    <tr>
+        <th style="text-align:center;">Student Name</th>
+        <th style="text-align:center;">Email</th>
+        <th style="text-align:center;">Uploaded Manuscript</th>
+        <th style="text-align:center;">Uploaded Certificate</th>
+        <th style="text-align:center;">Action</th>
+        <th style="text-align:center;">Deny</th>
+    </tr>
+</thead>
+<tbody id="appointments-table">
+    @foreach($appointments as $appointment)
+        <tr>
+            <td class="text-center">{{ $appointment->student->name }}</td>
+            <td class="text-center">{{ $appointment->student->email }}</td>
+            <td class="text-center">
+                @if($appointment->similarity_manuscript)
+                    <a href="#" data-toggle="modal" data-target="#manuscriptModal{{ $appointment->id }}">
+                        {{ basename($appointment->similarity_manuscript) }}
+                    </a>
+                @else
+                    <span>No manuscript uploaded</span>
+                @endif
+            </td>
+            <td class="text-center">
+                <form action="{{ route('library.uploadSimilarityCertificate') }}" method="POST" enctype="multipart/form-data" id="certificateUploadForm{{ $appointment->student_id }}">
+                    @csrf
+                    <input type="hidden" name="student_id" value="{{ $appointment->student_id }}">
+                    
+                    @if($appointment->similarity_certificate)
+                        <a href="#" data-toggle="modal" data-target="#certificateModal{{ $appointment->id }}">
+                            {{ basename($appointment->similarity_certificate) }}
+                        </a>
+                    @else
+                        <input type="file" name="similarity_certificate" class="form-control" required accept=".pdf">
+                    @endif
+                </form>
+            </td>
+            <td class="text-center">
+                <button type="submit" form="certificateUploadForm{{ $appointment->student_id }}" class="btn btn-primary">Save</button>
+            </td>
+            <td class="text-center">
+                <!-- Deny button triggers the denial modal -->
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#denyModal{{ $appointment->id }}">
+                    Deny
+                </button>
+            </td>
+        </tr>
 
                 <!-- Manuscript Modal -->
                 <div class="modal fade" id="manuscriptModal{{ $appointment->id }}" tabindex="-1" aria-labelledby="manuscriptModalLabel{{ $appointment->id }}" aria-hidden="true">
@@ -193,6 +202,34 @@
                         </div>
                     </div>
                 </div>
+
+
+                        <!-- Denial Modal -->
+        <div class="modal fade" id="denyModal{{ $appointment->id }}" tabindex="-1" aria-labelledby="denyModalLabel{{ $appointment->id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="denyModalLabel{{ $appointment->id }}">Deny Manuscript</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="{{ route('library.denyManuscript', $appointment->id) }}" method="POST">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="denialReason">Reason for Denial</label>
+                                <textarea name="denialReason" id="denialReason" class="form-control" rows="3" required placeholder="Enter the reason for denying this manuscript..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-danger">Deny Manuscript</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
             @endforeach
         </tbody>
     </table>
@@ -211,27 +248,20 @@ $(document).ready(function() {
 
         let query = $(this).val().trim();
 
-        // Set a debounce timer (e.g., 300ms) to wait before sending a request
         debounceTimer = setTimeout(function() {
             // Abort previous request if it's still in progress
             if (searchRequest) {
                 searchRequest.abort();
             }
 
-            // Check if the query is empty
-            if (query === '') {
-                // Clear the table or reload all results if the search is empty
-                query = ''; // Empty search should load all results
-            }
-
-            // Send a new AJAX request
             searchRequest = $.ajax({
                 url: "{{ route('library.search') }}",
                 type: "GET",
                 data: { query: query },
-                cache: false, // Disable cache for AJAX request
+                cache: false,
                 success: function(response) {
                     $('#appointments-table').html(response.html);
+                    reinitializeEventListeners(); // Re-bind events for new content
                 },
                 error: function(xhr) {
                     if (xhr.status !== 0) { // Ignore aborted requests
@@ -241,6 +271,21 @@ $(document).ready(function() {
             });
         }, 300); // Adjust debounce time as needed
     });
+
+    // Function to reinitialize form submission event listeners after AJAX response
+    function reinitializeEventListeners() {
+        // Bind click event to dynamically created "Save" buttons
+        $('.save-button').on('click', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Submit the form associated with the clicked "Save" button
+            let formId = $(this).attr('form');
+            $('#' + formId).submit();
+        });
+    }
+
+    // Initialize event listeners for the initial load
+    reinitializeEventListeners();
 });
 function deleteNotification(notificationId) {
     if (confirm('Are you sure you want to delete this notification?')) {

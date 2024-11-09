@@ -61,9 +61,9 @@ class SAAuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users|regex:/^[a-zA-Z0-9._%+-]+@auf\.edu\.ph$/',
             'password' => 'required|string|min:8|confirmed',
-            'account_type' => 'required|in:2,3,4,5,6,7,8,9,10,11',
-            'degree' => 'nullable|required_if:account_type,11|in:Masteral,Doctorate',
-            'program' => 'nullable|required_if:account_type,5,11|string',
+            'account_type' => 'required|in:4,5,6,7,8,9,10,11,12',
+            'degree' => 'nullable|required_if:account_type,4,5,11|in:Masteral,Doctorate',
+            'program' => 'nullable|required_if:account_type,4,5,11|string',
             'nationality' => 'nullable|required_if:account_type,11|string',
             // Immigration card required if nationality is not "filipino" (case-insensitive)
             'immigration_or_studentvisa' => [

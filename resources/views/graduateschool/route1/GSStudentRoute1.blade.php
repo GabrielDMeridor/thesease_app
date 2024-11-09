@@ -488,37 +488,62 @@
                 <div class="card-body">
                     <h4 class="routing-heading">File Uploads</h4>
                     
-                    <!-- Signed Routing Form 1 -->
-                    <div class="form-group mb-3">
-                        <label for="signed_routing_form_1">Signed Routing Form 1</label>
-                        <i class="fa-solid fa-download"></i>
-                        @if($appointment->signed_routing_form_1)
-                            <input type="text" 
-                                   class="form-control" 
-                                   value="{{ $appointment->original_signed_routing_form_1 }}" 
-                                   readonly 
-                                   onclick="$('#routingFormModal').modal('show')" 
-                                   style="cursor: pointer;">
-                        @else
-                            <input type="text" class="form-control" readonly placeholder="File not yet uploaded">
-                        @endif
-                    </div>
+<!-- Similarity Manuscript -->
+<div class="form-group">
+    @if($appointment->similarity_manuscript)
+        <div class="form-group">
+            <label for="similarity_manuscript">Similarity Manuscript:</label>
+            <i class="fa-solid fa-download"></i>
+            <input type="text" 
+                id="similarity_manuscript" 
+                class="form-control" 
+                value="{{ basename($appointment->similarity_manuscript) }}" 
+                readonly 
+                onclick="$('#similarityManuscriptModal').modal('show')" 
+                style="cursor: pointer;">
+        </div>
+    @else
+        <div class="form-group">
+            <label for="similarity_manuscript">Proposal Manuscript:</label>
+            <input type="text" 
+                id="similarity_manuscript" 
+                class="form-control" 
+                value="File not yet uploaded" 
+                readonly 
+                disabled 
+                style="cursor: not-allowed;">
+        </div>
+    @endif
+</div>
 
-                    <!-- Proposal Manuscript -->
-                    <div class="form-group mb-3">
-                        <label for="proposal_manuscript">Proposal Manuscript</label>
-                        <i class="fa-solid fa-download"></i>
-                        @if($appointment->proposal_manuscript)
-                            <input type="text" 
-                                   class="form-control" 
-                                   value="{{ $appointment->original_proposal_manuscript }}" 
-                                   readonly 
-                                   onclick="$('#proposalManuscriptModal').modal('show')" 
-                                   style="cursor: pointer;">
-                        @else
-                            <input type="text" class="form-control" readonly placeholder="File not yet uploaded">
-                        @endif
-                    </div>
+<!-- Similarity Certificate -->
+<div class="form-group">
+    @if($appointment->similarity_certificate)
+        <div class="form-group">
+            <label for="similarity_certificate">Similarity Certificate:</label>
+            <i class="fa-solid fa-download"></i>
+            <input type="text" 
+                id="similarity_certificate" 
+                class="form-control" 
+                value="{{ basename($appointment->similarity_certificate) }}" 
+                readonly 
+                onclick="$('#similarityCertificateModal').modal('show')" 
+                style="cursor: pointer;">
+        </div>
+    @else
+        <div class="form-group">
+            <label for="similarity_certificate">Similarity Certificate:</label>
+            <input type="text" 
+                id="similarity_certificate" 
+                class="form-control" 
+                value="File not yet uploaded" 
+                readonly 
+                disabled 
+                style="cursor: not-allowed;">
+        </div>
+    @endif
+</div>
+
 
                     <!-- Video Presentation -->
                     <div class="form-group">
@@ -539,28 +564,21 @@
             </div>
         </div>
 
-        <!-- Submission Files Section -->
-        <div class="col-md-6 mb-4">
-            <div class="card shadow">
-                <div class="card-body">
-                    <h4 class="routing-heading">Submission Files</h4>
-                    @if ($appointment->submission_files_link)
-                        <p>
-                            <a href="{{ $appointment->submission_files_link }}" target="_blank" class="text-primary" style="font-size: 1.25rem;">
-                            <i class="fa-solid fa-link"></i> {{ $appointment->submission_files_link }}
-                            </a>
-                        </p>
-                    @else
-                        <!-- Form for SuperAdmin to upload the submission files link -->
-                        <form action="{{ route('graduateschool.uploadSubmissionFilesLink', $student->id) }}" method="POST">
-                            @csrf
-                            <div class="form-group mb-3">
-                                <label for="submission_files_link">Submission Files Link:</label>
-                                <input type="url" name="submission_files_link" class="form-control" required placeholder="Enter the form link">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Upload Link</button>
-                        </form>
-                    @endif
+<!-- Submission Files Section -->
+<div class="col-md-6 mb-4">
+    <div class="card shadow">
+        <div class="card-body">
+            <h4 class="routing-heading">Submission Files</h4>
+            
+            @if ($globalSubmissionLink)
+            <p>
+                <a href="{{ $globalSubmissionLink }}" target="_blank" class="text-primary" style="font-size: 1.25rem;">
+                    <i class="fa-solid fa-link"></i> View Submission Files
+                </a>
+            </p>
+            @else
+            <p class="text-muted">Submission files link will be uploaded by the Superadmin/Admin/GraduateSchool.</p>
+            @endif
 
                     <hr class="my-4">
 
@@ -840,40 +858,41 @@
 <div class="card-footer footersaroute1"></div>
     </div>
 <!-- Modals for Uploaded Files -->
-<div class="modal fade" id="routingFormModal" tabindex="-1" aria-labelledby="routingFormModalLabel" aria-hidden="true">
+<div class="modal fade" id="similarityManuscriptModal" tabindex="-1" aria-labelledby="similarityManuscriptModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">View Signed Routing Form 1</h5>
+                <h5 class="modal-title" id="similarityManuscriptModalLabel">View Similarity Manuscript</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <iframe src="{{ Storage::url($appointment->signed_routing_form_1) }}" width="100%" height="600px"></iframe>
+                <iframe src="{{ Storage::url(optional($appointment)->similarity_manuscript) }}" width="100%" height="600px"></iframe>
             </div>
             <div class="modal-footer">
-                <a href="{{ Storage::url($appointment->signed_routing_form_1) }}" target="_blank" class="btn btn-primary" download>Download</a>
+                <a href="{{ Storage::url(optional($appointment)->similarity_manuscript) }}" target="_blank" class="btn btn-primary" download>Download Similarity Manuscript</a>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="proposalManuscriptModal" tabindex="-1" aria-labelledby="proposalManuscriptModalLabel" aria-hidden="true">
+<!-- Similarity Certificate Modal -->
+<div class="modal fade" id="similarityCertificateModal" tabindex="-1" aria-labelledby="similarityCertificateModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">View Proposal Manuscript</h5>
+                <h5 class="modal-title" id="similarityCertificateModalLabel">View Similarity Certificate</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <iframe src="{{ Storage::url($appointment->proposal_manuscript) }}" width="100%" height="600px"></iframe>
+                <iframe src="{{ Storage::url(optional($appointment)->similarity_certificate) }}" width="100%" height="600px"></iframe>
             </div>
             <div class="modal-footer">
-                <a href="{{ Storage::url($appointment->proposal_manuscript) }}" target="_blank" class="btn btn-primary" download>Download</a>
+                <a href="{{ Storage::url(optional($appointment)->similarity_certificate) }}" target="_blank" class="btn btn-primary" download>Download Similarity Certificate</a>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>

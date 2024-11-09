@@ -199,15 +199,15 @@
                               @foreach (json_decode($appointment->consultation_dates) as $date)
                               <div class="input-group mb-2">
                                  <input type="date" name="consultation_dates[]" class="form-control" value="{{ $date }}" readonly>
-                                 <div class="input-group-append">
-                                    <button class="btn btn-danger" type="button" onclick="removeConsultationDate(this)">Remove</button>
-                                 </div>
+
                               </div>
                               @endforeach
                               @endif
                            </div>
                            <!-- Button to add more consultation dates -->
-                           <button type="button" class="btn btn-primary" onclick="addConsultationDate()">Add Date</button>
+                           @if (is_null($appointment->adviser_endorsement_signature))
+    <button type="button" class="btn btn-primary" onclick="addConsultationDate()">Add Date</button>
+@endif
                         </div>
                         <!-- Adviser Signature Field -->
                         <div class="form-group">
@@ -480,60 +480,62 @@
                   <div class="card">
                      <div class="card-body">
                         <h4 class="routing-heading">File Uploads</h4>
-                        <!-- Signed Routing Form 1 -->
-                        <div class="form-group">
-                           @if($appointment->signed_routing_form_1)
-                           <div class="form-group">
-                              <label for="signed_routing_form_1">Signed Routing Form 1:</label>
-                              <i class="fa-solid fa-download"></i>
-                              <input type="text" 
-                                 id="signed_routing_form_1" 
-                                 class="form-control" 
-                                 value="{{ $appointment->original_signed_routing_form_1 }}" 
-                                 readonly 
-                                 onclick="$('#routingFormModal').modal('show')" 
-                                 style="cursor: pointer;">
-                           </div>
-                           @else
-                           <div class="form-group">
-                              <label for="signed_routing_form_1">Signed Routing Form 1:</label>
-                              <input type="text" 
-                                 id="signed_routing_form_1" 
-                                 class="form-control" 
-                                 value="File not yet uploaded" 
-                                 readonly 
-                                 disabled 
-                                 style="cursor: not-allowed;">
-                           </div>
-                           @endif
-                        </div>
-                        <!-- Proposal Manuscript -->
-                        <div class="form-group">
-                           @if($appointment->proposal_manuscript)
-                           <div class="form-group">
-                              <label for="proposal_manuscript">Proposal Manuscript:</label>
-                              <i class="fa-solid fa-download"></i>
-                              <input type="text" 
-                                 id="proposal_manuscript" 
-                                 class="form-control" 
-                                 value="{{ $appointment->original_proposal_manuscript }}" 
-                                 readonly 
-                                 onclick="$('#proposalManuscriptModal').modal('show')" 
-                                 style="cursor: pointer;">
-                           </div>
-                           @else
-                           <div class="form-group">
-                              <label for="proposal_manuscript">Proposal Manuscript:</label>
-                              <input type="text" 
-                                 id="proposal_manuscript" 
-                                 class="form-control" 
-                                 value="File not yet uploaded" 
-                                 readonly 
-                                 disabled 
-                                 style="cursor: not-allowed;">
-                           </div>
-                           @endif
-                        </div>
+<!-- Similarity Manuscript -->
+<div class="form-group">
+    @if($appointment->similarity_manuscript)
+        <div class="form-group">
+            <label for="similarity_manuscript">Similarity Manuscript:</label>
+            <i class="fa-solid fa-download"></i>
+            <input type="text" 
+                id="similarity_manuscript" 
+                class="form-control" 
+                value="{{ basename($appointment->similarity_manuscript) }}" 
+                readonly 
+                onclick="$('#similarityManuscriptModal').modal('show')" 
+                style="cursor: pointer;">
+        </div>
+    @else
+        <div class="form-group">
+            <label for="similarity_manuscript">Proposal Manuscript:</label>
+            <input type="text" 
+                id="similarity_manuscript" 
+                class="form-control" 
+                value="File not yet uploaded" 
+                readonly 
+                disabled 
+                style="cursor: not-allowed;">
+        </div>
+    @endif
+</div>
+
+<!-- Similarity Certificate -->
+<div class="form-group">
+    @if($appointment->similarity_certificate)
+        <div class="form-group">
+            <label for="similarity_certificate">Similarity Certificate:</label>
+            <i class="fa-solid fa-download"></i>
+            <input type="text" 
+                id="similarity_certificate" 
+                class="form-control" 
+                value="{{ basename($appointment->similarity_certificate) }}" 
+                readonly 
+                onclick="$('#similarityCertificateModal').modal('show')" 
+                style="cursor: pointer;">
+        </div>
+    @else
+        <div class="form-group">
+            <label for="similarity_certificate">Similarity Certificate:</label>
+            <input type="text" 
+                id="similarity_certificate" 
+                class="form-control" 
+                value="File not yet uploaded" 
+                readonly 
+                disabled 
+                style="cursor: not-allowed;">
+        </div>
+    @endif
+</div>
+
                         <!-- Video Presentation -->
                         <div class="form-group">
                            @if($appointment->proposal_video_presentation)
@@ -570,15 +572,13 @@
                      <div class="card-body">
                         <h5>Submission Files</h5>
                         <!-- Display the submission files link if it exists -->
-                        @if ($appointment->submission_files_link)
-                        <p>
-                           Submission Files Link:
-                           <a href="{{ $appointment->submission_files_link }}" target="_blank">
-                           <i class="fa-solid fa-link"></i>
-                           View Submission Files
-                           </a>
-                        </p>
-                        @else
+                        @if ($globalSubmissionLink)
+            <p>
+                <a href="{{ $globalSubmissionLink }}" target="_blank" class="text-primary" style="font-size: 1.25rem;">
+                    <i class="fa-solid fa-link"></i> View Submission Files
+                </a>
+            </p>
+            @else
                         <p class="text-muted">Submission files link will be uploaded by the Superadmin/Admin/Graduate School.</p>
                         @endif
                         <!-- Display the student's response status -->
@@ -997,43 +997,45 @@
 </div>
 <div class="card-footer footersaroute1"></div>
 <!-- Modals for Uploaded Files -->
-<div class="modal fade" id="routingFormModal" tabindex="-1" aria-labelledby="routingFormModalLabel" aria-hidden="true">
-   <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-         <div class="modal-header">
-            <h5 class="modal-title">View Signed Routing Form 1</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-         </div>
-         <div class="modal-body">
-            <iframe src="{{ Storage::url($appointment->signed_routing_form_1) }}" width="100%" height="600px"></iframe>
-         </div>
-         <div class="modal-footer">
-            <a href="{{ Storage::url($appointment->signed_routing_form_1) }}" target="_blank" class="btn btn-primary" download>Download</a>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         </div>
-      </div>
-   </div>
+<div class="modal fade" id="similarityManuscriptModal" tabindex="-1" aria-labelledby="similarityManuscriptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="similarityManuscriptModalLabel">View Similarity Manuscript</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{ Storage::url(optional($appointment)->similarity_manuscript) }}" width="100%" height="600px"></iframe>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ Storage::url(optional($appointment)->similarity_manuscript) }}" target="_blank" class="btn btn-primary" download>Download Similarity Manuscript</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="modal fade" id="proposalManuscriptModal" tabindex="-1" aria-labelledby="proposalManuscriptModalLabel" aria-hidden="true">
-   <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-         <div class="modal-header">
-            <h5 class="modal-title">View Proposal Manuscript</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-         </div>
-         <div class="modal-body">
-            <iframe src="{{ Storage::url($appointment->proposal_manuscript) }}" width="100%" height="600px"></iframe>
-         </div>
-         <div class="modal-footer">
-            <a href="{{ Storage::url($appointment->proposal_manuscript) }}" target="_blank" class="btn btn-primary" download>Download</a>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         </div>
-      </div>
-   </div>
+
+<!-- Similarity Certificate Modal -->
+<div class="modal fade" id="similarityCertificateModal" tabindex="-1" aria-labelledby="similarityCertificateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="similarityCertificateModalLabel">View Similarity Certificate</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{ Storage::url(optional($appointment)->similarity_certificate) }}" width="100%" height="600px"></iframe>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ Storage::url(optional($appointment)->similarity_certificate) }}" target="_blank" class="btn btn-primary" download>Download Similarity Certificate</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="modal fade" id="videoPresentationModal" tabindex="-1" aria-labelledby="videoPresentationModalLabel" aria-hidden="true">
    <div class="modal-dialog modal-lg">
@@ -1092,43 +1094,12 @@
        inputGroup.classList.add('input-group', 'mb-2');
        inputGroup.innerHTML = `
            <input type="date" name="consultation_dates[]" class="form-control" required onchange="saveDateToDatabase(this)">
-           <div class="input-group-append">
-               <button class="btn btn-danger" type="button" onclick="removeConsultationDate(this)">Remove</button>
-           </div>
+
        `;
        container.appendChild(inputGroup);
    }
    
-   function removeConsultationDate(button) {
-       const inputGroup = button.closest('.input-group');
-       const dateValue = inputGroup.querySelector('input').value;
-       const appointmentId = {{ $appointment->id }};
-       
-       // Send AJAX request to remove the date from the database
-       if (dateValue) {
-           fetch('{{ route('professor.removeConsultationDate') }}', {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/json',
-                   'X-CSRF-TOKEN': '{{ csrf_token() }}',
-               },
-               body: JSON.stringify({
-                   consultation_date: dateValue,
-                   appointment_id: appointmentId
-               })
-           })
-           .then(response => response.json())
-           .then(data => {
-               if (data.success) {
-                   alert('Date removed successfully');
-                   inputGroup.remove(); // Remove the input group from the DOM
-               } else {
-                   alert('Error removing date');
-               }
-           })
-           .catch(error => console.error('Error:', error));
-       }
-   }
+
    
    // AJAX function to save date to database
    function saveDateToDatabase(input) {

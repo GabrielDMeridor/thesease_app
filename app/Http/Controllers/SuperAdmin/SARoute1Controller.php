@@ -10,39 +10,45 @@ use App\Notifications\CommunityExtensionApprovedNotification;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\SubmissionFilesApprovedNotification;
+use App\Models\Setting;
 
 
 
 
 class SARoute1Controller extends Controller
 {
-public function show(Request $request)
-{
-    // Ensure the user is logged in as SuperAdmin or Dean
-    if (!auth()->check() || auth()->user()->account_type !== User::SuperAdmin) {
-        return redirect()->route('getLogin')->with('error', 'You must be logged in as a SuperAdmin to access this page');
+    public function show(Request $request)
+    {
+        // Ensure the user is logged in as SuperAdmin or Dean
+        if (!auth()->check() || auth()->user()->account_type !== User::SuperAdmin) {
+            return redirect()->route('getLogin')->with('error', 'You must be logged in as a SuperAdmin to access this page');
+        }
+
+        // Fetch students with an approved adviser appointment
+        $query = User::whereHas('adviserAppointment', function ($query) {
+            $query->where('status', 'approved');
+        })->where('account_type', 11);
+
+        // Handle search input
+        if ($request->has('search')) {
+            $searchTerm = $request->input('search');
+            $query->where('name', 'LIKE', "%{$searchTerm}%");
+        }
+        
+        // Get the students list with pagination
+        $students = $query->paginate(10);
+
+        // Retrieve the current submission files link from the settings table
+        $submissionFilesLink = Setting::firstOrCreate(
+            ['key' => 'submission_files_link'],
+            ['value' => null]
+        );
+
+        // Define the title
+        $title = "Routing Form 1 Checking";
+
+        return view('superadmin.route1.SAroute1', compact('students', 'title', 'submissionFilesLink'));
     }
-
-    // Query to fetch students with an approved adviser appointment
-    $query = User::whereHas('adviserAppointment', function ($query) {
-        $query->where('status', 'approved');  // Only show approved adviser appointments
-    })->where('account_type', 11);  // Assuming account_type 11 is for students
-
-    // Handle search input for filtering students by name
-    if ($request->has('search')) {
-        $searchTerm = $request->input('search');
-        $query->where('name', 'LIKE', "%{$searchTerm}%");
-    }
-    
-    // Get the students list with pagination
-    $students = $query->paginate(10);
-
-    // Define the title
-    $title = "Routing Form 1 Checking";
-
-    // Pass $title and $students to the view
-    return view('superadmin.route1.SAroute1', compact('students', 'title'));
-}
 
 
 public function showRoutingForm($studentId)
@@ -57,8 +63,11 @@ public function showRoutingForm($studentId)
     // Define the title for the view
     $title = 'Routing Form 1 for ' . $student->name;
 
+    $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
+
+
     // Pass the title, isDrPH flag, and other data to the view
-    return view('superadmin.route1.SAStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH'));
+    return view('superadmin.route1.SAStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 'globalSubmissionLink'));
 }
 
     
@@ -152,26 +161,23 @@ public function showRoutingForm($studentId)
                          ->with('error', 'Unable to find appointment.');
     }
 
-    public function uploadSubmissionFilesLink(Request $request, $studentId)
-{
-    // Validate the input for a URL
-    $request->validate([
-        'submission_files_link' => 'required|url',
-    ]);
+    public function storeOrUpdateSubmissionLink(Request $request)
+    {
+        // Validate that the input is a URL
+        $request->validate([
+            'submission_files_link' => 'required|url',
+        ]);
 
-    // Find the student's appointment record
-    $appointment = AdviserAppointment::where('student_id', $studentId)->first();
+        // Update or create the submission link setting
+        Setting::updateOrCreate(
+            ['key' => 'submission_files_link'],
+            ['value' => $request->input('submission_files_link')]
+        );
 
-    if ($appointment) {
-        // Save the link to the appointment
-        $appointment->submission_files_link = $request->input('submission_files_link');
-        $appointment->save();
-
-        return redirect()->route('superadmin.showRoutingForm', $studentId)->with('success', 'Submission files link uploaded successfully.');
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Application Form Fee link saved successfully.');
     }
-
-    return redirect()->route('superadmin.showRoutingForm', $studentId)->with('error', 'Unable to find appointment.');
-}
+    
 
 public function approveSubmissionFiles(Request $request, $studentId)
 {

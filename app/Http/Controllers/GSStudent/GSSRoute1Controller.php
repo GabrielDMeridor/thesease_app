@@ -16,7 +16,7 @@ use App\Notifications\ProposalManuscriptUpdateNotification;
 use App\Notifications\StudentReplyNotification;
 use App\Notifications\StatisticianResponseNotification;
 use App\Notifications\AUFCFileSubmissionNotification;
-
+use App\Models\Setting;
 
 
 
@@ -35,7 +35,8 @@ class GSSRoute1Controller extends Controller
         $advisers = User::where('account_type', User::Thesis_DissertationProfessor)->get();
         $appointment = AdviserAppointment::where('student_id', $user->id)->first();
         $allSignaturesFilled = $appointment && $appointment->adviser_signature && $appointment->chair_signature && $appointment->dean_signature;
-    
+        $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
+
         // Check if the student is in the DrPH program
         $isDrPH = $user->program === 'DRPH-HPE';
     
@@ -46,6 +47,7 @@ class GSSRoute1Controller extends Controller
             'appointment' => $appointment,
             'allSignaturesFilled' => $allSignaturesFilled,
             'isDrPH' => $isDrPH,  // Pass the DrPH status to the view
+            'globalSubmissionLink' => $globalSubmissionLink
         ];
     
         return view('gsstudent.route1.GSSroute1', $data);
@@ -126,51 +128,7 @@ class GSSRoute1Controller extends Controller
         return redirect()->route('gsstudent.route1')
                          ->with('success', 'Your response has been recorded, and the approval status is now pending.');
     }
-    public function uploadSignedRoutingForm(Request $request)
-    {
-        $user = Auth::user();
-        $appointment = AdviserAppointment::where('student_id', $user->id)->first();
     
-        $request->validate([
-            'signed_routing_form_1' => 'required|file|mimes:pdf|max:2048',
-        ]);
-    
-        $file = $request->file('signed_routing_form_1');
-        $originalFileName = $file->getClientOriginalName();
-        $uniqueFileName = time() . '_' . $originalFileName;
-        $storedFilePath = $file->storeAs('public/signed_routing_forms', $uniqueFileName);
-    
-        $appointment->signed_routing_form_1 = $storedFilePath;
-        $appointment->original_signed_routing_form_1 = $originalFileName;
-        $appointment->save();
-    
-        $this->checkAndNotifyProposalSubmissionCompletion($appointment);
-    
-        return redirect()->route('gsstudent.route1')->with('success', 'Signed Routing Form uploaded successfully!');
-    }
-    
-    public function uploadProposalManuscript(Request $request)
-    {
-        $user = Auth::user();
-        $appointment = AdviserAppointment::where('student_id', $user->id)->first();
-    
-        $request->validate([
-            'proposal_manuscript' => 'required|file|mimes:pdf|max:2048',
-        ]);
-    
-        $file = $request->file('proposal_manuscript');
-        $originalFileName = $file->getClientOriginalName();
-        $uniqueFileName = time() . '_' . $originalFileName;
-        $storedFilePath = $file->storeAs('public/proposal_manuscripts', $uniqueFileName);
-    
-        $appointment->proposal_manuscript = $storedFilePath;
-        $appointment->original_proposal_manuscript = $originalFileName;
-        $appointment->save();
-    
-        $this->checkAndNotifyProposalSubmissionCompletion($appointment);
-    
-        return redirect()->route('gsstudent.route1')->with('success', 'Proposal Manuscript uploaded successfully!');
-    }
     
     public function uploadVideoPresentation(Request $request)
     {
@@ -198,7 +156,7 @@ class GSSRoute1Controller extends Controller
     // Helper function to check proposal submission completion and notify
     protected function checkAndNotifyProposalSubmissionCompletion($appointment)
     {
-        if ($appointment->signed_routing_form_1 && $appointment->proposal_manuscript && $appointment->proposal_video_presentation) {
+        if ($appointment->proposal_video_presentation) {
             // All files are uploaded
             $appointment->proposal_submission_completed = true;
             $appointment->save();

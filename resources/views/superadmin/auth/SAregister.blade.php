@@ -80,9 +80,17 @@
                             <label for="account_type" class="entries">Account Type</label>
                             <select class="form-control @error('account_type') is-invalid @enderror" id="account_type" name="account_type" required>
                                 <option value="">Select Account Type</option>
+
+                                <option value="12" {{ old('account_type') == 12 ? 'selected' : '' }}>Christian Praxis</option>
+                                <option value="6" {{ old('account_type') == 6 ? 'selected' : '' }}>AUF Ethics Review Committee</option>
+                                <option value="7" {{ old('account_type') == 7 ? 'selected' : '' }}>Statistician</option>
+                                <option value="8" {{ old('account_type') == 8 ? 'selected' : '' }}>OVPRI</option>
+                                <option value="9" {{ old('account_type') == 9 ? 'selected' : '' }}>Library</option>
+                                <option value="10" {{ old('account_type') == 10 ? 'selected' : '' }}>Language Editor</option>
                                 <option value="4" {{ old('account_type') == 4 ? 'selected' : '' }}>Program Chair</option>
                                 <option value="5" {{ old('account_type') == 5 ? 'selected' : '' }}>Thesis/Dissertation Professor</option>
                                 <option value="11" {{ old('account_type') == 11 ? 'selected' : '' }}>Graduate School Student</option>
+
                             </select>
                             @error('account_type')
                                 <span class="invalid-feedback">{{ $message }}</span>
@@ -361,19 +369,45 @@
     // Handle degree change event to show program dropdown based on selected degree (for account types 5 and 11, and now 4)
     degree.addEventListener('change', handleDegreeChange);
 
-    // Handle nationality change event
-    nationalityDropdown.addEventListener('change', function () {
-        const nationality = nationalityDropdown.value;
-        const immigrationInput = document.querySelector('#immigration_or_studentvisa');
-    
-        if (nationality.toLowerCase() === 'filipino') {
-            immigrationContainer.style.display = 'none';
-            immigrationInput.removeAttribute('required'); // Remove required attribute
-        } else {
+    <script>
+// Existing JavaScript for toggling password visibility and other elements
+
+document.addEventListener('DOMContentLoaded', function () {
+    const accountType = document.querySelector('#account_type');
+    const nationalityDropdown = document.querySelector('#nationality');
+    const immigrationContainer = document.querySelector('#immigration-container');
+    const immigrationInput = document.querySelector('#immigration_or_studentvisa');
+
+    // Function to update immigration field based on account type and nationality
+    function updateImmigrationField() {
+        const nationality = nationalityDropdown.value.toLowerCase();
+        const isGraduateStudent = accountType.value === '11';
+
+        if (isGraduateStudent && nationality !== 'filipino') {
+            // Show immigration field if Graduate School Student with a foreign nationality
             immigrationContainer.style.display = 'block';
-            immigrationInput.setAttribute('required', 'required'); // Add required attribute
+            immigrationInput.setAttribute('required', 'required');
+        } else {
+            // Hide immigration field otherwise
+            immigrationContainer.style.display = 'none';
+            immigrationInput.removeAttribute('required');
         }
+    }
+
+    // Initialize the visibility of the immigration field on page load
+    updateImmigrationField();
+
+    // Update immigration field visibility whenever account type changes
+    accountType.addEventListener('change', function () {
+        updateImmigrationField();
     });
+
+    // Update immigration field visibility whenever nationality changes
+    nationalityDropdown.addEventListener('change', function () {
+        updateImmigrationField();
+    });
+});
+
 
     // Load nationalities from API
     async function loadNationalities() {

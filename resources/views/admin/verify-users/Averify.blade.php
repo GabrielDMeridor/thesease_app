@@ -106,11 +106,13 @@
                                     <option value="{{ \App\Models\User::ProgramChair }}" {{ request('account_type') == \App\Models\User::ProgramChair ? 'selected' : '' }}>Program Chair</option>
                                     <option value="{{ \App\Models\User::Thesis_DissertationProfessor }}" {{ request('account_type') == \App\Models\User::Thesis_DissertationProfessor ? 'selected' : '' }}>Thesis/Dissertation Professor</option>
                                     <option value="{{ \App\Models\User::Library }}" {{ request('account_type') == \App\Models\User::Library ? 'selected' : '' }}>Library</option>
+                                    <option value="{{ \App\Models\User::ChristianPraxis }}" {{ request('account_type') == \App\Models\User::ChristianPraxis ? 'selected' : '' }}>Christian Praxis</option>
                                     <option value="{{ \App\Models\User::AufEthicsReviewCommittee }}" {{ request('account_type') == \App\Models\User::AufEthicsReviewCommittee ? 'selected' : '' }}>AUF Ethics Review Committee</option>
                                     <option value="{{ \App\Models\User::Statistician }}" {{ request('account_type') == \App\Models\User::Statistician ? 'selected' : '' }}>Statistician</option>
                                     <option value="{{ \App\Models\User::OVPRI }}" {{ request('account_type') == \App\Models\User::OVPRI ? 'selected' : '' }}>OVPRI</option>
                                     <option value="{{ \App\Models\User::LanguageEditor }}" {{ request('account_type') == \App\Models\User::LanguageEditor ? 'selected' : '' }}>Language Editor</option>
                                     <option value="{{ \App\Models\User::GraduateSchoolStudent }}" {{ request('account_type') == \App\Models\User::GraduateSchoolStudent ? 'selected' : '' }}>Graduate School Student</option>
+
                                     </select>
                                 </div>
                             </div>

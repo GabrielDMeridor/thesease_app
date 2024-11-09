@@ -111,41 +111,42 @@
 
         <!-- List of Appointments -->
         <div class="table-responsive">
-            <table class="table table-bordered table-hover table-striped custom-table" id="results-table">
-                <thead class="table-dark">
-                    <tr>
-                        <th style="text-align:center;">Adviser Name</th>
-                        <th style="text-align:center;">Program</th>
-                        <th style="text-align:center;">Registration Response</th>
-                        <th style="text-align:center;">OVPRI Approval</th>
-                    </tr>
-                </thead>
-                <tbody id="results-body">
-                    @forelse ($appointments as $appointment)
-                        <tr>
-                            <td class="text-center">{{ $appointment->adviser->name }}</td>
-                            <td class="text-center">{{ $appointment->adviser->program ?? 'N/A' }}</td>
-                            <td class="text-center">{{ ucfirst($appointment->registration_response) }}</td>
-                            <td class="text-center">
-                                @if ($appointment->ovpri_approval === 'approved')
-                                    Approved
-                                @else
-                                    <form action="{{ route('ovpri.route1.approve', $appointment->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                                    </form>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center">No responded registrations found.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
+    <table class="table table-bordered table-hover table-striped custom-table" id="results-table">
+        <thead class="table-dark">
+            <tr>
+                <th style="text-align:center;">Adviser Name</th>
+                <th style="text-align:center;">Email</th>
+                <th style="text-align:center;">Program</th>
+                <th style="text-align:center;">Registration Response</th>
+                <th style="text-align:center;">OVPRI Approval</th>
+            </tr>
+        </thead>
+        <tbody id="results-body">
+            @forelse ($appointments as $appointment)
+                <tr>
+                    <td class="text-center">{{ $appointment->adviser->name }}</td>
+                    <td class="text-center">{{ $appointment->adviser->email }}</td>
+                    <td class="text-center">{{ $appointment->adviser->program ?? 'N/A' }}</td>
+                    <td class="text-center">{{ ucfirst($appointment->registration_response) }}</td>
+                    <td class="text-center">
+                        @if ($appointment->ovpri_approval === 'approved')
+                            Approved
+                        @else
+                            <form action="{{ route('ovpri.route1.approve', $appointment->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                            </form>
+                        @endif
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5" class="text-center">No responded registrations found.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
         <!-- Pagination Links -->
         <div class="d-flex justify-content-center" id="pagination-links">
             {{ $appointments->links() }}
@@ -175,6 +176,7 @@
                             let row = `
                                 <tr>
                                     <td>${appointment.adviser.name}</td>
+                                    <td>${appointment.adviser.email}</td>
                                     <td>${appointment.adviser.program ?? 'N/A'}</td>
                                     <td>${appointment.registration_response.charAt(0).toUpperCase() + appointment.registration_response.slice(1)}</td>
                                     <td>${approveButton}</td>
@@ -182,7 +184,7 @@
                             $('#results-body').append(row);
                         });
                     } else {
-                        $('#results-body').append('<tr><td colspan="4" class="text-center">No responded registrations found.</td></tr>');
+                        $('#results-body').append('<tr><td colspan="5" class="text-center">No responded registrations found.</td></tr>');
                     }
 
                     // Hide pagination links for AJAX results
@@ -191,6 +193,7 @@
             });
         });
     });
+
     function deleteNotification(notificationId) {
     if (confirm('Are you sure you want to delete this notification?')) {
         $.ajax({

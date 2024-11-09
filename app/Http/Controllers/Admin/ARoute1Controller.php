@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Notifications\CommunityExtensionApprovedNotification;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\SubmissionFilesApprovedNotification;
-
+use App\Models\Setting;
 
 class ARoute1Controller extends Controller
 {
@@ -37,8 +37,12 @@ class ARoute1Controller extends Controller
         // Define the title
         $title = "Routing Form 1 Checking";
 
+        $submissionFilesLink = Setting::firstOrCreate(
+            ['key' => 'submission_files_link'],
+            ['value' => null]
+        );
         // Pass $title and $students to the view
-        return view('admin.route1.Aroute1', compact('students', 'title'));
+        return view('admin.route1.Aroute1', compact('students', 'title', 'submissionFilesLink'));
     }
 
     public function showRoutingForm($studentId)
@@ -51,9 +55,12 @@ class ARoute1Controller extends Controller
 
         // Define the title for the view
         $title = 'Routing Form 1 for ' . $student->name;
+
+        $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
+
     
         // Pass the title along with the other data to the view
-        return view('admin.route1.AStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH'));
+        return view('admin.route1.AStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 'globalSubmissionLink'));
     }
     
     public function sign(Request $request, $studentId)
@@ -132,25 +139,21 @@ class ARoute1Controller extends Controller
                          ->with('error', 'Unable to find appointment.');
     }
 
-    public function uploadSubmissionFilesLink(Request $request, $studentId)
+    public function storeOrUpdateSubmissionLink(Request $request)
     {
-        // Validate the input for a URL
+        // Validate that the input is a URL
         $request->validate([
             'submission_files_link' => 'required|url',
         ]);
-    
-        // Find the student's appointment record
-        $appointment = AdviserAppointment::where('student_id', $studentId)->first();
-    
-        if ($appointment) {
-            // Save the link to the appointment
-            $appointment->submission_files_link = $request->input('submission_files_link');
-            $appointment->save();
-    
-            return redirect()->route('admin.showRoutingForm', $studentId)->with('success', 'Submission files link uploaded successfully.');
-        }
-    
-        return redirect()->route('admin.showRoutingForm', $studentId)->with('error', 'Unable to find appointment.');
+
+        // Update or create the submission link setting
+        Setting::updateOrCreate(
+            ['key' => 'submission_files_link'],
+            ['value' => $request->input('submission_files_link')]
+        );
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Application Form Fee link saved successfully.');
     }
     
     public function approveSubmissionFiles(Request $request, $studentId)

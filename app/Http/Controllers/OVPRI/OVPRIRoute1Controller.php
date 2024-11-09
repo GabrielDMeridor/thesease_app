@@ -19,9 +19,10 @@ class OVPRIRoute1Controller extends Controller
             return redirect()->route('getLogin')->with('error', 'You must be logged in as OVPRI to access this page');
         }
 
-        // Fetch appointments where registration_response is "responded"
+        // Fetch appointments where registration_response is "responded" and order by ovpri_approval (NULL values first for pending)
         $appointments = AdviserAppointment::where('registration_response', 'responded')
             ->with('adviser')
+            ->orderByRaw('ovpri_approval IS NOT NULL') // Pending (NULL) approvals at the top
             ->paginate(10);
 
         // Define the title variable
@@ -29,6 +30,7 @@ class OVPRIRoute1Controller extends Controller
 
         return view('ovpri.route1.OVPRIRoute1', compact('title', 'appointments'));
     }
+
 
     public function approve($id)
     {
@@ -64,26 +66,28 @@ class OVPRIRoute1Controller extends Controller
         return redirect()->back()->with('success', 'Adviser registration has been approved and notifications sent.');
     }
     public function ajaxSearch(Request $request)
-{
-    // Ensure the user is logged in as an OVPRI user
-    if (!auth()->check() || auth()->user()->account_type !== 8) {
-        return response()->json(['error' => 'Unauthorized access'], 403);
+    {
+        // Ensure the user is logged in as an OVPRI user
+        if (!auth()->check() || auth()->user()->account_type !== 8) {
+            return response()->json(['error' => 'Unauthorized access'], 403);
+        }
+
+        // Get the search query
+        $query = $request->input('search');
+
+        // Fetch appointments with pending approvals at the top
+        $appointments = AdviserAppointment::where('registration_response', 'responded')
+            ->whereHas('adviser', function ($q) use ($query) {
+                $q->where('name', 'like', '%' . $query . '%');
+            })
+            ->with('adviser')
+            ->orderByRaw('ovpri_approval IS NOT NULL') // Pending (NULL) approvals at the top
+            ->get();
+
+        // Return the data as JSON
+        return response()->json(['data' => $appointments]);
     }
 
-    // Get the search query
-    $query = $request->input('search');
-
-    // Fetch appointments where registration_response is "responded" and match the adviser's name
-    $appointments = AdviserAppointment::where('registration_response', 'responded')
-        ->whereHas('adviser', function ($q) use ($query) {
-            $q->where('name', 'like', '%' . $query . '%');
-        })
-        ->with('adviser')
-        ->get();
-
-    // Return the data as JSON
-    return response()->json(['data' => $appointments]);
-}
 
     
 }
