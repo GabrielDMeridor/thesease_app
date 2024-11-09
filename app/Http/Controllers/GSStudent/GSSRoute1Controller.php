@@ -178,8 +178,11 @@ class GSSRoute1Controller extends Controller
         $user = User::find(auth()->id());
         $appointment = AdviserAppointment::findOrFail($appointmentId);
     
+        // Retrieve submission_files_link from the settings table
+        $submissionFilesLink = Setting::where('key', 'submission_files_link')->value('value');
+    
         // Check if submission_files_link is null; if it is, do not proceed
-        if (is_null($appointment->submission_files_link)) {
+        if (is_null($submissionFilesLink)) {
             return redirect()->route('gsstudent.route1')
                              ->with('error', 'Submission files link is not available. Please try again later.');
         }

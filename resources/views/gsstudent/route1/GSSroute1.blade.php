@@ -488,6 +488,7 @@
          <!-- Step 5 for non-DrPH or Step 6 for DrPH - File Uploads -->
          <!-- Additional Section for Submission Files, shown if proposal_submission_completed is true -->
          <!-- Submission Files Section -->
+         @if (auth()->user()->nationality === 'Filipino')
          @if (optional($appointment)->proposal_submission_completed ?? false)
          <div class="container my-4 d-flex justify-content-center">
             <div class="col-12">
@@ -533,6 +534,7 @@
                </div>
             </div>
          </div>
+         @endif
          @endif
          @endif
          @if (($isDrPH && optional(value: $appointment)->community_extension_approval !== 'approved') ||
