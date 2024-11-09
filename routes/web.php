@@ -503,4 +503,6 @@ Route::post('/gsstudent/send-data-to-aufc', [GSSRoute1Controller::class, 'sendDa
      Route::post('graduateschool/store-submission-link', [SARoute1Controller::class, 'storeOrUpdateSubmissionLink'])->name('graduateschool.storeOrUpdateSubmissionLink');
      Route::post('/library/deny-manuscript/{appointmentId}', [LRoute1Controller::class, 'denyManuscript'])->name('library.denyManuscript');
 
+     Route::post('ovpri/store-ovpri-link', [OVPRIRoute1Controller::class, 'storeOrUpdateOVPRILink'])->name('ovpri.storeOrUpdateOVPRILink');
+
 

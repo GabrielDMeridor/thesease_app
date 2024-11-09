@@ -44,6 +44,8 @@ class SARoute1Controller extends Controller
             ['value' => null]
         );
 
+
+
         // Define the title
         $title = "Routing Form 1 Checking";
 
@@ -64,10 +66,11 @@ public function showRoutingForm($studentId)
     $title = 'Routing Form 1 for ' . $student->name;
 
     $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
+    $ovpriLink = Setting::where('key', 'ovpri_link')->value('value');
 
 
     // Pass the title, isDrPH flag, and other data to the view
-    return view('superadmin.route1.SAStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 'globalSubmissionLink'));
+    return view('superadmin.route1.SAStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 'globalSubmissionLink', 'ovpriLink'));
 }
 
     

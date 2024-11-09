@@ -132,6 +132,7 @@ public function showAdviseeForm($studentId)
     $title = 'Routing Form 1 for ' . $student->name;
 
     $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
+    $ovpriLink = Setting::where('key', 'ovpri_link')->value('value');
 
 
     return view('tdprofessor.route1.TDPAdviseeRoute1', [
@@ -140,7 +141,8 @@ public function showAdviseeForm($studentId)
         'advisee' => $student,
         'title' => $title,
         'isDrPH' => $isDrPH,
-        'globalSubmissionLink' => $globalSubmissionLink
+        'globalSubmissionLink' => $globalSubmissionLink,
+        'ovpriLink' => $ovpriLink
 
     ]);
 }

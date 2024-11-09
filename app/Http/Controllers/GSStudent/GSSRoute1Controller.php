@@ -36,6 +36,7 @@ class GSSRoute1Controller extends Controller
         $appointment = AdviserAppointment::where('student_id', $user->id)->first();
         $allSignaturesFilled = $appointment && $appointment->adviser_signature && $appointment->chair_signature && $appointment->dean_signature;
         $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
+        $ovpriLink = Setting::where('key', 'ovpri_link')->value('value');
 
         // Check if the student is in the DrPH program
         $isDrPH = $user->program === 'DRPH-HPE';
@@ -47,7 +48,8 @@ class GSSRoute1Controller extends Controller
             'appointment' => $appointment,
             'allSignaturesFilled' => $allSignaturesFilled,
             'isDrPH' => $isDrPH,  // Pass the DrPH status to the view
-            'globalSubmissionLink' => $globalSubmissionLink
+            'globalSubmissionLink' => $globalSubmissionLink,
+            'ovpriLink' => $ovpriLink,
         ];
     
         return view('gsstudent.route1.GSSroute1', $data);

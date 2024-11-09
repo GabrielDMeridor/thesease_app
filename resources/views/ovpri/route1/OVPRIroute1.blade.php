@@ -86,6 +86,37 @@
     </div>
     <br>
 
+    <div class="container">
+    <h2>Manage OVPRI Link</h2>
+
+    <!-- Display Success Message -->
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    <!-- Display Validation Errors -->
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Form for Creating or Updating the OVPRI Link -->
+    <form action="{{ route('ovpri.storeOrUpdateOVPRILink') }}" method="POST">
+        @csrf
+        <div class="form-group mb-3">
+            <label for="ovpri_link">OVPRI Link:</label>
+            <input type="url" name="ovpri_link" class="form-control" value="{{ $ovpriLink->value }}" required placeholder="Enter the OVPRI link">
+        </div>
+        <button type="submit" class="btn btn-primary">{{ $ovpriLink->value ? 'Update' : 'Upload' }} Link</button>
+    </form>
+</div>
+
+
 <!-- Search Form -->
 <div class="card">
     <div class="card-body">

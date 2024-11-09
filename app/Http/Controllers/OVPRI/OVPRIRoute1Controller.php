@@ -9,6 +9,7 @@ use App\Notifications\OVPRIApprovalNotificationToRoles;
 use App\Notifications\OVPRIApprovalNotificationToAdviser;
 use App\Notifications\OVPRIApprovalNotificationToStudent;
 use App\Models\User;
+use App\Models\Setting;
 
 class OVPRIRoute1Controller extends Controller
 {
@@ -28,7 +29,13 @@ class OVPRIRoute1Controller extends Controller
         // Define the title variable
         $title = 'Advisers Who Responded in Registration';
 
-        return view('ovpri.route1.OVPRIRoute1', compact('title', 'appointments'));
+        $ovpriLink = Setting::firstOrCreate(
+            ['key' => 'ovpri_link'],
+            ['value' => null] // Default value if not already set
+        );
+    
+
+        return view('ovpri.route1.OVPRIRoute1', compact('title', 'appointments', 'ovpriLink'));
     }
 
 
@@ -87,7 +94,21 @@ class OVPRIRoute1Controller extends Controller
         // Return the data as JSON
         return response()->json(['data' => $appointments]);
     }
-
+    public function storeOrUpdateOVPRILink(Request $request)
+    {
+        $request->validate([
+            'ovpri_link' => 'required|url',
+        ]);
+    
+        // Update or create the ovpri_link setting
+        Setting::updateOrCreate(
+            ['key' => 'ovpri_link'],
+            ['value' => $request->input('ovpri_link')]
+        );
+    
+        return redirect()->back()->with('success', 'OVPRI Link updated successfully.');
+    }
+    
 
     
 }

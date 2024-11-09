@@ -58,10 +58,11 @@ class GSRoute1Controller extends Controller
         $title = 'Routing Form 1 for ' . $student->name;
 
         $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
+        $ovpriLink = Setting::where('key', 'ovpri_link')->value('value');
 
     
         // Pass the title along with the other data to the view
-        return view('graduateschool.route1.GSStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 'globalSubmissionLink'));
+        return view('graduateschool.route1.GSStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 'globalSubmissionLink', 'ovpriLink'));
     }
     public function sign(Request $request, $studentId)
     {

@@ -370,8 +370,8 @@
                   <div class="instructions-section ml-md-4">
                      <h4 class="routing-heading">Research Registration</h4>
                      <p>Adviser accomplishes the 
-                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeT2G_Ap-A2PrFS-WW3E4GwP38SGaLbnvQBCtr4SniWo8YQlA/viewform" target="_blank" class="text-decoration-underline text-primary">
-                        <i class="fa-solid fa-link"></i>    
+                     <a href="{{ $ovpriLink }}" target="_blank" class="text-decoration-underline text-primary">
+                     <i class="fa-solid fa-link"></i>    
                         Research Registration Form
                         </a>. 
                         Note that the primary author will be the student, and the adviser will be the co-author. A copy of the form responses will be sent to the adviser’s email.
