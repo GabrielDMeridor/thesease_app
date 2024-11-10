@@ -128,6 +128,55 @@
     </div>
 </div>
 
+        <!-- Announcements Card -->
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Announcements</h6>
+                </div>
+                <div class="card-body">
+                    <!-- Announcement Creation Form -->
+                    <form action="{{ route('superadmin.storeAnnouncement') }}" method="POST">
+                        @csrf
+                        <div class="form-group">
+                            <label for="announcementTitle">Title</label>
+                            <input type="text" class="form-control" id="announcementTitle" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="announcementContent">Content</label>
+                            <textarea class="form-control" id="announcementContent" name="content" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Announcement</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Display Recent Announcements -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Announcements</h6>
+                </div>
+                <div class="card-body">
+                    @foreach ($announcements as $announcement)
+                        <div class="mb-4">
+                            <h5>{{ $announcement->title }}</h5>
+                            <p>{{ $announcement->content }}</p>
+                            <small class="text-muted">{{ $announcement->created_at->format('F j, Y, g:i a') }}</small>
+                        </div>
+                        <hr>
+                    @endforeach
+
+                    <!-- Pagination Links -->
+                    <div class="d-flex justify-content-center">
+                        {{ $announcements->links() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- JavaScript for Charts and AJAX calls -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

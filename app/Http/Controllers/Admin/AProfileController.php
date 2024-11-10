@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\AdviserAppointment;
+use App\Models\Announcement;
+use App\Notifications\AnnouncementNotification;
+use App\Models\User;
 
 class AProfileController extends Controller
 {
@@ -15,7 +18,9 @@ class AProfileController extends Controller
         }
         
         $data = [
-            'title' => 'Dashboard'
+            'title' => 'Dashboard',
+            'announcements' => Announcement::latest()->paginate(5), // Fetch recent announcements
+
         ];
         return view('admin.Adashboard', $data);
     }
@@ -91,4 +96,27 @@ class AProfileController extends Controller
             'nationalityData' => $nationalityData
         ]);
     }
+    
+
+    public function storeAnnouncement(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        $announcement = Announcement::create([
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+        ]);
+
+        // Notify GraduateSchool students and thesis/dissertation professors
+        $recipients = User::whereIn('account_type', [11, 5])->get();
+        foreach ($recipients as $user) {
+            $user->notify(new AnnouncementNotification($announcement));
+        }
+
+        return redirect()->back()->with('success', 'Announcement created and notifications sent.');
+    }
+
 }

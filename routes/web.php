@@ -117,6 +117,8 @@
     Route::post('/superadmin/logout', [SAProfileController::class, 'SAlogout'])->name('SAlogout');
     // SuperAdmin Routes Dashboard and Sidebar
     Route::get('/superadmin/dashboard', [SAProfileController::class, 'SAdashboard'])->name('SAdashboard');
+    Route::post('/superadmin/announcement/store', [SAProfileController::class, 'storeAnnouncement'])->name('superadmin.storeAnnouncement');
+
     //SuperAdmin Home
     //SuperAdmin Account
     Route::get('/superadmin/account', action: [SAAccountController::class, 'SAaccount'])->name('superadmin.account');
@@ -167,6 +169,8 @@
 
     //Admin Routes Dashboard and Sidebar
     Route::get('/admin/dashboard', [AProfileController::class, 'Adashboard'])->name('Adashboard');
+    Route::post('/admin/announcement/store', [AProfileController::class, 'storeAnnouncement'])->name('admin.storeAnnouncement');
+
     // Admin Account
     Route::get('/admin/account', action: [AAccountController::class, 'Aaccount'])->name('admin.account');
     Route::put('/admin/update-profile', [AAccountController::class, 'updateProfile'])->name('admin.updateProfile');
@@ -195,6 +199,8 @@
 
     //GraduateSchool Routes Dashboard and Sidebar
     Route::get('/graduateschool/dashboard', [GSProfileController::class, 'GSdashboard'])->name('GSdashboard');
+    Route::post('/graduateschool/announcement/store', [GSProfileController::class, 'storeAnnouncement'])->name('graduateschool.storeAnnouncement');
+
     // GraduateSchool Account
     Route::get('/graduateschool/account', action: [GSAccountController::class, 'GSaccount'])->name('graduateschool.account');
     Route::put('/graduateschool/update-profile', [GSAccountController::class, 'updateProfile'])->name('graduateschool.updateProfile');
