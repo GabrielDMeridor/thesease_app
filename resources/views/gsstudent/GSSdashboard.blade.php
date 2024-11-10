@@ -27,7 +27,7 @@
                             </div>
                             <div>
                                 <div class="small text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
-                                <span>{{ $notification->data['message'] }}</span>
+                                <span>{{ $notification->data['message'] ?? 'No message available' }}</span> <!-- Default value if 'message' is missing -->
                                 <!-- Conditionally display the reason if it exists -->
                                 @if (!empty($notification->data['reason']))
                                     <p class="mb-0 text-gray-700">Reason: {{ $notification->data['reason'] }}</p>
@@ -84,142 +84,34 @@
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
-    <!-- Page Greeting -->
-    <div class=" sagreet">
-        Welcome, {{ auth()->user()->name ?? 'GraduateSchoolStudent' }}
-    </div>
-    <br>
+<div class="sagreet">{{ $title }}</div>
+<br>
 
-    <div class="dashboard-container">
-        <!-- Main Table for List of Pending Requirements -->
-        <div class="col-md-6 mb-3 mb-lg-0">
-    <div class="card" style="border-radius: 0;">
-            <div class="card-header">List of Pending Requirements</div>
-            <div class="table-responsive">
-                <table class="table table-hover table-borderless mb-0">
-                    <tbody>
-                        <tr>
-                            <td>Prepare Initial Files</td>
-                            <td class="text-end"><span class="fas fa-check text-success"></span></td>
-                        </tr>
-                        <tr>
-                            <td>Request for appointment of thesis/dissertation adviser</td>
-                            <td class="text-end"><span class="fas fa-lock text-muted"></span></td>
-                        </tr>
-                        <tr>
-                            <td>Consultation with Statistician</td>
-                            <td class="text-end"><span class="fas fa-lock text-muted"></span></td>
-                        </tr>
-                        <tr>
-                            <td>Submission Files to Graduate School</td>
-                            <td class="text-end"><span class="fas fa-lock text-muted"></span></td>
-                        </tr>
-                        <tr>
-                            <td>Endorsement of Manuscript for Proposal Defense</td>
-                            <td class="text-end"><span class="fas fa-lock text-muted"></span></td>
-                        </tr>
-                        <tr>
-                            <td>Similarity Checking</td>
-                            <td class="text-end"><span class="fas fa-lock text-muted"></span></td>
-                        </tr>
-                        <tr>
-                            <td>Research Registration</td>
-                            <td class="text-end"><span class="fas fa-lock text-muted"></span></td>
-                        </tr>
-                        <tr>
-                            <td>Submission of files to Graduate School</td>
-                            <td class="text-end"><span class="fas fa-lock text-muted"></span></td>
-                        </tr>
-                        <tr>
-                            <td>Application for Proposal Defense</td>
-                            <td class="text-end"><span class="fas fa-lock text-muted"></span></td>
-                        </tr>
-                        <tr>
-                            <td>Approval of the revised proposal by panel members</td>
-                            <td class="text-end"><span class="fas fa-lock text-muted"></span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="card-footer footerdashboard" style="background-color: transparent;">
-                <button class="btn btn-view-all w-100 dashbtn">Next Page</button>
-            </div>
-        </div>
-    </div>
-
-
-        <!-- Sidebar with Announcements and Upcoming Schedules -->
-        <div class="sidebar" style="flex: 1;">
-            <!-- Announcements Table -->
-            <div class="card announcements-container" style="border-radius: 0;">
-                <div class="table-responsive">
-                    <table class="table table-hover table-borderless mb-0">
-                        <thead>
-                            <tr class="card-header">
-                                <th >Announcements</th>
-                                <th >Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>There are no current announcements</td>
-                                <td class="text-end text-muted">------</td>
-                            </tr>
-                            <tr>
-                                <td>There are no current announcements</td>
-                                <td class="text-end text-muted">------</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <!-- Display Recent Announcements -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Announcements</h6>
                 </div>
-                <div class="card-footer announcements-view-all" style="background-color: transparent;">
-                    <button class="btn btn-view-all w-100 dashbtn">View all announcements</button>
+                <div class="card-body">
+                    @foreach ($announcements as $announcement)
+                        <div class="mb-4">
+                            <h5>{{ $announcement->title }}</h5>
+                            <p>{{ $announcement->content }}</p>
+                            <small class="text-muted">{{ $announcement->created_at->format('F j, Y, g:i a') }}</small>
+                        </div>
+                        <hr>
+                    @endforeach
+
+                    <!-- Pagination Links -->
+                    <div class="d-flex justify-content-center">
+                        {{ $announcements->links() }}
+                    </div>
                 </div>
             </div>
+</div>
 
-            <!-- Upcoming Schedules Table -->
-            <div class="card schedules-container schedules-upcoming" style="border-radius: 0; margin-top: 20px;">
-                <div class="table-responsive">
-                    <table class="table table-hover table-borderless mb-0">
-                        <thead>
-                            <tr class="card-header">
-                                <th>Upcoming Schedules</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Consultation with Adviser</td>
-                                <td class="text-end"><a href="#">May, 16</a></td>
-                            </tr>
-                            <tr>
-                                <td>Consultation with Adviser</td>
-                                <td class="text-end"><a href="#">May, 20</a></td>
-                            </tr>
-                            <tr>
-                                <td>Meeting with Program Chair</td>
-                                <td class="text-end"><a href="#">May, 29</a></td>
-                            </tr>
-                            <tr>
-                                <td>Meeting with Adviser</td>
-                                <td class="text-end"><a href="#">June, 4</a></td>
-                            </tr>
-                            <tr>
-                                <td>Proposal Defense</td>
-                                <td class="text-end"><a href="#">June, 6</a></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card-footer schedules-button" style="background-color: transparent;">
-                    <button class="btn btn-view-all w-100 dashbtn">Next Page</button>
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <script>
-        function deleteNotification(notificationId) {
+<script>
+    function deleteNotification(notificationId) {
     if (confirm('Are you sure you want to delete this notification?')) {
         $.ajax({
             url: `/notifications/${notificationId}`, // URL for delete route
@@ -248,6 +140,6 @@
         });
     }
 }
-    </script>
+</script>
 <!-- /.container-fluid -->
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\TDProfessor;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Announcement;
 
 class TDPProfileController extends Controller
 {
@@ -14,7 +15,9 @@ class TDPProfileController extends Controller
         }
         
         $data = [
-            'title' => 'Dashboard'
+            'title' => 'Dashboard',
+            'announcements' => Announcement::latest()->paginate(5), // Fetch recent announcements
+
         ];
         return view('tdprofessor.TDPdashboard', $data);
     }

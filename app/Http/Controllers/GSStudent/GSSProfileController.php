@@ -4,6 +4,7 @@ namespace App\Http\Controllers\GSStudent;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Announcement;
 
 class GSSProfileController extends Controller
 {
@@ -25,6 +26,8 @@ class GSSProfileController extends Controller
         // If verified, show the full dashboard
         $data = [
             'title' => 'Account Profile',
+            'announcements' => Announcement::latest()->paginate(5), // Fetch recent announcements
+
         ];
     
         return view('gsstudent.GSSdashboard', $data);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\CCFP;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Announcement;
 
 class CCFPProfileController extends Controller
 {
@@ -14,7 +15,9 @@ class CCFPProfileController extends Controller
         }
         
         $data = [
-            'title' => 'Dashboard'
+            'title' => 'Dashboard',
+            'announcements' => Announcement::latest()->paginate(5), // Fetch recent announcements
+
         ];
         return view('ccfp.Cdashboard', $data);
     }
