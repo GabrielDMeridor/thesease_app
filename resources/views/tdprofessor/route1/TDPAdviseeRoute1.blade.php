@@ -26,7 +26,7 @@
                             </div>
                             <div>
                                 <div class="small text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
-                                <span>{{ $notification->data['message'] }}</span>
+                                <span>{{ $notification->data['message'] ?? 'No message available' }}</span> <!-- Default value if 'message' is missing -->
                                 <!-- Conditionally display the reason if it exists -->
                                 @if (!empty($notification->data['reason']))
                                     <p class="mb-0 text-gray-700">Reason: {{ $notification->data['reason'] }}</p>
@@ -566,7 +566,7 @@
                      </div>
                   </div>
                </div>
-               @if ($appointment->proposal_submission_completed)
+               @if ($appointment->proposal_submission_completed && $student->nationality === 'Filipino')
                <div class="col-md-6">
                   <div class="card mt-4 mt-md-0">
                      <div class="card-body">
@@ -607,7 +607,6 @@
                @endif
             </div>
          </div>
-         <br>
          @endif
          @elseif (($step === 6 && !$isDrPH) || ($step === 7 && $isDrPH))
          @if (optional($appointment)->proposal_defense_date === null)

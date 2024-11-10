@@ -571,6 +571,7 @@
         </div>
 
 <!-- Submission Files Section -->
+@if ($student->nationality === 'Filipino')
 <div class="col-md-6 mb-4">
     <div class="card shadow">
         <div class="card-body">
@@ -616,13 +617,17 @@
                             @csrf
                             <button type="submit" class="btn btn-primary">Approve Submission Files</button>
                         </form>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endif
+                        @endif
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               @endif
+            </div>  
+            @if ($student->nationality !== 'Filipino')
+            </div> <!-- Closing div for .card if not Filipino -->
+             @endif
+            @endif
 
 
 @elseif (($step === 6 && !$isDrPH) || ($step === 7 && $isDrPH))

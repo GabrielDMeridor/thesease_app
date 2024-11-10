@@ -519,9 +519,8 @@
                         </div>
                      </div>
                   </div>
-<!-- Submission Files Section 
+<!-- Submission Files Section -->
 @if ($student->nationality === 'Filipino') 
-                           -->
 <div class="col-md-6 mb-4">
     <div class="card shadow">
         <div class="card-body">
@@ -566,11 +565,12 @@
                      </div>
                   </div>
                </div>
-            </div>
+               @endif
+            </div>  
+            @if ($student->nationality !== 'Filipino')
+            </div> <!-- Closing div for .card if not Filipino -->
+             @endif
             @endif
-            <!--
-            @endif
-                           -->
             @elseif (($step === 6 && !$isDrPH) || ($step === 7 && $isDrPH))
             @if (optional($appointment)->proposal_defense_date === null)
             <!-- Step Locked Message in a Centered Card -->
