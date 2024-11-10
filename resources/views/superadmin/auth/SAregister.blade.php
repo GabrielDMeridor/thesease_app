@@ -1,6 +1,9 @@
 @extends('guest-layout')
 
 @section('content-header1')
+<title>ThesEase - Register
+</title>
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-lg-5">
@@ -80,7 +83,6 @@
                             <label for="account_type" class="entries">Account Type</label>
                             <select class="form-control @error('account_type') is-invalid @enderror" id="account_type" name="account_type" required>
                                 <option value="">Select Account Type</option>
-
                                 <option value="12" {{ old('account_type') == 12 ? 'selected' : '' }}>Christian Praxis</option>
                                 <option value="6" {{ old('account_type') == 6 ? 'selected' : '' }}>AUF Ethics Review Committee</option>
                                 <option value="7" {{ old('account_type') == 7 ? 'selected' : '' }}>Statistician</option>
@@ -136,11 +138,6 @@
                             <input class="form-control" id="immigration_or_studentvisa" type="file" name="immigration_or_studentvisa" accept=".jpg,.jpeg,.png"/>
                         </div>
 
-                        <!-- Routing Form One Upload (only for account type 11) -->
-                        <div class="form-floating mb-3" id="routing-form-container" style="display: none;">
-                            <label for="routing_form_one" class="entries">Upload Routing Form One</label>
-                            <input class="form-control" id="routing_form_one" type="file" name="routing_form_one" accept=".pdf"/>
-                        </div>
 
                         <!-- Manuscript Upload (only for account type 11) -->
                         <div class="form-floating mb-3" id="manuscript-container" style="display: none;">
@@ -148,11 +145,7 @@
                             <input class="form-control" id="manuscript" type="file" name="manuscript" accept=".pdf"/>
                         </div>
 
-                        <!-- Adviser Appointment Form Upload (only for account type 11) -->
-                        <div class="form-floating mb-3" id="adviser-appointment-form-container" style="display: none;">
-                            <label for="adviser_appointment_form" class="entries">Upload Adviser Appointment Form</label>
-                            <input class="form-control" id="adviser_appointment_form" type="file" name="adviser_appointment_form" accept=".pdf"/>
-                        </div>
+
 
 
                         <hr class="lineborder">
@@ -369,10 +362,9 @@
     // Handle degree change event to show program dropdown based on selected degree (for account types 5 and 11, and now 4)
     degree.addEventListener('change', handleDegreeChange);
 
-    <script>
-// Existing JavaScript for toggling password visibility and other elements
+    // Handle nationality change event
 
-document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
     const accountType = document.querySelector('#account_type');
     const nationalityDropdown = document.querySelector('#nationality');
     const immigrationContainer = document.querySelector('#immigration-container');
@@ -407,7 +399,6 @@ document.addEventListener('DOMContentLoaded', function () {
         updateImmigrationField();
     });
 });
-
 
     // Load nationalities from API
     async function loadNationalities() {

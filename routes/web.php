@@ -94,6 +94,8 @@
     use App\Http\Controllers\GSStudent\GSSCalendarController;
     use App\Http\Controllers\GSStudent\GSSRoute2Controller;
 
+    use App\Http\Controllers\CCFP\CCFPProfileController;
+    use App\Http\Controllers\CCFP\CCFPRoute1Controller;
 
 
     use App\Http\Controllers\PasswordResetController;
@@ -334,15 +336,29 @@
     // GS Route 1 Step 3
     Route::post('/gsstudent/upload-similarity-manuscript', [GSSRoute1Controller::class, 'uploadSimilarityManuscript'])->name('gsstudent.uploadSimilarityManuscript');
     // GS  Stundent DRPH
-    Route::post('/gsstudent/adviser_appointments/{id}/respond-community-extension', [GSSRoute1Controller::class, 'respondToCommunityExtension'])->name('gsstudent.respondToCommunityExtension');
+    Route::post('/gsstudent/adviser_appointments/{id}/respond-community-extension', [GSSRoute1Controller::class, 'respondToCommunityExtension'])
+    ->name('gsstudent.respondToCommunityExtension');
     // GS Student Step 6 DRPH :  Step 5
     Route::post('/gsstudent/upload-signed-routing-form', [GSSRoute1Controller::class, 'uploadSignedRoutingForm'])->name('gsstudent.uploadSignedRoutingForm');
     Route::post('/gsstudent/upload-proposal-manuscript', [GSSRoute1Controller::class, 'uploadProposalManuscript'])->name('gsstudent.uploadProposalManuscript');
     Route::post('/gsstudent/upload-video-presentation', [GSSRoute1Controller::class, 'uploadVideoPresentation'])->name('gsstudent.uploadVideoPresentation');
 
-    Route::post('/gsstudent/adviser_appointments/{id}/respond-community-extension', [GSSRoute1Controller::class, 'respondToSubmissionFiles'])->name('gsstudent.respondToSubmissionFiles');
+    Route::post('/gsstudent/adviser_appointments/{id}/respond-submission-files', [GSSRoute1Controller::class, 'respondToSubmissionFiles'])->name('gsstudent.respondToSubmissionFiles');
     // Step 8 : Step 7
     Route::post('/gsstudent/respondToStatistician', [GSSRoute1Controller::class, 'respondToStatistician'])->name('gsstudent.respondToStatistician');
+
+
+
+    Route::get('/ccfp/dashboard', [CCFPProfileController::class, 'Cdashboard'])->name('Cdashboard');
+
+        Route::get('/ccfp/route1', [CCFPRoute1Controller::class, 'index'])->name('ccfp.route1');
+        Route::post('ccfp/route1/approve/{id}', [CCFPRoute1Controller::class, 'approve'])->name('ccfp.route1.approve');
+        Route::get('/ccfp/route1/ajax-search', [CCFPRoute1Controller::class, 'ajaxSearch'])->name('ccfp.route1.ajaxSearch');
+        Route::post('ccfp/store-ovpri-link', [CCFPRoute1Controller::class, 'storeOrUpdateCCFPLink'])->name('ccfp.storeOrUpdateCCFPLink');
+
+
+
+
 
 
     //Notificaion Event Handler

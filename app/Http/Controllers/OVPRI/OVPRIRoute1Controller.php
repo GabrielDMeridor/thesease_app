@@ -19,24 +19,25 @@ class OVPRIRoute1Controller extends Controller
         if (!auth()->check() || auth()->user()->account_type !== 8) {
             return redirect()->route('getLogin')->with('error', 'You must be logged in as OVPRI to access this page');
         }
-
+    
         // Fetch appointments where registration_response is "responded" and order by ovpri_approval (NULL values first for pending)
         $appointments = AdviserAppointment::where('registration_response', 'responded')
             ->with('adviser')
             ->orderByRaw('ovpri_approval IS NOT NULL') // Pending (NULL) approvals at the top
+            ->orderBy('updated_at', 'desc') // Newest responses at the top within each group
             ->paginate(10);
-
+    
         // Define the title variable
         $title = 'Advisers Who Responded in Registration';
-
+    
         $ovpriLink = Setting::firstOrCreate(
             ['key' => 'ovpri_link'],
             ['value' => null] // Default value if not already set
         );
     
-
         return view('ovpri.route1.OVPRIRoute1', compact('title', 'appointments', 'ovpriLink'));
     }
+    
 
 
     public function approve($id)

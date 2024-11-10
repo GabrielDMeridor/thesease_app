@@ -429,11 +429,11 @@
             <div class="card shadow mb-4">
                <div class="card-body">
                   <h5><strong>Community Extension Registration (For DrPH students only)</strong></h5>
-                  @if ($appointment->community_extension_link)
+                  @if ($ccfpLink)
                   <!-- Display the form link if it exists -->
                   <p><strong>Form Link:</strong> 
-                     <a href="{{ $appointment->community_extension_link }}" target="_blank">
-                     Community Extension Registration Form
+                  <a href="{{ $ccfpLink }}" target="_blank" class="text-decoration-underline text-primary">
+                  Community Extension Registration Form
                      </a>
                   </p>
                   @else
@@ -457,12 +457,15 @@
                      @endif
                   </p>
                   <!-- Response Button for Student -->
-                  @if (!$appointment->community_extension_response)
-                  <form action="{{ route('gsstudent.respondToCommunityExtension', parameters: $appointment->id) }}" method="POST">
-                     @csrf
-                     <button type="submit" class="btn btn-primary">Mark as Responded</button>
-                  </form>
-                  @endif
+<!-- Response Button for Student -->
+@if (!$appointment->community_extension_response)
+   <form action="{{ route('gsstudent.respondToCommunityExtension') }}" method="POST">
+      @csrf
+      <button type="submit" class="btn btn-primary">Mark as Responded</button>
+   </form>
+@endif
+
+
                </div>
             </div>
          </div>

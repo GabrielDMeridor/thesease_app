@@ -58,10 +58,12 @@ class ARoute1Controller extends Controller
 
         $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
         $ovpriLink = Setting::where('key', 'ovpri_link')->value('value');
+        $ccfpLink = Setting::where('key', 'ccfp_link')->value('value');
 
     
         // Pass the title along with the other data to the view
-        return view('admin.route1.AStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 'globalSubmissionLink', 'ovpriLink'));
+        return view('admin.route1.AStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 'globalSubmissionLink',
+        'ccfpLink', 'ovpriLink'));
     }
     
     public function sign(Request $request, $studentId)
@@ -97,26 +99,6 @@ class ARoute1Controller extends Controller
         return response()->json($students);
     }
 
-    public function uploadCommunityExtensionLink(Request $request, $studentId)
-{
-    // Validate the input for a URL
-    $request->validate([
-        'community_extension_link' => 'required|url',
-    ]);
-
-    // Find the student's appointment record
-    $appointment = AdviserAppointment::where('student_id', $studentId)->first();
-
-    if ($appointment) {
-        // Save the link to the appointment
-        $appointment->community_extension_link = $request->input('community_extension_link');
-        $appointment->save();
-
-        return redirect()->route('admin.showRoutingForm', $studentId)->with('success', 'Community Extension link uploaded successfully.');
-    }
-
-    return redirect()->route('admin.showRoutingForm', $studentId)->with('error', 'Unable to find appointment.');
-}
 
     public function approveCommunityExtension(Request $request, $studentId)
     {

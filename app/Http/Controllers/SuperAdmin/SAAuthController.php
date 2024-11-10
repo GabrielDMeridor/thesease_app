@@ -79,6 +79,7 @@ class SAAuthController extends Controller
             ],
             'manuscript' => 'nullable|mimes:pdf|max:25000',
         ]);
+        
 
         // Handle file uploads
         $immigrationFileName = null;

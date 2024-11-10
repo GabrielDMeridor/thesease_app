@@ -420,22 +420,17 @@
             <div class="card-body">
                 <h5 class="font-weight-bold mb-3">Community Extension Registration (For DrPH students only)</h5>
                 
-                @if ($appointment->community_extension_link)
-                    <p><strong>Form Link:</strong> 
-                        <a href="{{ $appointment->community_extension_link }}" target="_blank" class="text-primary">
-                            {{ $appointment->community_extension_link }}
-                        </a>
-                    </p>
+            <!-- Display CCFP Link -->
+            <p><strong>CCFP Link:</strong> 
+                @if ($ccfpLink)
+                    <a href="{{ $ccfpLink }}" target="_blank" class="text-primary">
+                        {{ $ccfpLink }}
+                    </a>
                 @else
-                    <form action="{{ route('superadmin.uploadCommunityExtensionLink', $student->id) }}" method="POST">
-                        @csrf
-                        <div class="form-group mb-3">
-                            <label for="community_extension_link">Community Extension Link:</label>
-                            <input type="url" name="community_extension_link" class="form-control" required placeholder="Enter the form link">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Upload Link</button>
-                    </form>
+                    <span class="text-muted">Please wait for the upload of the link by the CCFP.</span>
                 @endif
+            </p>
+ 
 
                 <hr class="my-4">
 

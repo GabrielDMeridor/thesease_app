@@ -67,10 +67,12 @@ public function showRoutingForm($studentId)
 
     $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
     $ovpriLink = Setting::where('key', 'ovpri_link')->value('value');
+    $ccfpLink = Setting::where('key', 'ccfp_link')->value('value');
 
 
     // Pass the title, isDrPH flag, and other data to the view
-    return view('superadmin.route1.SAStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 'globalSubmissionLink', 'ovpriLink'));
+    return view('superadmin.route1.SAStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 
+    'globalSubmissionLink', 'ovpriLink', 'ccfpLink'));
 }
 
     
@@ -136,32 +138,6 @@ public function showRoutingForm($studentId)
         }
     
         return redirect()->route('superadmin.showRoutingForm', $studentId)->with('error', 'Unable to find appointment.');
-    }
-    public function approveCommunityExtension(Request $request, $studentId)
-    {
-        // Ensure user is authenticated and has SuperAdmin privileges
-        if (!auth()->check() || auth()->user()->account_type !== User::SuperAdmin) {
-            return redirect()->route('getLogin')->with('error', 'Unauthorized access.');
-        }
-    
-        // Retrieve authenticated user as User instance
-        $superAdmin = User::find(auth()->id());
-        $appointment = AdviserAppointment::where('student_id', $studentId)->first();
-    
-        if ($appointment) {
-            // Set the community_extension_approval to "approved"
-            $appointment->community_extension_approval = 'approved';
-            $appointment->save();
-    
-            // Notify the student about the approval
-            Notification::send($appointment->student, new CommunityExtensionApprovedNotification($superAdmin));
-    
-            return redirect()->route('superadmin.showRoutingForm', $studentId)
-                             ->with('success', 'Community Extension approved successfully.');
-        }
-    
-        return redirect()->route('superadmin.showRoutingForm', $studentId)
-                         ->with('error', 'Unable to find appointment.');
     }
 
     public function storeOrUpdateSubmissionLink(Request $request)

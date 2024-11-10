@@ -59,10 +59,12 @@ class GSRoute1Controller extends Controller
 
         $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
         $ovpriLink = Setting::where('key', 'ovpri_link')->value('value');
+        $ccfpLink = Setting::where('key', 'ccfp_link')->value('value');
 
     
         // Pass the title along with the other data to the view
-        return view('graduateschool.route1.GSStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 'globalSubmissionLink', 'ovpriLink'));
+        return view('graduateschool.route1.GSStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 
+        'ccfpLink', 'globalSubmissionLink', 'ovpriLink'));
     }
     public function sign(Request $request, $studentId)
     {
@@ -97,48 +99,6 @@ class GSRoute1Controller extends Controller
         return response()->json($students);
     }
 
-    public function uploadCommunityExtensionLink(Request $request, $studentId)
-{
-    // Validate the input for a URL
-    $request->validate([
-        'community_extension_link' => 'required|url',
-    ]);
-
-    // Find the student's appointment record
-    $appointment = AdviserAppointment::where('student_id', $studentId)->first();
-
-    if ($appointment) {
-        // Save the link to the appointment
-        $appointment->community_extension_link = $request->input('community_extension_link');
-        $appointment->save();
-
-        return redirect()->route('graduateschool.showRoutingForm', $studentId)->with('success', 'Community Extension link uploaded successfully.');
-    }
-
-    return redirect()->route('graduateschool.showRoutingForm', $studentId)->with('error', 'Unable to find appointment.');
-}
-
-    public function approveCommunityExtension(Request $request, $studentId)
-    {
-        $appointment = AdviserAppointment::where('student_id', $studentId)->first();
-        $graduateSchoolUser = User::find(auth()->id());  // Explicitly cast to User
-
-        if ($appointment && $graduateSchoolUser) {
-            $appointment->community_extension_approval = 'approved';
-            $appointment->save();
-
-            // Notify the SuperAdmin and the student
-            $superAdmins = User::where('account_type', User::SuperAdmin)->get();
-            Notification::send($superAdmins, new CommunityExtensionApprovedNotification($graduateSchoolUser));
-            Notification::send($appointment->student, new CommunityExtensionApprovedNotification($graduateSchoolUser));
-
-            return redirect()->route('graduateschool.showRoutingForm', $studentId)
-                             ->with('success', 'Community Extension approved successfully.');
-        }
-
-        return redirect()->route('graduateschool.showRoutingForm', $studentId)
-                         ->with('error', 'Unable to find appointment.');
-    }
     public function uploadSubmissionFilesLink(Request $request, $studentId)
     {
         // Validate the input for a URL

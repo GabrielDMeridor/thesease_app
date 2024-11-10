@@ -98,9 +98,17 @@ class UserAuthController extends Controller
             // Allow login regardless of verification status
             return redirect()->route('GSSdashboard')->with('success', 'Login Successful');
         }
+
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'account_type' => 12])) {
+            $user = Auth::user();
+            // Allow login regardless of verification status
+            return redirect()->route('Cdashboard')->with('success', 'Login Successful');
+        }
     
         // If none of the login attempts were successful
         return redirect()->back()->with('error', 'Invalid credentials');
+
+        
     }
     
 

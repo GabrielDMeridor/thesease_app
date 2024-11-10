@@ -409,23 +409,19 @@
                                 <div class="card shadow mb-4">
                                     <div class="card-body">
                                         <h5><strong>Community Extension Registration (For DrPH students only)</strong></h5>
-                                        @if ($appointment->community_extension_link)
-                                            <p><strong>Form Link:</strong> 
-                                                <a href="{{ $appointment->community_extension_link }}" target="_blank">
-                                                    {{ $appointment->community_extension_link }}
-                                                </a>
-                                            </p>
-                                        @else
-                                            <form action="{{ route('graduateschool.uploadCommunityExtensionLink', $student->id) }}" method="POST">
-                                                @csrf
-                                                <div class="form-group">
-                                                    <label for="community_extension_link">Community Extension Link:</label>
-                                                    <input type="url" name="community_extension_link" class="form-control" required placeholder="Enter the form link">
-                                                </div>
-                                                <button type="submit" class="btn btn-primary">Upload Link</button>
-                                            </form>
-                                        @endif
+            <!-- Display CCFP Link -->
+            <p><strong>CCFP Link:</strong> 
+                @if ($ccfpLink)
+                    <a href="{{ $ccfpLink }}" target="_blank" class="text-primary">
+                        {{ $ccfpLink }}
+                    </a>
+                @else
+                    <span class="text-muted">Please wait for the upload of the link by the CCFP.</span>
+                @endif
+            </p>
+ 
 
+                <hr class="my-4">
                                         @if ($appointment->community_extension_response)
                                         <p><strong>Status:</strong> 
                                             Responded on {{ optional($appointment->community_extension_response_date)->format('F j, Y') }}
