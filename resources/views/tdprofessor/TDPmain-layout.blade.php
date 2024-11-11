@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Admin Panel  {{isset($title)?'| '.$title:''}}</title>
+    <title>Thesis/Dissertation Professor {{isset($title)?'| '.$title:''}}</title>
     <!-- Custom fonts for this template-->
     <link href="{{asset('vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
     <link

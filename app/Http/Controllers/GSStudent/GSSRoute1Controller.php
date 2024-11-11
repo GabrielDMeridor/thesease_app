@@ -42,7 +42,7 @@ class GSSRoute1Controller extends Controller
 
         // Check if the student is in the DrPH program
         $isDrPH = $user->program === 'DRPH-HPE';
-        $signatures = is_string($appointment->panel_signatures) ? json_decode($appointment->panel_signatures, true) : $appointment->panel_signatures ?? [];
+        $signatures = is_string(optional($appointment)->panel_signatures) ? json_decode(optional($appointment)->panel_signatures, true) : optional($appointment)->panel_signatures ?? []; // Use optional() to handle null$appointment->panel_signatures) ? json_decode($appointment->panel_signatures, true) : $appointment->panel_signatures ?? [];
 
     
         $data = [

@@ -51,7 +51,7 @@ class SAProfileController extends Controller
                         AND ovpri_approval IS NULL, 1, 0)) as step_4,
                 SUM(IF(ovpri_approval IS NOT NULL 
                         AND proposal_defense_date IS NULL, 1, 0)) as step_5,
-                SUM(IF(proposal_defense_date IS NOT NULL 
+                SUM(IF(proposal_defense_date IS NOT NULL /// add restriction 
                         AND dean_monitoring_signature IS NULL, 1, 0)) as step_6,
                 SUM(IF(dean_monitoring_signature IS NOT NULL 
                         AND statistician_approval IS NULL, 1, 0)) as step_7,

@@ -120,7 +120,7 @@
                             </div>
                             <div>
                                 <div class="small text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
-                                <span>{{ $notification->data['message'] }}</span>
+                                <span>{{ $notification->data['message'] ?? 'No message available' }}</span> <!-- Default value if 'message' is missing -->
                                 <!-- Conditionally display the reason if it exists -->
                                 @if (!empty($notification->data['reason']))
                                     <p class="mb-0 text-gray-700">Reason: {{ $notification->data['reason'] }}</p>
