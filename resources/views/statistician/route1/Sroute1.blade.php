@@ -84,6 +84,46 @@
     <div class="sagreet">{{ $title }}</div>
     <br>
 
+        <!-- Display Statistician Link Section -->
+        <div class="container">
+        <h2>Manage Statistician Link</h2>
+
+        <!-- Display Success Message -->
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        <!-- Display Validation Errors -->
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <!-- Form for Creating or Updating the Statistician Link -->
+<!-- Form for Creating or Updating the Statistician Link -->
+<form action="{{ route('statistician.storeOrUpdateStatisticianLink') }}" method="POST">
+    @csrf
+    <div class="form-group mb-3">
+        <label for="statistician_link">Statistician Link:</label>
+        <input type="url" name="statistician_link" class="form-control" value="{{ $statisticianLink ?? '' }}" required placeholder="Enter the Statistician link">
+    </div>
+    <button type="submit" class="btn btn-primary">{{ $statisticianLink ? 'Update' : 'Upload' }} Link</button>
+</form>
+
+<!-- Displaying the Statistician Link -->
+<br>
+<h4>Current Statistician Link</h4>
+@if($statisticianLink)
+    <a href="{{ $statisticianLink }}" target="_blank" class="text-primary">{{ $statisticianLink }}</a>
+@else
+    <p>No link available.</p>
+@endif
+
     <!-- Search Form -->
     <div class="card">
         <div class="card-body">

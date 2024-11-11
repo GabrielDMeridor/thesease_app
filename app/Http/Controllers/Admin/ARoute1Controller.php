@@ -59,11 +59,12 @@ class ARoute1Controller extends Controller
         $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
         $ovpriLink = Setting::where('key', 'ovpri_link')->value('value');
         $ccfpLink = Setting::where('key', 'ccfp_link')->value('value');
+    $statisticianLink = Setting::where('key', 'statistician_link')->value('value');
 
     
         // Pass the title along with the other data to the view
         return view('admin.route1.AStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 'globalSubmissionLink',
-        'ccfpLink', 'ovpriLink'));
+        'ccfpLink', 'ovpriLink', 'statisticianLink'));
     }
     
     public function sign(Request $request, $studentId)

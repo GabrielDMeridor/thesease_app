@@ -38,6 +38,7 @@ class GSSRoute1Controller extends Controller
         $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
         $ovpriLink = Setting::where('key', 'ovpri_link')->value('value');
         $ccfpLink = Setting::where('key', 'ccfp_link')->value('value');
+        $statisticianLink = Setting::where('key', 'statistician_link')->value('value');
 
         // Check if the student is in the DrPH program
         $isDrPH = $user->program === 'DRPH-HPE';
@@ -54,7 +55,8 @@ class GSSRoute1Controller extends Controller
             'globalSubmissionLink' => $globalSubmissionLink,
             'ovpriLink' => $ovpriLink,
             'ccfpLink' => $ccfpLink,
-            'signatures' => $signatures, // Pass the signatures to the view
+            'signatures' => $signatures,
+            'statisticianLink' => $statisticianLink, // Pass the signatures to the view
 
         ];
     

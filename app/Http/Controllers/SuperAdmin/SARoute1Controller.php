@@ -68,11 +68,12 @@ public function showRoutingForm($studentId)
     $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
     $ovpriLink = Setting::where('key', 'ovpri_link')->value('value');
     $ccfpLink = Setting::where('key', 'ccfp_link')->value('value');
+    $statisticianLink = Setting::where('key', 'statistician_link')->value('value');
 
 
     // Pass the title, isDrPH flag, and other data to the view
     return view('superadmin.route1.SAStudentRoute1', compact('student', 'appointment', 'title', 'isDrPH', 
-    'globalSubmissionLink', 'ovpriLink', 'ccfpLink'));
+    'globalSubmissionLink', 'ovpriLink', 'ccfpLink', 'statisticianLink'));
 }
 
     

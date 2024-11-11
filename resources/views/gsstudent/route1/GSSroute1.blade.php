@@ -946,9 +946,10 @@
                      <div class="instructions-section ml-md-4">
                         <h4 class="routing-heading">Consultation with Statistician</h4>
                         <p>Please complete the 
-                           <a href="https://docs.google.com/forms/d/e/1FAIpQLSezh_2LK83Yh435RFQ879axmNE7B761ifHd1ML4vZz54j8GSw/viewform" target="_blank" class="text-decoration-underline text-primary">
-                           <i class="fa-solid fa-link"></i> CDAIC Service Request Form. 
-                           </a>
+                        <a href="{{ $statisticianLink }}" target="_blank" class="text-primary">
+    <i class="fa-solid fa-link"></i> CDAIC Service Request Form
+</a>
+
                            Send your manuscript to:
                         </p>
                         <ul class="mb-3" style="list-style: none; padding-left: 0;">

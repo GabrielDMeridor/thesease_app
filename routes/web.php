@@ -286,7 +286,7 @@
     Route::get('statistician/route1', [SRoute1Controller::class, 'index'])->name('statistician.route1.index');
     Route::post('statistician/route1/approve/{id}', [SRoute1Controller::class, 'approve'])->name('statistician.route1.approve');
     Route::get('statistician/route1/ajaxSearch', [SRoute1Controller::class, 'ajaxSearch'])->name('statistician.route1.ajaxSearch');
-
+    Route::post('statistician/storeOrUpdateLink', [SRoute1Controller::class, 'storeOrUpdateStatisticianLink'])->name('statistician.storeOrUpdateStatisticianLink');
 
 
 

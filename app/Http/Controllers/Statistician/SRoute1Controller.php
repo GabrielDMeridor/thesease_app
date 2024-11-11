@@ -8,6 +8,7 @@ use App\Models\AdviserAppointment;
 use App\Notifications\StatisticianApprovalNotificationToRoles;
 use App\Notifications\StatisticianApprovalNotificationToStudent;
 use App\Models\User;
+use App\Models\Setting;
 
 class SRoute1Controller extends Controller
 {
@@ -26,7 +27,10 @@ class SRoute1Controller extends Controller
         // Define the title variable
         $title = 'Students Who Responded for Statistician Consultation';
 
-        return view('statistician.route1.Sroute1', compact('title', 'appointments'));
+        $statisticianLink = Setting::where('key', 'statistician_link')->value('value');
+
+
+        return view('statistician.route1.Sroute1', compact('title', 'appointments', 'statisticianLink'));
     }
 
     public function approve($id)
@@ -78,4 +82,20 @@ class SRoute1Controller extends Controller
         // Return the data as JSON
         return response()->json(['data' => $appointments]);
     }
+
+    public function storeOrUpdateStatisticianLink(Request $request)
+{
+    $request->validate([
+        'statistician_link' => 'required|url',
+    ]);
+
+    // Update or create the statistician_link setting
+    Setting::updateOrCreate(
+        ['key' => 'statistician_link'],
+        ['value' => $request->input('statistician_link')]
+    );
+
+    return redirect()->back()->with('success', 'Statistician Link updated successfully.');
+}
+
 }
