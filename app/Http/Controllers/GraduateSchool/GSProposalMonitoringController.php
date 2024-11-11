@@ -73,9 +73,13 @@ class GSProposalMonitoringController extends Controller
 
         $studentName = $appointment->student->name ?? 'Student';
 
+        $signatures = json_decode($appointment->panel_signatures, true) ?? [];
+
+
         return view('graduateschool.monitoringform.GSstudentassignedmonitoring', [
             'appointment' => $appointment,
             'title' => "Monitoring Form for {$studentName}", // Dynamic title
+            'signatures' => $signatures,
         ]);
     }
 

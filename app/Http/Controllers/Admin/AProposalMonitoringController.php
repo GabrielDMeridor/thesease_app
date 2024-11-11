@@ -73,9 +73,13 @@ class AProposalMonitoringController extends Controller
 
         $studentName = $appointment->student->name ?? 'Student';
 
+        $signatures = json_decode($appointment->panel_signatures, true) ?? [];
+
+
         return view('admin.monitoringform.Astudentassignedmonitoring', [
             'appointment' => $appointment,
             'title' => "Monitoring Form for {$studentName}", // Dynamic title
+            'signatures' => $signatures
         ]);
     }
 

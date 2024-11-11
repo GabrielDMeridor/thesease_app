@@ -208,83 +208,121 @@
          @endif
       </div>
    </div>
-   <!-- Panel Review Section -->
-   <div class="card mb-4 review-panel">
-      <h4 class="routing-heading">Panel Review</h4>
-      @foreach ($panelMembers as $panelistId)
-      @php
-      $panelist = \App\Models\User::find($panelistId);
-      $panelistName = $panelist ? $panelist->name : "Unknown Panelist";
-      @endphp
-      <div class="panelist-card">
-         <!-- Panelist Header with Name and Signature Status -->
-         <div class="panelist-header">
-            <h5 class="panelist-name">{{ $panelistName }}</h5>
-            @if (!empty($signatures[$panelistId]))
-            <span class="signature-status signed">Signed</span>
-            @else
-            <span class="signature-status unsigned">Unsigned</span>
-            @endif
-         </div>
-         <!-- Comments, Replies, and Remarks -->
-         <div class="panelist-content">
-            <p><strong>Comment:</strong> {{ $comments[$panelistId] ?? 'No comment yet' }}</p>
-            <p><strong>Student Reply:</strong> {{ $replies[$panelistId] ?? 'No reply yet' }}</p>
-            <p><strong>Remarks:</strong> {{ $remarks[$panelistId] ?? 'No remarks yet' }}</p>
-         </div>
-         <!-- Forms for Editable Panelists Only -->
-         @if (Auth::id() == $panelistId)
-         <div class="panelist-forms">
-            <!-- Comment Form -->
-            <form action="{{ route('panel.addComment', $appointment->student_id) }}" method="POST" class="form-section">
-               @csrf
-               <div class="form-group">
-                  <label for="comment">Your Comment</label>
-                  <textarea name="comment" class="form-control" placeholder="Enter your comment...">{{ $comments[$panelistId] ?? '' }}</textarea>
-               </div>
-               <button type="submit" class="btn btn-primary">Save Comment</button>
+   <div class="container-fluid">
+    <div class="card mb-4 review-panel">
+        <h4 class="routing-heading">Panel Review</h4>
+
+        <!-- Iterate through panel members -->
+        @foreach ($panelMembers as $panelistId)
+            @php
+                $panelist = \App\Models\User::find($panelistId);
+                $panelistName = $panelist ? $panelist->name : "Unknown Panelist";
+            @endphp
+            <div class="panelist-card">
+                <h5 class="panelist-name">{{ $panelistName }}</h5>
+
+                <!-- Display Comments -->
+                @php
+                    // Filter comments for this panelist
+                    $panelistComments = collect($comments)->where('panelist_id', $panelistId);
+                @endphp
+                @foreach ($panelistComments as $comment)
+                    <div class="comment-item">
+                        <p><strong>Comment:</strong> {{ $comment['comment'] }}</p>
+                        <p><small>Posted on: {{ \Carbon\Carbon::parse($comment['created_at'])->format('m/d/Y h:i A') }}</small></p>
+
+                        <!-- Display Student Reply for this Comment (if any) -->
+                        <h6>Student Reply:</h6>
+                        @php
+                            // Filter replies specific to this comment
+                            $repliesForComment = collect($replies)->where('comment_id', $comment['id']);
+                        @endphp
+                        @if($repliesForComment->isNotEmpty())
+                            @foreach ($repliesForComment as $reply)
+                                <div class="reply-item">
+                                    <p><strong>Reply:</strong> {{ $reply['reply'] }}</p>
+                                    <p><small>Replied on: {{ \Carbon\Carbon::parse($reply['created_at'])->format('m/d/Y h:i A') }}</small></p>
+
+
+                                    @if (!empty($reply['location']))
+                                <p><strong>Location:</strong> {{ $reply['location'] }}</p>
+                            @endif
+                        
+                                    <!-- Display Remarks on this Reply -->
+                                    <h6>Panelist Remarks on Reply:</h6>
+                                    @php
+                                        $remarksForReply = collect($remarks)->where('comment_id', $comment['id']);
+                                    @endphp
+                                    @if($remarksForReply->isNotEmpty())
+                                        @foreach ($remarksForReply as $remark)
+                                            <div class="remark-item">
+                                                <p><strong>Remark by {{ \App\Models\User::find($remark['panelist_id'])->name ?? 'Unknown Panelist' }}:</strong> {{ $remark['remark'] }}</p>
+                                                <p><small>Remarked on: {{ \Carbon\Carbon::parse($remark['created_at'])->format('m/d/Y h:i A') }}</small></p>
+                                            </div>
+                                        @endforeach
+                                    @else
+                                        <p>No remarks yet.</p>
+                                    @endif
+                                </div>
+                            @endforeach
+                        @else
+                            <p>No reply yet.</p>
+                        @endif
+
+                        <!-- Add Remark Form for this Comment -->
+                        @if (Auth::id() == $panelistId)
+                            <form action="{{ route('panel.addRemark', ['studentId' => $appointment->student_id, 'commentId' => $comment['id']]) }}" method="POST">
+                                @csrf
+                                <textarea name="remark" class="form-control" placeholder="Enter your remark..." required></textarea>
+                                <button type="submit" class="btn btn-primary mt-2">Submit Remark</button>
+                            </form>
+                        @endif
+                    </div>
+                    <hr>
+                @endforeach
+
+                                <!-- Panel Signature Section -->
+<!-- Panel Signature Section -->
+<div class="signature-section mt-3">
+    <h6>Signature</h6>
+    @if (isset($signatures[$panelistId]))
+        @php
+            $signatureInfo = $signatures[$panelistId];
+        @endphp
+
+        @if (is_array($signatureInfo))
+            <p class="text-success"><strong>Signed by:</strong> {{ $signatureInfo['name'] ?? 'Unknown' }} on {{ \Carbon\Carbon::parse($signatureInfo['date'] ?? now())->format('m/d/Y h:i A') }}</p>
+        @else
+            <!-- If it is a string, display it as-is -->
+            <p class="text-success"><strong>Signed by:</strong> {{ $signatureInfo }}</p>
+        @endif
+    @else
+        <p class="text-danger">Not signed yet.</p>
+        <!-- Show signature form for the authenticated panelist -->
+        @if (Auth::id() == $panelistId)
+            <form action="{{ route('panel.affixSignature', $appointment->student_id) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-affix btn-primary mt-2">Affix Signature</button>
             </form>
-            <!-- Remark Form -->
-            <form action="{{ route('panel.addRemark', $appointment->student_id) }}" method="POST" class="form-section">
-               @csrf
-               <div class="form-group">
-                  <label for="remark">Your Remark</label>
-                  <textarea name="remark" class="form-control" placeholder="Enter your remark...">{{ $remarks[$panelistId] ?? '' }}</textarea>
-               </div>
-               <button type="submit" class="btn btn-primary">Save Remark</button>
-            </form>
-            <!-- Signature Form -->
-            @if (empty($signatures[$panelistId]))
-            <form action="{{ route('panel.affixSignature', $appointment->student_id) }}" method="POST" class="form-section">
-               @csrf
-               <button type="submit" class="btn btn-affix" style="color:white;">Affix Signature</button>
-            </form>
-            @endif
-         </div>
-         @endif
-      </div>
-      @endforeach
-   </div>
-   <!-- Dean's Signature Section
-      <div class="card mb-4">
-          <div class="card-body">
-              <h4 class="routing-heading">Dean's Signature</h4>
-              @php
-                  $allPanelSigned = count($appointment->panel_members) === count(array_filter($signatures));
-              @endphp
-      
-              @if($allPanelSigned)
-                  @if($appointment->dean_monitoring_signature)
-                      <p><strong>Dean's Signature:</strong> {{ $appointment->dean_monitoring_signature }}</p>
-                  @else
-                      <p><strong>Status:</strong> Waiting for Dean’s Signature</p>
-                  @endif
-              @else
-                  <p><strong>Status:</strong> All panel members have not signed yet</p>
-              @endif
-          </div>
-      </div> -->
+        @endif
+    @endif
 </div>
+
+
+                <!-- Add New Comment Form for this Panelist -->
+                @if (Auth::id() == $panelistId)
+                    <form action="{{ route('panel.addComment', $appointment->student_id) }}" method="POST">
+                        @csrf
+                        <textarea name="comment" class="form-control" placeholder="Add new comment..." required></textarea>
+                        <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
+                    </form>
+                @endif
+            </div>
+        @endforeach
+    </div>
+</div>
+
+
 <script>
    function deleteNotification(notificationId) {
     if (confirm('Are you sure you want to delete this notification?')) {

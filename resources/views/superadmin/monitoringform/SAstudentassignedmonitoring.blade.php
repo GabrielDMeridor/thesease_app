@@ -75,73 +75,7 @@
 <!-- Optional Toast Message for Deletion Confirmation -->
 <div id="toast-message" class="alert alert-success" style="display:none; position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
 
-@endsection
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-        <i class="fa fa-bars"></i>
-    </button>
-    <ul class="navbar-nav ml-auto">
-        <!-- Notifications Dropdown -->
-        <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bell fa-fw"></i>
-                <!-- Counter for Notifications -->
-                <span class="badge badge-danger badge-counter">{{ auth()->user()->unreadNotifications->count() }}</span>
-            </a>
-            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
-                <h6 class="dropdown-header">Notifications Center</h6>
 
-                <!-- Scrollable area with all notifications -->
-                <div class="overflow-auto" style="max-height: 300px;"> <!-- Set max height for scrolling -->
-                    @foreach (auth()->user()->notifications as $notification) <!-- No limit on notifications -->
-                        <a class="dropdown-item d-flex align-items-center {{ $notification->read_at ? 'text-muted' : 'font-weight-bold' }}" href="#" onclick="markAsRead('{{ $notification->id }}')">
-                            <div class="mr-3">
-                                <div class="icon-circle">
-                                    <i class="fa-solid fa-bell"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="small text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
-                                <span>{{ $notification->data['message'] }}</span>
-                                <!-- Conditionally display the reason if it exists -->
-                                @if (!empty($notification->data['reason']))
-                                    <p class="mb-0 text-gray-700">Reason: {{ $notification->data['reason'] }}</p>
-                                @endif
-                            </div>
-                        </a>
-                    @endforeach
-                </div>
-
-                <!-- Mark all as read link -->
-                <div class="dropdown-item text-center small text-gray-500">
-                    <a href="{{ route('notifications.markAsRead') }}">Mark all as read</a>
-                </div>
-
-                <!-- Clear all notifications button -->
-                <div class="dropdown-item text-center small text-gray-500">
-                    <form action="{{ route('notifications.clearAll') }}" method="POST">
-                        @csrf
-                        <button class="btn btn-link" type="submit">Clear all notifications</button>
-                    </form>
-                </div>
-            </div>
-        </li>
-
-        <div class="topbar-divider d-none d-sm-block"></div>
-        <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small navbar-username">{{ auth()->user()->name }}</span>
-                <i class="fas fa-user-circle text-gray-600" style="font-size: 1.25rem;"></i> <!-- Adjusted icon size -->
-            </a>
-            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Logout
-                </a>
-            </div>
-        </li>
-    </ul>
-</nav>
 @endsection
 
 @section('body')
@@ -165,7 +99,7 @@
                   <tr>
                      <td class="text-center">
                         <span onclick="$('#mainProposalManuscriptModal').modal('show')" style="cursor: pointer; color: #007bff; text-decoration: underline;">
-                        {{ $appointment->original_proposal_manuscript }}
+                        {{ $appointment->original_similarity_manuscript_filename }}
                         </span>
                      </td>
                   </tr>
@@ -224,14 +158,14 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ $appointment->original_proposal_manuscript ?? 'No Manuscript Available' }}</h5>
+                <h5 class="modal-title">{{ $appointment->original_similarity_manuscript_filename ?? 'No Manuscript Available' }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                @if(Storage::exists($appointment->proposal_manuscript))
-                    <iframe src="{{ Storage::url($appointment->proposal_manuscript) }}" width="100%" height="500px"></iframe>
+                @if(Storage::exists($appointment->similarity_manuscript))
+                    <iframe src="{{ Storage::url($appointment->similarity_manuscript) }}" width="100%" height="500px"></iframe>
                 @else
                     <p>File not found or inaccessible.</p>
                 @endif
@@ -263,35 +197,56 @@
                     </div>
                 </div>
    <!-- Panel Review Section -->
-   <div class="card mb-4 review-panel">
-      <h4 class="routing-heading">Panel Review</h4>
-      @foreach ($appointment->panel_members as $panelistId)
-      @php
-      $panelist = \App\Models\User::find($panelistId);
-      $panelistName = $panelist ? $panelist->name : "Unknown Panelist";
-      $comments = json_decode($appointment->panel_comments, true) ?? [];
-      $remarks = json_decode($appointment->panel_remarks, true) ?? [];
-      $signatures = json_decode($appointment->panel_signatures, true) ?? [];
-      @endphp
-      <div class="panelist-card">
-         <!-- Panelist Header with Name and Signature Status -->
-         <div class="panelist-header">
-            <h5 class="panelist-name">{{ $panelistName }}</h5>
-            @if (!empty($signatures[$panelistId]))
-            <span class="signature-status signed">Signed</span>
-            @else
-            <span class="signature-status unsigned">Unsigned</span>
-            @endif
-         </div>
-         <!-- Comments and Remarks -->
-         <div class="panelist-content">
-            <p><strong>Comment:</strong> {{ $comments[$panelistId] ?? 'No comment yet' }}</p>
-            <p><strong>Remarks:</strong> {{ $remarks[$panelistId] ?? 'No remarks yet' }}</p>
-            <p><strong>Signature:</strong> {{ $signatures[$panelistId] ?? 'Not signed yet' }}</p>
-         </div>
-      </div>
-      @endforeach
-   </div>
+   <div class="card mb-4 review-panel">               <!-- Panel Review Section -->
+               <div class="review-panel">
+                  <h4 class="routing-heading">Panel Review</h4>
+                  @foreach ($appointment->panel_comments ?? [] as $comment)
+            <div class="comment-item">
+                <!-- Display Panelist's Comment -->
+                <p><strong>Comment by {{ \App\Models\User::find($comment['panelist_id'])->name ?? 'Unknown Panelist' }}:</strong> {{ $comment['comment'] }}</p>
+                <p><small>Posted on: {{ \Carbon\Carbon::parse($comment['created_at'])->format('m/d/Y h:i A') }}</small></p>
+
+                <!-- Display Existing Student Reply for This Comment (if any) -->
+                @php
+                    // Filter replies for this specific comment
+                    $repliesForComment = collect($appointment->student_replies ?? [])->where('comment_id', $comment['id']);
+                @endphp
+                @if($repliesForComment->isNotEmpty())
+                    @foreach ($repliesForComment as $reply)
+                        <div class="reply-item">
+                            <p><strong>Student Reply:</strong> {{ $reply['reply'] }}</p>
+                            <p><small>Replied on: {{ \Carbon\Carbon::parse($reply['created_at'])->format('m/d/Y h:i A') }}</small></p>
+
+                            <!-- Optional Location Field -->
+                            @if (!empty($reply['location']))
+                                <p><strong>Location:</strong> {{ $reply['location'] }}</p>
+                            @endif
+
+                            <!-- Display Panel Remarks for this Reply -->
+                            <h6>Panelist Remarks:</h6>
+                            @php
+                                // Filter remarks for this specific reply
+                                $remarksForReply = collect($appointment->panel_remarks ?? [])->where('comment_id', $comment['id']);
+                            @endphp
+                            @if($remarksForReply->isNotEmpty())
+                                @foreach ($remarksForReply as $remark)
+                                    <div class="remark-item">
+                                        <p><strong>Remark by {{ \App\Models\User::find($remark['panelist_id'])->name ?? 'Unknown Panelist' }}:</strong> {{ $remark['remark'] }}</p>
+                                        <p><small>Remarked on: {{ \Carbon\Carbon::parse($remark['created_at'])->format('m/d/Y h:i A') }}</small></p>
+                                    </div>
+                                @endforeach
+                            @else
+                                <p>No remarks yet.</p>
+                            @endif
+                        </div>
+                    @endforeach
+                @else
+                    <p>No reply yet.</p>
+                @endif
+                <hr>
+            </div>
+        @endforeach
+    </div>
    <!-- Dean's Signature Section -->
    <div class="card mb-4">
       <div class="card-body">

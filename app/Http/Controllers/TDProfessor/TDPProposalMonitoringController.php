@@ -58,15 +58,15 @@ class TDPProposalMonitoringController extends Controller
                         ->whereJsonContains('panel_members', (string) Auth::id())
                         ->with('student')
                         ->firstOrFail();
-
+    
         $panelMembers = is_string($appointment->panel_members) ? json_decode($appointment->panel_members, true) : $appointment->panel_members ?? [];
         $comments = is_string($appointment->panel_comments) ? json_decode($appointment->panel_comments, true) : $appointment->panel_comments ?? [];
         $replies = is_string($appointment->student_replies) ? json_decode($appointment->student_replies, true) : $appointment->student_replies ?? [];
         $remarks = is_string($appointment->panel_remarks) ? json_decode($appointment->panel_remarks, true) : $appointment->panel_remarks ?? [];
         $signatures = is_string($appointment->panel_signatures) ? json_decode($appointment->panel_signatures, true) : $appointment->panel_signatures ?? [];
-
+    
         $studentName = $appointment->student->name ?? 'Student';
-
+    
         return view('tdprofessor.monitoringform.TDPstudentassignedmonitoring', [
             'appointment' => $appointment,
             'panelMembers' => $panelMembers,
@@ -77,38 +77,53 @@ class TDPProposalMonitoringController extends Controller
             'title' => "Monitoring Form for {$studentName}",
         ]);
     }
+    
 
     public function addComment(Request $request, $studentId)
     {
         $panelistId = Auth::id();
         $appointment = AdviserAppointment::where('student_id', $studentId)->firstOrFail();
-
-        $comments = $appointment->panel_comments ? json_decode($appointment->panel_comments, true) : [];
-        $comments[$panelistId] = $request->comment;
-        $appointment->panel_comments = json_encode($comments);
+    
+        $comments = $appointment->panel_comments ?? [];
+    
+        $newComment = [
+            'id' => uniqid(), // Unique ID for each comment
+            'panelist_id' => $panelistId,
+            'comment' => $request->comment,
+            'created_at' => now()->toDateTimeString(),
+        ];
+    
+        $comments[] = $newComment;
+    
+        $appointment->panel_comments = $comments;
         $appointment->save();
-
-        $student = $appointment->student;
-        Notification::send($student, new PanelCommentNotification(Auth::user()->name));
-
+    
         return back()->with('success', 'Comment added successfully!');
     }
+    
 
-    public function addRemark(Request $request, $studentId)
+    public function addRemark(Request $request, $studentId, $commentId)
     {
         $panelistId = Auth::id();
         $appointment = AdviserAppointment::where('student_id', $studentId)->firstOrFail();
-
-        $remarks = $appointment->panel_remarks ? json_decode($appointment->panel_remarks, true) : [];
-        $remarks[$panelistId] = $request->remark;
-        $appointment->panel_remarks = json_encode($remarks);
+    
+        $remarks = $appointment->panel_remarks ?? [];
+    
+        $newRemark = [
+            'comment_id' => $commentId, // Link to the specific comment
+            'panelist_id' => $panelistId,
+            'remark' => $request->remark,
+            'created_at' => now()->toDateTimeString(),
+        ];
+    
+        $remarks[] = $newRemark;
+    
+        $appointment->panel_remarks = $remarks;
         $appointment->save();
-
-        $student = $appointment->student;
-        Notification::send($student, new PanelRemarkNotification(Auth::user()->name));
-
+    
         return back()->with('success', 'Remark added successfully!');
     }
+    
 
     public function affixSignature(Request $request, $studentId)
     {

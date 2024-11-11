@@ -668,7 +668,7 @@
                                        <span 
                                           onclick="$('#mainProposalManuscriptModal').modal('show')" 
                                           style="cursor: pointer; color: #007bff; text-decoration: underline;">
-                                       {{ $appointment->original_proposal_manuscript }}
+                                       {{ $appointment->original_similarity_manuscript_filename }}
                                        </span>
                                     </td>
                                  </tr>
@@ -750,14 +750,14 @@
                      <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                            <div class="modal-header">
-                              <h5 class="modal-title">{{ $appointment->original_proposal_manuscript }}</h5>
+                              <h5 class="modal-title">{{ $appointment->original_similarity_manuscript_filename }}</h5>
                               <button type="button" class="close" data-dismiss="modal">&times;</button>
                            </div>
                            <div class="modal-body">
-                              <iframe src="{{ Storage::url($appointment->proposal_manuscript) }}" width="100%" height="500px"></iframe>
+                              <iframe src="{{ Storage::url($appointment->similarity_manuscript) }}" width="100%" height="500px"></iframe>
                            </div>
                            <div class="modal-footer">
-                              <a href="{{ Storage::url($appointment->proposal_manuscript) }}" download class="btn btn-primary">Download</a>
+                              <a href="{{ Storage::url($appointment->similarity_manuscript) }}" download class="btn btn-primary">Download</a>
                            </div>
                         </div>
                      </div>
@@ -818,46 +818,101 @@
                <p><strong>Status:</strong> All panel members have not signed yet</p>
                @endif
             </div>
+
+
+                <!-- Panel Signatures Section -->
+    <div class="card mb-4 signatures-gallery">
+        <h4 class="signatures-heading">Panelist Signatures</h4>
+        <div class="signatures-grid">
+            <!-- Loop through each panel member to display signature status -->
+            @foreach ($appointment->panel_members ?? [] as $panelistId)
+                @php
+                    $panelist = \App\Models\User::find($panelistId);
+                    $panelistName = $panelist ? $panelist->name : "Unknown Panelist";
+                    $signature = $signatures[$panelistId] ?? null;
+                @endphp
+                <div class="signature-card mb-2">
+                    <p><strong>{{ $panelistName }}</strong></p>
+                    @if ($signature)
+                        <p class="text-success">
+                            <strong>Signed by:</strong> {{ is_array($signature) ? ($signature['name'] ?? $panelistName) : $signature }} 
+                        </p>
+                    @else
+                        <p class="text-danger">Not signed yet.</p>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+
             <!-- Panel Review Section -->
-            <div class="card mb-4 review-panel">
-               <h4 class="routing-heading">Panel Review</h4>
-               @foreach ($appointment->panel_members ?? [] as $panelistId)
-               @php
-               // Retrieve panelist information
-               $panelist = \App\Models\User::find($panelistId);
-               $panelistName = $panelist ? $panelist->name : "Unknown Panelist";
-               $comments = json_decode($appointment->panel_comments, true) ?? [];
-               $replies = json_decode($appointment->student_replies, true) ?? [];
-               $remarks = json_decode($appointment->panel_remarks, true) ?? [];
-               $signatures = json_decode($appointment->panel_signatures, true) ?? [];
-               @endphp
-               <div class="panelist-card">
-                  <!-- Panelist Header with Name and Signature Status -->
-                  <div class="panelist-header">
-                     <h5 class="panelist-name">{{ $panelistName }}</h5>
-                     @if (!empty($signatures[$panelistId]))
-                     <span class="signature-status signed">Signed</span>
-                     @else
-                     <span class="signature-status unsigned">Unsigned</span>
-                     @endif
-                  </div>
-                  <!-- Comments, Replies, and Remarks -->
-                  <div class="panelist-content">
-                     <p><strong>Comment:</strong> {{ $comments[$panelistId] ?? 'No comment yet' }}</p>
-                     <p><strong>Student Reply:</strong> {{ $replies[$panelistId] ?? 'No reply yet' }}</p>
-                     <p><strong>Remarks:</strong> {{ $remarks[$panelistId] ?? 'No remarks yet' }}</p>
-                     <!-- Reply Form for the Student -->
-                     <form action="{{ route('gsstudent.addStudentReply', $panelistId) }}" method="POST" class="form-section">
-                        @csrf
-                        <div class="form-group">
-                           <label for="reply">Your Reply</label>
-                           <textarea name="reply" class="form-control" placeholder="Enter your reply...">{{ $replies[$panelistId] ?? '' }}</textarea>
+            <div class="container-fluid">
+    <div class="card mb-4 review-panel">
+        <h4 class="routing-heading">Comments and Responses</h4>
+
+        <!-- Iterate through each panelist's comments -->
+        @foreach ($appointment->panel_comments as $comment)
+            <div class="comment-item">
+                <!-- Display Panelist's Comment -->
+                <p><strong>Comment by {{ \App\Models\User::find($comment['panelist_id'])->name ?? 'Unknown Panelist' }}:</strong> {{ $comment['comment'] }}</p>
+                <p><small>Posted on: {{ \Carbon\Carbon::parse($comment['created_at'])->format('m/d/Y h:i A') }}</small></p>
+
+                <!-- Display Existing Student Reply for This Comment (if any) -->
+                @php
+                    // Filter replies for this specific comment
+                    $repliesForComment = collect($appointment->student_replies)->where('comment_id', $comment['id']);
+                @endphp
+                @if($repliesForComment->isNotEmpty())
+                    @foreach ($repliesForComment as $reply)
+                        <div class="reply-item">
+                            <p><strong>Your Reply:</strong> {{ $reply['reply'] }}</p>
+                            <p><small>Replied on: {{ \Carbon\Carbon::parse($reply['created_at'])->format('m/d/Y h:i A') }}</small></p>
+
+                            @if (!empty($reply['location']))
+                                <p><strong>Location:</strong> {{ $reply['location'] }}</p>
+                            @endif
+                            <!-- Display Panel Remarks for this Reply -->
+                            <h6>Panelist Remarks:</h6>
+                            @php
+                                // Filter remarks for this specific reply
+                                $remarksForReply = collect($appointment->panel_remarks)->where('comment_id', $comment['id']);
+                            @endphp
+                            @if($remarksForReply->isNotEmpty())
+                                @foreach ($remarksForReply as $remark)
+                                    <div class="remark-item">
+                                        <p><strong>Remark by {{ \App\Models\User::find($remark['panelist_id'])->name ?? 'Unknown Panelist' }}:</strong> {{ $remark['remark'] }}</p>
+                                        <p><small>Remarked on: {{ \Carbon\Carbon::parse($remark['created_at'])->format('m/d/Y h:i A') }}</small></p>
+                                    </div>
+                                @endforeach
+                            @else
+                                <p>No remarks yet.</p>
+                            @endif
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit Reply</button>
-                     </form>
-                  </div>
-               </div>
-               @endforeach
+                    @endforeach
+                @else
+                    <p>No reply yet.</p>
+                @endif
+
+                <!-- Student Reply Form for this Comment -->
+<!-- Student Reply Form -->
+<form action="{{ route('gsstudent.addStudentReply', ['appointmentId' => $appointment->id, 'commentId' => $comment['id']]) }}" method="POST" class="form-section">
+    @csrf
+    <div class="form-group">
+        <label for="reply">Your Reply</label>
+        <textarea name="reply" class="form-control" placeholder="Enter your reply..." required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="location">Location (optional)</label>
+        <input type="text" name="location" class="form-control" placeholder="E.g., Page 10, Paragraph 3">
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Submit Reply</button>
+</form>
+
+                <hr>
+            </div>
+        @endforeach
+      </div>
                @php
                // Check if all panel members have signed
                $allPanelSigned = count($appointment->panel_members ?? []) === count(array_filter($signatures ?? []));

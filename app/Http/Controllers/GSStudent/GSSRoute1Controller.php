@@ -41,6 +41,8 @@ class GSSRoute1Controller extends Controller
 
         // Check if the student is in the DrPH program
         $isDrPH = $user->program === 'DRPH-HPE';
+        $signatures = is_string($appointment->panel_signatures) ? json_decode($appointment->panel_signatures, true) : $appointment->panel_signatures ?? [];
+
     
         $data = [
             'title' => 'Routing Form 1',
@@ -51,7 +53,9 @@ class GSSRoute1Controller extends Controller
             'isDrPH' => $isDrPH,  // Pass the DrPH status to the view
             'globalSubmissionLink' => $globalSubmissionLink,
             'ovpriLink' => $ovpriLink,
-            'ccfpLink' => $ccfpLink
+            'ccfpLink' => $ccfpLink,
+            'signatures' => $signatures, // Pass the signatures to the view
+
         ];
     
         return view('gsstudent.route1.GSSroute1', $data);
@@ -252,22 +256,32 @@ class GSSRoute1Controller extends Controller
     
     
 
-    public function addStudentReply(Request $request, $panelistId)
+    public function addStudentReply(Request $request, $appointmentId, $commentId)
     {
-        $appointment = AdviserAppointment::where('student_id', Auth::id())->first();
-        $replies = $appointment->student_replies ? json_decode($appointment->student_replies, true) : [];
-        $replies[$panelistId] = $request->reply;
-        $appointment->student_replies = json_encode($replies);
-        $appointment->save();
+        $appointment = AdviserAppointment::findOrFail($appointmentId);
     
-        // Notify the specific panelist
-        $panelist = User::find($panelistId);
-        if ($panelist) {
-            Notification::send($panelist, new StudentReplyNotification(Auth::user()));
-        }
+        // Step 1: Retrieve the existing replies or initialize an empty array
+        $replies = $appointment->student_replies ?? [];
+    
+        // Step 2: Create a new reply structure, including optional location
+        $newReply = [
+            'comment_id' => $commentId, // Link to the specific comment
+            'reply' => $request->reply,
+            'created_at' => now()->toDateTimeString(),
+            'location' => $request->location, // Optional single field for page/paragraph info
+        ];
+    
+        // Step 3: Append the new reply to the replies array
+        $replies[] = $newReply;
+    
+        // Step 4: Save the updated replies array back to the JSON field
+        $appointment->student_replies = $replies;
+        $appointment->save();
     
         return back()->with('success', 'Reply added successfully!');
     }
+    
+    
     public function respondToStatistician(Request $request)
     {
         $user = Auth::user();

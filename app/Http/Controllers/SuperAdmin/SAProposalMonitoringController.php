@@ -71,14 +71,19 @@ public function index()
         $appointment = AdviserAppointment::where('student_id', $studentId)
                         ->with('student')
                         ->firstOrFail();
-
+    
+        // Decode the JSON-encoded signatures field
+        $signatures = json_decode($appointment->panel_signatures, true) ?? [];
+    
         $studentName = $appointment->student->name ?? 'Student';
-
+    
         return view('superadmin.monitoringform.SAstudentassignedmonitoring', [
             'appointment' => $appointment,
-            'title' => "Monitoring Form for {$studentName}", // Dynamic title
+            'signatures' => $signatures,  // Pass signatures to the view
+            'title' => "Monitoring Form for {$studentName}",
         ]);
     }
+    
 
     // Method to affix Dean's signature to a student's monitoring form
     public function affixDeanSignature(Request $request, $studentId)
