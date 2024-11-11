@@ -26,7 +26,7 @@
                             </div>
                             <div>
                                 <div class="small text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
-                                <span>{{ $notification->data['message'] }}</span>
+                                <span>{{ $notification->data['message'] ?? 'No message available' }}</span> <!-- Default value if 'message' is missing -->
                                 <!-- Conditionally display the reason if it exists -->
                                 @if (!empty($notification->data['reason']))
                                     <p class="mb-0 text-gray-700">Reason: {{ $notification->data['reason'] }}</p>
@@ -112,42 +112,38 @@
          <h4 class="routing-heading">Proposal Manuscript Updates</h4>
          <p>Updated Proposal Manuscript: <i class="fa-solid fa-download"></i></p>
          <div class="table-responsive">
-            <table class="table table-bordered table-hover table-striped custom-table">
-               <thead class="table-dark">
-                  <tr>
-                     <th class="text-center">File</th>
-                     <th class="text-center">Last Updated</th>
-                     <th class="text-center">Action</th>
-                  </tr>
-               </thead>
-               <tbody>
-                  @if($appointment->proposal_manuscript_updates)
-                  @php
-                  $updates = json_decode($appointment->proposal_manuscript_updates, true);
-                  @endphp
-                  <tr>
-                     <td class="text-center">
-                        <a href="#" data-toggle="modal" data-target="#manuscriptUpdateModal">
-                        {{ $updates['original_name'] }}
-                        </a>
-                     </td>
-                     <td class="text-center">
-                                                    {{ isset($updates['uploaded_at']) ? \Carbon\Carbon::parse($updates['uploaded_at'])->format('m/d/Y h:i A') : 'Not available' }}
-                                                </td>
-                     <td class="text-center">
-                        <a href="{{ Storage::url($updates['file_path']) }}" download class="btn btn-primary">
-                        <i class="fa-solid fa-download"></i> Download
-                        </a>
-                     </td>
-                  </tr>
-                  @else
-                  <tr>
-                     <td colspan="3" class="text-center">No updates available.</td>
-                  </tr>
-                  @endif
-               </tbody>
-            </table>
-         </div>
+    <table class="table table-bordered table-hover table-striped custom-table">
+        <thead class="table-dark">
+            <tr>
+                <th class="text-center">File</th>
+                <th class="text-center">Last Updated</th>
+                <th class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if($appointment->proposal_manuscript_updates && $appointment->proposal_manuscript_update_status === 'approved')
+            @php
+            $updates = json_decode($appointment->proposal_manuscript_updates, true);
+            @endphp
+            <tr>
+                <td class="text-center">
+                    <a href="#" data-toggle="modal" data-target="#manuscriptUpdateModal">{{ $updates['original_name'] }}</a>
+                </td>
+                <td class="text-center">
+                    {{ isset($updates['uploaded_at']) ? \Carbon\Carbon::parse($updates['uploaded_at'])->format('m/d/Y h:i A') : 'Not available' }}
+                </td>
+                <td class="text-center">
+                    <a href="{{ Storage::url($updates['file_path']) }}" download class="btn btn-primary">Download</a>
+                </td>
+            </tr>
+            @else
+            <tr>
+                <td colspan="3" class="text-center">No approved updates available.</td>
+            </tr>
+            @endif
+        </tbody>
+    </table>
+</div>
          <!-- Modal for Main Proposal Manuscript -->
          <div class="modal fade" id="mainProposalManuscriptModal" tabindex="-1" aria-labelledby="mainProposalManuscriptModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">

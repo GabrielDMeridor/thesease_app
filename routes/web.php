@@ -264,6 +264,9 @@
     Route::get('/tdprofessor/advisee/{id}/routing-form', [TDPRoute1Controller::class, 'showAdviseeForm'])->name('professor.showRoutingForm');
     Route::post('/tdprofessor/sign/{appointmentId}', [TDPRoute1Controller::class, 'affixSignature'])->name('professor.affixSignature');
     Route::put('/tdprofessor/advisee/{id}/sign-routing-form', [TDPRoute1Controller::class, 'signRoutingForm'])->name('professor.signRoutingForm');
+    // Approve prposal update
+    Route::post('/tdprofessor/approve-proposal-manuscript-update/{appointmentId}', [TDPRoute1Controller::class, 'approveProposalManuscriptUpdate'])->name('tdprofessor.approveProposalManuscriptUpdate');
+    Route::post('/tdprofessor/deny-proposal-manuscript-update/{appointmentId}', [TDPRoute1Controller::class, 'denyProposalManuscriptUpdate'])->name('tdprofessor.denyProposalManuscriptUpdate');
 
     //AUFCommittee Routes Dashboard and Sidebar
     Route::get('/aufcommittee/dashboard', [AUFCProfileController::class, 'AUFCdashboard'])->name('AUFCdashboard');
@@ -478,7 +481,7 @@ Route::post('/gsstudent/add-student-reply/{panelistId}', [GSSRoute1Controller::c
 Route::get('/tdprofessorpanel/monitoring', [TDPProposalMonitoringController::class, 'index'])->name('panel.monitoring');
 Route::get('/tdprofessorpanel/monitoring/{studentId}', [TDPProposalMonitoringController::class, 'showStudentMonitoringForm'])->name('panel.showStudentMonitoringForm');
 Route::post('/tdprofessorpanel/monitoring/comment/{studentId}', [TDPProposalMonitoringController::class, 'addComment'])->name('panel.addComment');
-Route::post('/tdprofessorpanel/monitoring/remark/{studentId}', [TDPProposalMonitoringController::class, 'addRemark'])->name('panel.addRemark');
+Route::post('/tdprofessorpanel/monitoring/remark/{studentId}', action: [TDPProposalMonitoringController::class, 'addRemark'])->name('panel.addRemark');
 Route::post('/tdprofessorpanel/monitoring/signature/{studentId}', [TDPProposalMonitoringController::class, 'affixSignature'])->name('panel.affixSignature');
 Route::get('/tdprofessor/monitoring/search', [TDPProposalMonitoringController::class, 'search'])->name('tdprofessor.monitoring.search');
 

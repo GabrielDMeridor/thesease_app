@@ -234,22 +234,18 @@ class GSSRoute1Controller extends Controller
         $appointment->proposal_manuscript_updates = json_encode([
             'file_path' => $storedFileName,
             'original_name' => $originalFileName,
-            'uploaded_at' => \Carbon\Carbon::now()->toDateTimeString(), // Store full date and time of the upload
+            'uploaded_at' => \Carbon\Carbon::now()->toDateTimeString(),
         ]);
-    
-        // Update the exact date and time of the upload in `update_date_saved`
-        $appointment->update_date_saved = \Carbon\Carbon::now(); // Stores full date and time
-    
+        $appointment->proposal_manuscript_update_status = 'pending';
+        $appointment->update_date_saved = \Carbon\Carbon::now();
         $appointment->save();
     
-        // Notify all panel members
-        $panelMembersIds = is_string($appointment->panel_members) 
-            ? json_decode($appointment->panel_members, true) 
-            : $appointment->panel_members;
-    
-        // Retrieve users with those IDs and send notifications
-        $panelMembers = User::whereIn('id', $panelMembersIds)->get();
-        Notification::send($panelMembers, new ProposalManuscriptUpdateNotification($user));
+        // Notify the adviser with a custom message
+        $adviser = User::find($appointment->adviser_id);
+        if ($adviser) {
+            $message = "Your advisee, {$user->name}, has uploaded a proposal manuscript update, awaiting your approval.";
+            Notification::send($adviser, new ProposalManuscriptUpdateNotification($user, 'upload', $message));
+        }
     
         return redirect()->route('gsstudent.route1')->with('success', 'Proposal manuscript update uploaded successfully!');
     }

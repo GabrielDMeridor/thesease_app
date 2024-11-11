@@ -11,6 +11,8 @@ use App\Notifications\AdviserResponseNotificationToPCandD;
 use App\Notifications\AdviseeNotifStep2;
 use App\Notifications\SAAGSNotifyStep2;
 use App\Models\Setting;
+use App\Notifications\ProposalManuscriptUpdateNotification;
+use Illuminate\Support\Facades\Notification;
 
 
 class TDPRoute1Controller extends Controller
@@ -257,6 +259,46 @@ public function markRegistrationResponded($appointmentId)
     // Redirect back with success message
     return redirect()->back()->with('success', 'Registration marked as responded, and OVPRI has been notified.');
 }
+
+public function approveProposalManuscriptUpdate($appointmentId)
+{
+    $appointment = AdviserAppointment::findOrFail($appointmentId);
+
+    // Ensure the logged-in professor is the adviser
+    if ($appointment->adviser_id !== auth()->id()) {
+        return redirect()->back()->with('error', 'Unauthorized action.');
+    }
+
+    // Approve the manuscript update
+    $appointment->proposal_manuscript_update_status = 'approved';
+    $appointment->save();
+
+    return redirect()->back()->with('success', 'Proposal manuscript update approved successfully.');
+}
+public function denyProposalManuscriptUpdate($appointmentId)
+{
+    $appointment = AdviserAppointment::findOrFail($appointmentId);
+
+    // Ensure the logged-in professor is the assigned adviser
+    if ($appointment->adviser_id != auth()->id()) {
+        return redirect()->back()->with('error', 'Unauthorized action.');
+    }
+
+    // Reset the manuscript update status to require re-upload
+    $appointment->proposal_manuscript_update_status = 'denied';
+    $appointment->save();
+
+    // Notify the student to re-upload the manuscript update
+    $student = User::find($appointment->student_id);
+    if ($student) {
+        Notification::send($student, new ProposalManuscriptUpdateNotification($student, 'deny'));
+    }
+
+    return redirect()->back()->with('success', 'Proposal manuscript update denied. The student has been notified to re-upload.');
+}
+
+
+
 
 
 

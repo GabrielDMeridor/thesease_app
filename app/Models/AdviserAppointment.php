@@ -104,4 +104,5 @@ class AdviserAppointment extends Model
     {
         return $value ? json_decode($value) : [];
     }
+    
 }

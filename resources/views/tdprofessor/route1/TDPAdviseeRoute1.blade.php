@@ -648,43 +648,65 @@
                            </table>
                            <bR>
                            <!-- Proposal Manuscript Updates Section -->
-                           <div class="updates-section">
-                              <div class="table-responsive">
-                                 <h4 class="routing-heading">Proposal Manuscript Updates</h4>
-                                 <p>Updated Proposal Manuscript: <i class="fa-solid fa-download"></i></p>
-                                 <table class="table table-bordered table-hover table-striped custom-table">
-                                    <thead class="table-dark">
-                                       <tr>
-                                          <th class="text-center">File</th>
-                                          <th class="text-center">Last Updated</th>
-                                          <th class="text-center">Action</th>
-                                       </tr>
-                                    </thead>
-                                    <tbody>
-                                       @if($appointment->proposal_manuscript_updates)
-                                       @php
-                                       $updates = json_decode($appointment->proposal_manuscript_updates, true);
-                                       @endphp
-                                       <tr>
-                                          <td class="text-center">
-                                             <a href="#" data-toggle="modal" data-target="#manuscriptUpdateModal">{{ $updates['original_name'] }}</a>
-                                          </td>
-                                          <td class="text-center">
-                                             {{ isset($updates['uploaded_at']) ? \Carbon\Carbon::parse($updates['uploaded_at'])->format('m/d/Y h:i A') : 'Not available' }}
-                                          </td>
-                                          <td class="text-center">
-                                             <a href="{{ Storage::url($updates['file_path']) }}" download class="btn btn-primary">Download</a>
-                                          </td>
-                                       </tr>
-                                       @else
-                                       <tr>
-                                          <td colspan="3" class="text-center">No updates available.</td>
-                                       </tr>
-                                       @endif
-                                    </tbody>
-                                 </table>
-                              </div>
-                           </div>
+<!-- Proposal Manuscript Updates Section in Professor View -->
+<div class="updates-section">
+    <div class="table-responsive">
+        <h4 class="routing-heading">Proposal Manuscript Updates</h4>
+        <p>Updated Proposal Manuscript: <i class="fa-solid fa-download"></i></p>
+        <table class="table table-bordered table-hover table-striped custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th class="text-center">File</th>
+                    <th class="text-center">Last Updated</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if($appointment->proposal_manuscript_updates)
+                @php
+                $updates = json_decode($appointment->proposal_manuscript_updates, true);
+                @endphp
+                <tr>
+                    <td class="text-center">
+                        <a href="#" data-toggle="modal" data-target="#manuscriptUpdateModal">{{ $updates['original_name'] }}</a>
+                    </td>
+                    <td class="text-center">
+                        {{ isset($updates['uploaded_at']) ? \Carbon\Carbon::parse($updates['uploaded_at'])->format('m/d/Y h:i A') : 'Not available' }}
+                    </td>
+                    <td class="text-center">
+                        @if ($appointment->proposal_manuscript_update_status === 'pending')
+                            <span class="text-warning">Pending Approval</span>
+                        @elseif ($appointment->proposal_manuscript_update_status === 'approved')
+                            <span class="text-success">Approved</span>
+                        @else
+                            <span class="text-danger">Disapproved</span>
+                        @endif
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ Storage::url($updates['file_path']) }}" download class="btn btn-primary">Download</a>
+                        @if ($appointment->proposal_manuscript_update_status === 'pending')
+                        <form action="{{ route('tdprofessor.approveProposalManuscriptUpdate', $appointment->id) }}" method="POST" style="display:inline-block;">
+                            @csrf
+                            <button type="submit" class="btn btn-success">Approve</button>
+                        </form>
+                        <form action="{{ route('tdprofessor.denyProposalManuscriptUpdate', $appointment->id) }}" method="POST" style="display:inline-block;">
+                            @csrf
+                            <button type="submit" class="btn btn-danger">Deny</button>
+                        </form>
+                        @endif
+                    </td>
+                </tr>
+                @else
+                <tr>
+                    <td colspan="4" class="text-center">No updates available.</td>
+                </tr>
+                @endif
+            </tbody>
+        </table>
+    </div>
+</div>
+
                         </div>
                         <!-- Modal for Main Proposal Manuscript -->
                         <div class="modal fade" id="mainProposalManuscriptModal" tabindex="-1" aria-labelledby="mainProposalManuscriptModalLabel" aria-hidden="true">

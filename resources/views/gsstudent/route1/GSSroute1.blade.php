@@ -678,51 +678,71 @@
                         <hr>
                         <bR>
                         <!-- Proposal Manuscript Updates Section -->
-                        <div class="updates-section">
-                           <div class="table-responsive">
-                              <h4 class="routing-heading">Proposal Manuscript Updates</h4>
-                              <table class="table table-bordered table-hover table-striped custom-table">
-                                 <p>Updated Proposal Manuscript: <i class="fa-solid fa-download"></i></p>
-                                 <thead class="table-dark">
-                                    <tr>
-                                       <th class="text-center">File</th>
-                                       <th class="text-center">Last Updated</th>
-                                       <th class="text-center">Action</th>
-                                    </tr>
-                                 </thead>
-                                 <tbody>
-                                    @if($appointment->proposal_manuscript_updates)
-                                    @php
-                                    $updates = json_decode($appointment->proposal_manuscript_updates, true);
-                                    @endphp
-                                    <tr>
-                                       <td class="text-center">
-                                          <a href="#" data-toggle="modal" data-target="#manuscriptUpdateModal">{{ $updates['original_name'] }}</a>
-                                       </td>
-                                       <td class="text-center">
-                                          {{ isset($updates['uploaded_at']) ? \Carbon\Carbon::parse($updates['uploaded_at'])->format('m/d/Y h:i A') : 'Not available' }}
-                                       </td>
-                                       <td class="text-center">
-                                          <a href="{{ Storage::url($updates['file_path']) }}" download class="btn btn-primary">Download</a>
-                                       </td>
-                                    </tr>
-                                    @endif
-                                    <tr>
-                                       <form action="{{ route('gsstudent.uploadProposalManuscriptUpdate') }}" method="POST" enctype="multipart/form-data">
-                                          @csrf
-                                          <td class="text-center">
-                                             <input type="file" name="proposal_manuscript_update" class="form-control" accept=".pdf" required>
-                                          </td>
-                                          <td class="text-center">{{ \Carbon\Carbon::now()->format('m/d/Y') }}</td>
-                                          <td class="text-center">
-                                             <button type="submit" class="btn btn-primary">Save</button>
-                                          </td>
-                                       </form>
-                                    </tr>
-                                 </tbody>
-                              </table>
-                           </div>
-                        </div>
+<!-- Proposal Manuscript Updates Section in Student View -->
+<div class="updates-section">
+    <div class="table-responsive">
+        <h4 class="routing-heading">Proposal Manuscript Updates</h4>
+        <table class="table table-bordered table-hover table-striped custom-table">
+            <p>Updated Proposal Manuscript: <i class="fa-solid fa-download"></i></p>
+            <thead class="table-dark">
+                <tr>
+                    <th class="text-center">File</th>
+                    <th class="text-center">Last Updated</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Display Existing Update with Status -->
+                @if($appointment->proposal_manuscript_updates)
+                @php
+                $updates = json_decode($appointment->proposal_manuscript_updates, true);
+                @endphp
+                <tr>
+                    <td class="text-center">
+                        <a href="#" data-toggle="modal" data-target="#manuscriptUpdateModal">{{ $updates['original_name'] }}</a>
+                    </td>
+                    <td class="text-center">
+                        {{ isset($updates['uploaded_at']) ? \Carbon\Carbon::parse($updates['uploaded_at'])->format('m/d/Y h:i A') : 'Not available' }}
+                    </td>
+                    <td class="text-center">
+                        @if ($appointment->proposal_manuscript_update_status === 'pending')
+                            <span class="text-warning">Pending Adviser Approval</span>
+                        @elseif ($appointment->proposal_manuscript_update_status === 'approved')
+                            <span class="text-success">Approved</span>
+                        @else 
+                            <span class="text-danger">Disapproved</span>
+                        @endif
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ Storage::url($updates['file_path']) }}" download class="btn btn-primary">Download</a>
+                    </td>
+                </tr>
+                @else
+                <tr>
+                    <td colspan="4" class="text-center">No updates available.</td>
+                </tr>
+                @endif
+                
+                <!-- Upload Form for New Update -->
+                <tr>
+                    <form action="{{ route('gsstudent.uploadProposalManuscriptUpdate') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <td class="text-center">
+                            <input type="file" name="proposal_manuscript_update" class="form-control" accept=".pdf" required>
+                        </td>
+                        <td class="text-center">{{ \Carbon\Carbon::now()->format('m/d/Y') }}</td>
+                        <td class="text-center">New Upload</td>
+                        <td class="text-center">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </td>
+                    </form>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
                      </div>
                   </div>
                   <!-- Modal for Main Proposal Manuscript -->
