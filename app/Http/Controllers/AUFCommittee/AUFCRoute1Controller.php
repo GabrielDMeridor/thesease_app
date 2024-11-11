@@ -8,6 +8,7 @@ use App\Models\AdviserAppointment;
 use App\Models\User;
 use App\Notifications\AUFCApprovalNotificationToRoles;  // Corrected namespace
 use App\Notifications\AUFCApprovalNotificationToStudent; // Corrected namespace
+use App\Notifications\AUFCDenialNotification;
 
 class AUFCRoute1Controller extends Controller
 {
@@ -58,5 +59,39 @@ class AUFCRoute1Controller extends Controller
             ->get();
 
         return response()->json(['data' => $appointments]);
+    }
+
+    public function uploadEthicsClearance(Request $request, $id)
+    {
+        // Validate file upload
+        $request->validate([
+            'ethics_clearance' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ]);
+
+        // Find the appointment
+        $appointment = AdviserAppointment::findOrFail($id);
+
+        // Handle the file upload and save file path
+        $filePath = $request->file('ethics_clearance')->store('public/ethics_clearance');
+        $appointment->ethics_clearance = $filePath;
+        $appointment->aufc_status = 'approved';
+        $appointment->save();
+
+        return redirect()->back()->with('success', 'Ethics clearance uploaded and approval granted.');
+    }
+
+    public function denyAppointment(Request $request, $id)
+    {
+        // Validate denial reason
+        $request->validate([
+            'denialReason' => 'required|string|max:255',
+        ]);
+
+        // Find the appointment and notify the student of the denial reason
+        $appointment = AdviserAppointment::findOrFail($id);
+        $student = $appointment->student;
+        $student->notify(new AUFCDenialNotification($request->denialReason));
+
+        return redirect()->back()->with('success', 'Denial notification sent to student.');
     }
 }

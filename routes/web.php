@@ -536,3 +536,5 @@ Route::post('/gsstudent/send-data-to-aufc', [GSSRoute1Controller::class, 'sendDa
      Route::post('ovpri/store-ovpri-link', [OVPRIRoute1Controller::class, 'storeOrUpdateOVPRILink'])->name('ovpri.storeOrUpdateOVPRILink');
 
 
+     Route::post('/aufcommittee/route1/uploadEthicsClearance/{id}', [AUFCRoute1Controller::class, 'uploadEthicsClearance'])->name('aufcommittee.route1.uploadEthicsClearance');
+     Route::post('/aufcommittee/route1/denyAppointment/{id}', [AUFCRoute1Controller::class, 'denyAppointment'])->name('aufcommittee.route1.denyAppointment');
