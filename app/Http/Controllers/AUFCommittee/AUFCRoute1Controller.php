@@ -14,14 +14,16 @@ class AUFCRoute1Controller extends Controller
 {
     public function index(Request $request)
     {
+        // Fetch all records, but prioritize showing pending ones (non-approved) at the top
         $appointments = AdviserAppointment::where('ethics_send_data_to_aufc', 1)
-            ->where('aufc_status', '!=', 'approved')
             ->with('student')
+            ->orderByRaw("CASE WHEN aufc_status = 'approved' THEN 1 ELSE 0 END")
             ->paginate(10);
-
+    
         $title = "Students Awaiting AUFC Approval";
         return view('aufcommittee.route1.AUFCroute1', compact('title', 'appointments'));
     }
+    
 
     public function approve($id)
     {
