@@ -147,40 +147,42 @@
 
     <!-- List of Appointments -->
     <div class="table-responsive">
-        <table class="table table-bordered table-hover table-striped custom-table" id="results-table">
-            <thead class="table-dark">
+    <table class="table table-bordered table-hover table-striped custom-table" id="results-table">
+        <thead class="table-dark">
+            <tr>
+                <th style="text-align:center;">Student Name</th>
+                <th style="text-align:center;">Email</th> <!-- New column for student email -->
+                <th style="text-align:center;">Program</th>
+                <th style="text-align:center;">Statistician Response</th>
+                <th style="text-align:center;">Statistician Approval</th>
+            </tr>
+        </thead>
+        <tbody id="results-body">
+            @forelse ($appointments as $appointment)
                 <tr>
-                    <th style="text-align:center;">Student Name</th>
-                    <th style="text-align:center;">Program</th>
-                    <th style="text-align:center;">Statistician Response</th>
-                    <th style="text-align:center;">Statistician Approval</th>
+                    <td class="text-center">{{ $appointment->student->name }}</td>
+                    <td class="text-center">{{ $appointment->student->email ?? 'N/A' }}</td> <!-- Display student's email here -->
+                    <td class="text-center">{{ $appointment->student->program ?? 'N/A' }}</td>
+                    <td class="text-center">{{ ucfirst($appointment->student_statistician_response) }}</td>
+                    <td class="text-center">
+                        @if ($appointment->statistician_approval === 'approved')
+                            Approved
+                        @else
+                            <form action="{{ route('statistician.route1.approve', $appointment->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                            </form>
+                        @endif
+                    </td>
                 </tr>
-            </thead>
-            <tbody id="results-body">
-                @forelse ($appointments as $appointment)
-                    <tr>
-                        <td class="text-center">{{ $appointment->student->name }}</td>
-                        <td class="text-center">{{ $appointment->student->program ?? 'N/A' }}</td>
-                        <td class="text-center">{{ ucfirst($appointment->student_statistician_response) }}</td>
-                        <td class="text-center">
-                            @if ($appointment->statistician_approval === 'approved')
-                                Approved
-                            @else
-                                <form action="{{ route('statistician.route1.approve', $appointment->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                                </form>
-                            @endif
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="text-center">No responded consultations found.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+            @empty
+                <tr>
+                    <td colspan="5" class="text-center">No responded consultations found.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
     <!-- Pagination Links -->
     <div class="d-flex justify-content-center" id="pagination-links">

@@ -146,6 +146,7 @@
         <thead class="table-dark">
             <tr>
                 <th style="text-align:center;">Adviser Name</th>
+                <th style="text-align:center;">Advisee Name</th> <!-- New column for advisee name -->
                 <th style="text-align:center;">Email</th>
                 <th style="text-align:center;">Program</th>
                 <th style="text-align:center;">Registration Response</th>
@@ -156,6 +157,7 @@
             @forelse ($appointments as $appointment)
                 <tr>
                     <td class="text-center">{{ $appointment->adviser->name }}</td>
+                    <td class="text-center">{{ $appointment->student->name ?? 'N/A' }}</td> <!-- Display advisee name -->
                     <td class="text-center">{{ $appointment->adviser->email }}</td>
                     <td class="text-center">{{ $appointment->adviser->program ?? 'N/A' }}</td>
                     <td class="text-center">{{ ucfirst($appointment->registration_response) }}</td>
@@ -172,12 +174,13 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="text-center">No responded registrations found.</td>
+                    <td colspan="6" class="text-center">No responded registrations found.</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
 </div>
+
         <!-- Pagination Links -->
         <div class="d-flex justify-content-center" id="pagination-links">
             {{ $appointments->links() }}

@@ -22,7 +22,7 @@ class OVPRIRoute1Controller extends Controller
     
         // Fetch appointments where registration_response is "responded" and order by ovpri_approval (NULL values first for pending)
         $appointments = AdviserAppointment::where('registration_response', 'responded')
-            ->with('adviser')
+        ->with(['adviser', 'student']) // Load both adviser and student relationships
             ->orderByRaw('ovpri_approval IS NOT NULL') // Pending (NULL) approvals at the top
             ->orderBy('updated_at', 'desc') // Newest responses at the top within each group
             ->paginate(10);
