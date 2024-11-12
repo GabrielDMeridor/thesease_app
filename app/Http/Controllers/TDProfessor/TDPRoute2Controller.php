@@ -44,6 +44,7 @@ class TDPRoute2Controller extends Controller
         $isDrPH = $student->program === 'DRPH-HPE';
         $totalSteps = $isDrPH ? 8 : 7;
         $final_statisticianLink = Setting::where('key', 'final_statistician_link')->value('value');
+        $final_ovpri_link = Setting::where('key', 'final_ovpri_link')->value('value');
 
 
 
@@ -55,7 +56,8 @@ class TDPRoute2Controller extends Controller
             'title' => 'Routing Form 2 for ' . $student->name,
             'isDrPH' => $isDrPH,
             'totalSteps' => $totalSteps,
-            'final_statisticianLink' => $final_statisticianLink
+            'final_statisticianLink' => $final_statisticianLink,
+            'final_ovpri_link' => $final_ovpri_link
         ]);
     }
     public function addFinalConsultationDatesAndSign(Request $request, $appointmentId)
@@ -100,6 +102,21 @@ class TDPRoute2Controller extends Controller
     $appointment->save();
 
     return response()->json(['success' => true, 'message' => 'Date saved successfully']);
+}
+public function markFinalRegistrationResponded($appointmentId)
+{
+    $appointment = AdviserAppointment::findOrFail($appointmentId);
+
+    if ($appointment->adviser_id !== auth()->user()->id) {
+        return redirect()->back()->with('error', 'Unauthorized action.');
+    }
+
+    $appointment->final_registration_response = 'responded';
+    $appointment->final_ovpri_approval = 'pending';
+    $appointment->save();
+
+
+    return redirect()->back()->with('success', 'Final registration marked as responded, and OVPRI has been notified.');
 }
 
 }

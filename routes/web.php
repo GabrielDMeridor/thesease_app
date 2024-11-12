@@ -577,3 +577,8 @@ Route::post('/gsstudent/send-data-to-aufc', [GSSRoute1Controller::class, 'sendDa
 
      Route::post('/programchair/route2/approve/{id}', [PCRoute2Controller::class, 'approve'])->name('programchair.route2.approve');
     Route::post('/programchair/route2/deny/{id}', [PCRoute2Controller::class, 'deny'])->name('programchair.route2.deny');
+
+    Route::post('/tdprofessor/route2/markRegistrationResponded/{appointmentId}', [TDPRoute2Controller::class, 'markFinalRegistrationResponded'])->name('tdprofessor.markRegistrationResponded');
+    Route::get('/ovpri/route2', [OVPRIRoute2Controller::class, 'index'])->name('ovpri.route2');
+    Route::post('/ovpri/route2/approve/{id}', [OVPRIRoute2Controller::class, 'approve'])->name('ovpri.route2.approve');
+    Route::post('/ovpri/route2/link', [OVPRIRoute2Controller::class, 'storeOrUpdateOVPRILink'])->name('ovpri.route2.storeOrUpdateOVPRILink');

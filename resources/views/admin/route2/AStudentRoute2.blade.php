@@ -141,6 +141,40 @@
                     </div>  
             <!-- Step 2 Content -->
         @elseif ($step === 3)
+
+        <div class="container my-4">
+                            <div class="card shadow mb-4">
+                                <div class="card-body d-flex flex-column flex-md-row align-items-center justify-content-between">
+                                    <div class="qr-code-section text-center mb-4 mb-md-0">
+                                        <img src="{{ asset('img/qr_code.png') }}" alt="QR Code" class="qr-code-image rounded" style="width: 150px; border: 2px solid #ddd;">
+                                        <p class="mt-2 text-muted" style="font-size: 0.9rem;">Scan for Registration Form</p>
+                                    </div>
+                                    <div class="instructions-section ml-md-4">
+                                        <h4 class="routing-heading">Research Registration</h4>
+                                        <p>Adviser accomplishes the 
+                                            <a href="{{ $final_ovpri_link }}" target="_blank" class="text-decoration-underline text-primary">
+                                                <i class="fa-solid fa-link"></i>    
+                                                Research Registration Form
+                                            </a>.
+                                            The primary author will be the student, and the adviser will be the co-author. A copy of the form responses will be sent to the adviser’s email.
+                                        </p>
+                                        <p>After completing the form, please forward the copy and the manuscript to:
+                                            <br><strong>cdaic@auf.edu.ph</strong> (cc: <strong>ovpri@auf.edu.ph</strong>, <strong>collegesecretary.gs@auf.edu.ph</strong>).
+                                        </p>
+                                        <p><strong>Status:</strong> 
+                                            @if ($appointment->final_ovpri_approval === 'approved')
+                                                <span class="badge badge-success">Already approved by OVPRI.</span>
+                                            @elseif ($appointment->final_ovpri_approval === 'pending')
+                                                <span class="badge badge-warning">Pending OVPRI approval.</span>
+                                            @else
+                                                <span class="badge badge-secondary">Not yet responded.</span>
+                                            @endif
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
             <!-- Step 3 Content -->
         @elseif ($step === 4)
             <!-- Step 4 Content -->

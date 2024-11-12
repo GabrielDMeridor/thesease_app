@@ -50,9 +50,11 @@ class ARoute2Controller extends Controller
         // Define the title for the view
         $title = 'Routing Form 2 for ' . $student->name;
         $final_statisticianLink = Setting::where('key', 'final_statistician_link')->value('value');
+        $final_ovpri_link = Setting::where('key', 'final_ovpri_link')->value('value');
 
 
         // Pass the title and other data to the view
-        return view('admin.route2.AStudentRoute2', compact('student', 'appointment', 'title', 'isDrPH', 'totalSteps', 'final_statisticianLink'));
+        return view('admin.route2.AStudentRoute2', compact('student', 'appointment', 'title', 'isDrPH', 'totalSteps', 
+        'final_ovpri_link','final_statisticianLink'));
     }
 }

@@ -49,8 +49,11 @@ class SARoute2Controller extends Controller
 
         // Define the title for the view
         $title = 'Routing Form 2 for ' . $student->name;
+        $final_ovpri_link = Setting::where('key', 'final_ovpri_link')->value('value');
+
 
         // Pass the title and other data to the view
-        return view('superadmin.route2.SAStudentRoute2', compact('student', 'appointment', 'title', 'isDrPH', 'totalSteps'));
+        return view('superadmin.route2.SAStudentRoute2', compact('student', 'appointment', 'title', 'isDrPH', 
+        'final_ovpri_link','totalSteps'));
     }
 }
