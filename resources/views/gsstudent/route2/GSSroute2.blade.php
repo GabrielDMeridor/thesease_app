@@ -143,6 +143,64 @@
                         </div>
                     </div>
 
+                            <!-- Proof of Publication Upload (Conditional Display for Specific Programs) -->
+        @php
+            $eligiblePrograms = [
+                'PhD-Ed-EM', 'PhD-Mgmt', 'DIT', 'MAEd', 'MANm', 'MSPH',
+                'MBA', 'MIT', 'MA-Pysch-CP', 'MS-MLS', 'MSPH', 'MSCJ-Crim'
+            ];
+        @endphp
+
+        @if (in_array($program, $eligiblePrograms))
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h4>Submission of Proof of Publication (If required)</h4>
+                    <p>Send your proof of publication to your program chair, cc: adviser and <strong>collegesecretary.gs@auf.edu.ph</strong>. (<a href="https://docs.google.com/document/d/1Dc8m5mJYenYDTLaUtuBXcr-xwFR73HF1/edit" target="_blank">See Publication Guidelines</a>.)</p>
+                    
+                    <!-- Upload Proof of Publication -->
+                    @if (is_null($appointment->proof_of_publication_path))
+                        <form method="POST" action="{{ route('gsstudent.uploadProofOfPublication', $appointment->id) }}" enctype="multipart/form-data">
+                            @csrf
+                            <div class="form-group">
+                                <label for="proof_of_publication">Upload Proof of Publication:</label>
+                                <input type="file" name="proof_of_publication" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                        </form>
+                    @else
+                        <div class="mt-3">
+                            <label>Uploaded Proof of Publication:</label>
+                            <a href="#" data-toggle="modal" data-target="#publicationModal">
+                                {{ $appointment->proof_of_publication_original_name }}
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        @endif
+    </div>
+
+<!-- Publication Modal for Viewing Uploaded Proof -->
+<div class="modal fade" id="publicationModal" tabindex="-1" aria-labelledby="publicationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="publicationModalLabel">View Proof of Publication</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{ asset('storage/' . $appointment->proof_of_publication_path) }}" width="100%" height="600px" style="border: none;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ asset('storage/' . $appointment->proof_of_publication_path) }}" target="_blank" class="btn btn-primary" download>Download Proof</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
                 {{-- Additional Steps Content --}}
                 @elseif ($step === 3)
 

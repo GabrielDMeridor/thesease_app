@@ -253,7 +253,6 @@
         }
     });
 
-
     // Get HTML elements
     const accountType = document.querySelector('#account_type');
     const degreeContainer = document.querySelector('#degree-container');

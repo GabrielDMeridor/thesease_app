@@ -74,6 +74,9 @@ class AdviserAppointment extends Model
         'uploaded_at',
         'final_student_statiscian_response',
         'final_statistician_approval',
+        'proof_of_publication_path',
+        'proof_of_publication_original_name',
+        'publication_status'
     ];
 
     // Casts for specific fields

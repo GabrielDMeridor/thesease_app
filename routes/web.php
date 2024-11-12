@@ -571,3 +571,9 @@ Route::post('/gsstudent/send-data-to-aufc', [GSSRoute1Controller::class, 'sendDa
 
 
      Route::post('/statistician/route2/update-link', [SRoute2Controller::class, 'storeOrUpdateFinalStatisticianLink'])->name('statistician.route2.updateLink');
+     Route::post('gsstudent/upload-proof-of-publication/{appointment}', [GSSRoute2Controller::class, 'uploadProofOfPublication'])->name('gsstudent.uploadProofOfPublication');
+
+     Route::get('/programchair/route2', [PCRoute2Controller::class, 'show'])->name('programchair.route2.show');
+
+     Route::post('/programchair/route2/approve/{id}', [PCRoute2Controller::class, 'approve'])->name('programchair.route2.approve');
+    Route::post('/programchair/route2/deny/{id}', [PCRoute2Controller::class, 'deny'])->name('programchair.route2.deny');

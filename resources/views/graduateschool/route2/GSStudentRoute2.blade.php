@@ -138,6 +138,8 @@
                             </div>
                         </div>
                     </div>
+
+                    
                     <!-- Step 2 Content -->
                 @elseif ($step === 3)
                     <!-- Step 3 Content -->

@@ -38,7 +38,9 @@ class GSSRoute2Controller extends Controller
             'totalSteps' => $totalSteps,
             'isDrPH' => $isDrPH,
             'appointment' => $appointment,
-            'final_statisticianLink' => $final_statisticianLink, // Make sure $appointment is not null
+            'final_statisticianLink' => $final_statisticianLink,
+            'program' => $user->program // Ensure this is passed to the view
+            // Make sure $appointment is not null
         ]);
     }
     
@@ -86,4 +88,23 @@ public function respondToFinalStatistician(Request $request)
     return redirect()->route('gsstudent.route2')
                      ->with('success', 'Your response to the final consultation with the statistician has been recorded.');
 }
+
+public function uploadProofOfPublication(Request $request, AdviserAppointment $appointment)
+{
+    $request->validate([
+        'proof_of_publication' => 'required|file|mimes:pdf,doc,docx|max:2048', // PDF or DOC files only
+    ]);
+
+    $file = $request->file('proof_of_publication');
+    $path = $file->store('proof_of_publication', 'public'); // Store in the "public" disk
+    $originalName = $file->getClientOriginalName();
+
+    $appointment->update([
+        'proof_of_publication_path' => $path,
+        'proof_of_publication_original_name' => $originalName,
+    ]);
+
+    return redirect()->back()->with('success', 'Proof of Publication uploaded successfully.');
+}
+
 }
