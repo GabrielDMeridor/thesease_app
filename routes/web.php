@@ -105,6 +105,7 @@
     use App\Http\Controllers\PasswordResetController;
 
 
+    use App\Http\Controllers\GraduateSchool\GSThesisRepoController;
 
 
     use App\Http\Controllers\UserAuthController;
@@ -582,7 +583,7 @@ Route::post('/gsstudent/send-data-to-aufc', [GSSRoute1Controller::class, 'sendDa
      Route::post('/programchair/route2/approve/{id}', [PCRoute2Controller::class, 'approve'])->name('programchair.route2.approve');
     Route::post('/programchair/route2/deny/{id}', [PCRoute2Controller::class, 'deny'])->name('programchair.route2.deny');
 
-    Route::post('/tdprofessor/route2/markRegistrationResponded/{appointmentId}', [TDPRoute2Controller::class, 'markFinalRegistrationResponded'])->name('tdprofessor.markRegistrationResponded');
+    Route::post('/tdprofessor/route2/markRegistrationResponded/{appointmentId}', [TDPRoute2Controller::class, 'markFinalRegistrationResponded'])->name('tdprofessor.markRegistrationResponded2');
     Route::get('/ovpri/route2', [OVPRIRoute2Controller::class, 'index'])->name('ovpri.route2');
     Route::post('/ovpri/route2/approve/{id}', [OVPRIRoute2Controller::class, 'approve'])->name('ovpri.route2.approve');
     Route::post('/ovpri/route2/link', [OVPRIRoute2Controller::class, 'storeOrUpdateOVPRILink'])->name('ovpri.route2.storeOrUpdateOVPRILink');
@@ -616,3 +617,9 @@ Route::post('/gsstudent/respond-to-final-submission-files/{appointment}', [GSSRo
     ->name('gsstudent.respondToFinalSubmissionFiles');
     Route::post('/admin/approveFormFee/{id}', [ARoute2Controller::class, 'approveFormFee'])->name('admin.approveFormFee');
     Route::post('/admin/denyFormFee/{id}', [ARoute2Controller::class, 'denyFormFee'])->name('admin.denyFormFee');
+
+    Route::get('/graduate-school/thesis/upload', [GSThesisRepoController::class, 'showThesisUploadForm'])->name('gs.showThesisUploadForm');
+Route::post('/graduate-school/thesis/upload', [GSThesisRepoController::class, 'uploadThesis'])->name('gs.uploadThesis');
+Route::get('/graduate-school/thesis', [GSThesisRepoController::class, 'index'])->name('gs.thesisIndex');
+
+Route::get('/superadmin/thesis', [GSThesisRepoController::class, 'index'])->name('gs.thesisIndex');

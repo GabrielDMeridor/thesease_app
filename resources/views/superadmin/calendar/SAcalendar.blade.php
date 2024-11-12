@@ -155,7 +155,7 @@
 
                 <!-- Proposal Defense Schedule -->
                 <div style="margin-bottom: 15px;">
-                    <h3  class="setsched-heading">Proposal Defense Schedule</h3>
+                    <h3  class="setsched-heading">Defense Schedule</h3>
                     <label for="proposal_defense_date"  class="setsched-p" >Date:</label>
                     <input type="date" name="proposal_defense_date" id="proposal_defense_date" required style="width: 100%; padding: 8px; margin-top: 5px;" class="form-control">
 

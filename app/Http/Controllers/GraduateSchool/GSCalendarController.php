@@ -52,7 +52,7 @@ class GSCalendarController extends Controller
         // Decode panel_members JSON string to an array
         $panelMembers = json_decode($request->panel_members, true);
     
-        if ($request->schedule_type === 'Proposal Defense') {
+        if ($request->schedule_type === 'Proposal Defense' || $request->schedule_type === 'Final Defense') {
             // Save schedule type and other data only if schedule type is "Proposal Defense"
             $appointment = AdviserAppointment::updateOrCreate(
                 ['student_id' => $request->student_id],

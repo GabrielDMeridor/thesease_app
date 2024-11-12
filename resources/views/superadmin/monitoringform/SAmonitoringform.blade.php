@@ -115,7 +115,7 @@
                 <tr>
                     <th class="text-center">Student Name</th>
                     <th class="text-center">Schedule Type</th>
-                    <th class="text-center">Proposal Date & Time</th>
+                    <th class="text-center">Date & Time</th>
                     <th class="text-center">Status</th>
                     <th class="text-center">Action</th>
                 </tr>

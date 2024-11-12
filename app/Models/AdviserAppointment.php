@@ -93,7 +93,15 @@ class AdviserAppointment extends Model
         'final_submission_files',
         'final_submission_approval',
        'final_submission_files_response',
-        'final_submission_approval_formfee'
+        'final_submission_approval_formfee',
+        'final_defense_date',
+        'final_defense_time',
+        'final_manuscript_updates',
+        'final_panel_comments',
+        'final_student_replies',
+        'final_panel_remarks',
+        'final_panel_signatures',
+        'dean_final_monitoring_signature',
 
     ];
 

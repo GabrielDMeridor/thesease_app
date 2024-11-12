@@ -110,25 +110,7 @@
                     
                 </div>
 
-                <!-- Thesis Details Section -->
-                    <div class="col-md-8 col-sm-12">
-                        <div class="p-3 py-5">
-                            <div class="">
-                                <h5 class="header-style">Your Thesis Details</h5>
-                                <p><strong>Thesis Topic:</strong> The Stress-Relieving Effects of Reading: A Comparative Analysis of Physical Books Versus Screen Reading</p>
-                                <h6>Thesis Progress:</h6>
-                                <div class="progress mb-3">
-                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 30%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">Routing Form 1</div>
-                                </div>
-                                <div class="progress">
-                                    <div class="progress-bar bg-secondary" role="progressbar" style="width: 10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">Routing Form 2</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            </div>
-        </div>
-    </div>
+   
 
     <!-- Change Password Modal -->
     <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">

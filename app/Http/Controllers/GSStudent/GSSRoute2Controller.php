@@ -31,6 +31,7 @@ class GSSRoute2Controller extends Controller
     
         $final_statisticianLink = Setting::where('key', 'final_statistician_link')->value('value');
         $final_ovpri_link = Setting::where('key', 'final_ovpri_link')->value('value');
+        $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
 
         // Render the view and pass the necessary data to it
         return view('gsstudent.route2.GSSroute2', [
@@ -41,7 +42,8 @@ class GSSRoute2Controller extends Controller
             'appointment' => $appointment,
             'final_statisticianLink' => $final_statisticianLink,
             'program' => $user->program,
-            'final_ovpri_link' => $final_ovpri_link // Ensure this is passed to the view
+            'final_ovpri_link' => $final_ovpri_link,
+            'globalSubmissionLink' => $globalSubmissionLink // Ensure this is passed to the view
             // Make sure $appointment is not null
         ]);
     }

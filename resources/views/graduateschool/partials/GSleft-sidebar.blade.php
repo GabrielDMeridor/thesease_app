@@ -77,10 +77,10 @@
     </li>
 
     <!-- Nav Item - Thesis Repository -->
-    <li class="nav-item">
-        <a href="#" class="nav-link">
-            <i class="fas fa-fw fa-book"></i>
-            <span>Thesis Repository</span>
+    <li class="nav-item {{ $current_route == 'gs.thesisIndex' ? 'active' : '' }}">
+        <a href="{{ route('gs.thesisIndex') }}" class="nav-link">
+        <i class="fas fa-fw fa-book"></i>
+        <span>Thesis Repository</span>
         </a>
     </li>
 </ul>

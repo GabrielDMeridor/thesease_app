@@ -1,4 +1,4 @@
-@extends('statistician.Smain-layout')
+@extends('superadmin.SAmain-layout')
 
 @section('content-header')
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -80,95 +80,69 @@
 
 
 @section('body')
-<div class="container-fluid">
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+<div class="container mt-4">
+    <h2>Thesis Repository</h2>
 
-
-        <!-- Statistician Link Management -->
-        <div class="card mb-4">
-        <div class="card-body">
-            <h4>Manage Final Statistician Link</h4>
-            <form action="{{ route('statistician.route2.updateLink') }}" method="POST">
-                @csrf
-                <div class="input-group mb-3">
-                    <input type="url" name="final_statistician_link" class="form-control" placeholder="Enter final statistician link" value="{{ $final_statisticianLink ?? '' }}" required>
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit">{{ $final_statisticianLink ? 'Update' : 'Upload' }} Link</button>
-                    </div>
+    <!-- Filter Form -->
+    <form action="{{ route('gs.thesisIndex') }}" method="GET" class="mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="degree_type">Degree Type</label>
+                    <select name="degree_type" id="degree_type" class="form-control">
+                        <option value="">All Degree Types</option>
+                        <option value="Masteral" {{ request('degree_type') == 'Masteral' ? 'selected' : '' }}>Masteral</option>
+                        <option value="Doctorate" {{ request('degree_type') == 'Doctorate' ? 'selected' : '' }}>Doctorate</option>
+                    </select>
                 </div>
-            </form>
-        </div>
-    </div>
-    <!-- Search Form -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="GET" action="{{ route('statistician.route2.index') }}">
-                <div class="input-group mb-3">
-                    <input type="text" name="search" class="form-control" placeholder="Search by student name" value="{{ $search ?? '' }}">
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit"><i class="fa-solid fa-search"></i> Search</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
+            </div>
 
-    <!-- Table to List Students Awaiting Approval -->
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-            <thead class="thead-dark">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="year_published">Year Published</label>
+                    <select name="year_published" id="year_published" class="form-control">
+                        <option value="">All Years</option>
+                        @foreach($years as $year)
+                            <option value="{{ $year }}" {{ request('year_published') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Thesis List -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Program</th>
+                <th>Degree Type</th>
+                <th>Year Published</th>
+                <th>File</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($theses as $thesis)
                 <tr>
-                    <th>Student Name</th>
-                    <th>Email</th>
-                    <th>Program</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <td>{{ $thesis->title }}</td>
+                    <td>{{ $thesis->program }}</td>
+                    <td>{{ $thesis->degree_type }}</td>
+                    <td>{{ $thesis->year_published }}</td>
+                    <td><a href="{{ Storage::url($thesis->file_path) }}" target="_blank">View</a></td>
+                    <td><a href="{{ Storage::url($thesis->file_path) }}" download class="btn btn-primary btn-sm">Download</a></td>
                 </tr>
-            </thead>
-            <tbody>
-                @forelse ($appointments as $appointment)
-                    <tr>
-                        <td>{{ $appointment->student->name }}</td>
-                        <td>{{ $appointment->student->email }}</td>
-                        <td>{{ $appointment->student->program }}</td>
-                        <td>
-                            @if ($appointment->final_statistician_approval === 'approved')
-                                <span class="badge badge-success">Approved</span>
-                            @elseif ($appointment->final_statistician_approval === 'rejected')
-                                <span class="badge badge-danger">Rejected</span>
-                            @else
-                                <span class="badge badge-warning">Pending</span>
-                            @endif
-                        </td>
-                        <td>
-                            @if ($appointment->final_statistician_approval !== 'approved')
-                                <form action="{{ route('statistician.route2.approve', $appointment->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                                </form>
-                            @endif
-                            @if ($appointment->final_statistician_approval !== 'rejected')
-                                <form action="{{ route('statistician.route2.reject', $appointment->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
-                                </form>
-                            @endif
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="text-center">No students found.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Pagination Links -->
-    <div class="d-flex justify-content-center">
-        {{ $appointments->appends(['search' => $search])->links() }}
-    </div>
+            @empty
+                <tr>
+                    <td colspan="6" class="text-center">No theses found for the selected filters.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
 </div>
 @endsection
