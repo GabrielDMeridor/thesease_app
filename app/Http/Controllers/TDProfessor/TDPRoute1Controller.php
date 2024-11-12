@@ -128,7 +128,7 @@ public function showAdviseeForm($studentId)
                                      ->where('adviser_id', auth()->user()->id)
                                      ->firstOrFail();
 
-    $isDrPH = $student->program === 'DrPH';
+    $isDrPH = $student->program === 'DRPH-HPE';
 
     // Set the title with the student's name
     $title = 'Routing Form 1 for ' . $student->name;
@@ -150,6 +150,7 @@ public function showAdviseeForm($studentId)
 
     ]);
 }
+
 
 public function signRoutingForm(Request $request, $id)
 {

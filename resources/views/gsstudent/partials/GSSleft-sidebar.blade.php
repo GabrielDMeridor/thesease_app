@@ -68,7 +68,7 @@
             <div id="collapseThesisCheck" class="collapse" aria-labelledby="headingThesisCheck" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="{{ route('gsstudent.route1') }}">Routing Form 1</a>
-                <a class="collapse-item" href="#">Routing Form 2</a>
+                <a class="collapse-item" href="{{ route('gsstudent.route2') }}">Routing Form 2</a>
                 </div>
             </div>
         </li>

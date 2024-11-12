@@ -261,7 +261,7 @@
     // TD Professor Routes
     Route::put('/tdprofessor/requests/{id}', [TDPRoute1Controller::class, 'updateRequestStatus'])->name('professor.request.update');
     //Route for showiing routing form for tdprofessor for a specific advisee
-    Route::get('/tdprofessor/advisee/{id}/routing-form', [TDPRoute1Controller::class, 'showAdviseeForm'])->name('professor.showRoutingForm');
+    Route::get('/tdprofessor/advisee/{id}/routing-form1', [TDPRoute1Controller::class, 'showAdviseeForm'])->name('professor.showRoutingForm');
     Route::post('/tdprofessor/sign/{appointmentId}', [TDPRoute1Controller::class, 'affixSignature'])->name('professor.affixSignature');
     Route::put('/tdprofessor/advisee/{id}/sign-routing-form', [TDPRoute1Controller::class, 'signRoutingForm'])->name('professor.signRoutingForm');
     // Approve prposal update
@@ -538,3 +538,29 @@ Route::post('/gsstudent/send-data-to-aufc', [GSSRoute1Controller::class, 'sendDa
 
      Route::post('/aufcommittee/route1/uploadEthicsClearance/{id}', [AUFCRoute1Controller::class, 'uploadEthicsClearance'])->name('aufcommittee.route1.uploadEthicsClearance');
      Route::post('/aufcommittee/route1/denyAppointment/{id}', [AUFCRoute1Controller::class, 'denyAppointment'])->name('aufcommittee.route1.denyAppointment');
+
+
+
+
+
+
+
+     /////ROUTE 2222
+     Route::get('/superadmin/route2', [SARoute2Controller::class, 'show'])->name('superadmin.route2');
+     Route::get('/superadmin/route2/student/{id}', [SARoute2Controller::class, 'showRoutingForm'])->name('superadmin.showRoutingForm2');
+
+     Route::get('/admin/route2', [ARoute2Controller::class, 'show'])->name('admin.route2');
+     Route::get('/admin/route2/student/{id}', [ARoute2Controller::class, 'showRoutingForm'])->name('admin.showRoutingForm2');
+
+     
+     Route::get('/graduateschool/route2', [GSRoute2Controller::class, 'show'])->name('graduateschool.route2');
+     Route::get('/graduateschool/route2/student/{id}', [GSRoute2Controller::class, 'showRoutingForm'])->name('graduateschool.showRoutingForm2');
+
+     Route::get('/gsstudent/route2', action: [GSSRoute2Controller::class, 'show'])->name('gsstudent.route2');
+
+     Route::get('/tdprofessor/route2', action: [TDPRoute2Controller::class, 'show'])->name('tdprofessor.route2');
+     //Route for showiing routing form for superadmin for a specific student
+     Route::get('/tdprofessor/advisee/{id}/routing-form', [TDPRoute2Controller::class, 'showRoutingForm'])->name('tdprofessor.showRoutingForm2');
+     Route::post('/tdprofessor/route2/appointments/{appointment}/add-final-consultation-dates-sign', [TDPRoute2Controller::class, 'addFinalConsultationDatesAndSign'])->name('route2.addFinalConsultationDatesAndSign');
+     Route::post('/save-consultation-date', [TDPRoute2Controller::class, 'saveConsultationDate'])->name('professor2.saveConsultationDate');
+     Route::post('/gsstudent/upload-manuscript/{appointment}', [GSSRoute2Controller::class, 'uploadManuscript'])->name('gsstudent.uploadManuscript');

@@ -66,7 +66,12 @@ class AdviserAppointment extends Model
         'ethics_send_data_to_aufc',
         'ethics_sample_informed_consent',
         'ethics_sample_informed_consent_filename',
-        'aufc_status'
+        'aufc_status',
+        'final_adviser_endorsement_signature',
+        'final_consultation_dates',
+        'revised_manuscript_path',
+        'revised_manuscript_original_name',
+        'uploaded_at',
     ];
 
     // Casts for specific fields

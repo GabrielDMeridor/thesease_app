@@ -33,7 +33,7 @@ class GSSRoute1Controller extends Controller
     
         $user = auth()->user();
         $advisers = User::where('account_type', User::Thesis_DissertationProfessor)->get();
-        $appointment = AdviserAppointment::where('student_id', $user->id)->first();
+        $appointment = AdviserAppointment::where('student_id', operator: $user->id)->first();
         $allSignaturesFilled = $appointment && $appointment->adviser_signature && $appointment->chair_signature && $appointment->dean_signature;
         $globalSubmissionLink = Setting::where('key', 'submission_files_link')->value('value');
         $ovpriLink = Setting::where('key', 'ovpri_link')->value('value');
