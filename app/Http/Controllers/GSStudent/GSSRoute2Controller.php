@@ -189,6 +189,49 @@ public function uploadCommunityExtensionForms(Request $request)
     return redirect()->route('gsstudent.route2')->with('success', 'Community Extension forms uploaded successfully.');
 }
 
+public function uploadFinalVideoPresentation(Request $request)
+{
+    // Validate video file
+    $request->validate([
+        'final_video_presentation' => 'required|file|mimes:mp4,avi,mov|max:10240', // Limit to 10MB
+    ]);
 
+    // Fetch the logged-in student's appointment
+    $user = Auth::user();
+    $appointment = AdviserAppointment::where('student_id', $user->id)->first();
 
+    if (!$appointment) {
+        return redirect()->back()->with('error', 'Appointment not found.');
+    }
+
+    // Store the video file
+    $video = $request->file('final_video_presentation');
+    $path = $video->storeAs('public/final_videos', $video->getClientOriginalName());
+
+    // Update the appointment with video file path and mark final_submission_files as 1
+    $appointment->update([
+        'final_video_presentation' => $path,
+        'original_final_video_presentation' => $video->getClientOriginalName(),
+        'final_submission_files' => 1,
+    ]);
+
+    return redirect()->back()->with('success', 'Final video presentation uploaded and submission marked as complete.');
+}
+public function respondToFinalSubmissionFiles(Request $request, $appointmentId)
+{
+    $user = Auth::user();
+    $appointment = AdviserAppointment::findOrFail($appointmentId);
+
+    // Only proceed if student hasn't already responded
+    if (!$appointment->final_submission_files_response) {
+        $appointment->final_submission_files_response = 1; // Student has responded
+        $appointment->final_submission_approval_formfee = 'pending'; // Mark for admin approval
+        $appointment->save();
+
+        // Notify relevant users
+    }
+
+    return redirect()->route('gsstudent.route2')
+                     ->with('success', 'Your response has been recorded, awaiting approval.');
+}
 }

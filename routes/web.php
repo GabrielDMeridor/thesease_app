@@ -76,6 +76,9 @@
     use App\Http\Controllers\OVPRI\OVPRIRoute1Controller;
     use App\Http\Controllers\OVPRI\OVPRIRoute2Controller;
 
+    use App\Http\Controllers\LanguageEditor\LERoute2Controller;
+
+
 
 
     use App\Http\Controllers\Library\LProfileController;
@@ -599,3 +602,17 @@ Route::post('gsstudent/route2/respond-community', [GSSRoute2Controller::class, '
 Route::get('/ccfp/route2', [CCFPRoute2Controller::class, 'index'])->name('ccfp.route2');
     Route::post('/ccfp/route2/sign/{id}', [CCFPRoute2Controller::class, 'sign'])->name('ccfp.route2.sign');
     Route::post('/gsstudent/uploadCommunityExtensionForms', [GSSRoute2Controller::class, 'uploadCommunityExtensionForms'])->name('gsstudent.uploadCommunityExtensionForms');
+
+    Route::get('/gsstudent/files', [GSSRoute2Controller::class, 'showFiles'])->name('gsstudent.showFiles');
+    Route::post('/gsstudent/uploadFinalVideoPresentation', [GSSRoute2Controller::class, 'uploadFinalVideoPresentation'])->name('gsstudent.uploadFinalVideoPresentation');
+
+
+    Route::get('/languageeditor/submissions', [LERoute2Controller::class, 'show'])->name('le.show');
+    Route::post('/languageeditor/approve/{id}', [LERoute2Controller::class, 'approve'])->name('le.approve');
+    Route::post('/languageeditor/deny/{id}', [LERoute2Controller::class, 'deny'])->name('le.deny');
+    Route::post('/admin/route2/final-global-link', [ARoute2Controller::class, 'storeOrUpdateFinalGlobalLink'])->name('admin.storeOrUpdateFinalGlobalLink');
+// Assuming this is inside a group with middleware for authentication and role-based access
+Route::post('/gsstudent/respond-to-final-submission-files/{appointment}', [GSSRoute2Controller::class, 'respondToFinalSubmissionFiles'])
+    ->name('gsstudent.respondToFinalSubmissionFiles');
+    Route::post('/admin/approveFormFee/{id}', [ARoute2Controller::class, 'approveFormFee'])->name('admin.approveFormFee');
+    Route::post('/admin/denyFormFee/{id}', [ARoute2Controller::class, 'denyFormFee'])->name('admin.denyFormFee');

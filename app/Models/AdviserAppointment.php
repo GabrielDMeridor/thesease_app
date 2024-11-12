@@ -88,6 +88,12 @@ class AdviserAppointment extends Model
         'final_program_signature',
         'community_extension_service_form_path',
         'community_accomplishment_report_path',
+        'final_video_presentation', 
+        'original_final_video_presentation', 
+        'final_submission_files',
+        'final_submission_approval',
+       'final_submission_files_response',
+        'final_submission_approval_formfee'
 
     ];
 

@@ -80,6 +80,24 @@
     <br>
 
 
+        <!-- Form to update final_global_link -->
+        <div class="card mb-4">
+        <div class="card-header">
+            <h5>Update Final Global Link</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('admin.storeOrUpdateFinalGlobalLink') }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label for="final_global_link">Final Global Link</label>
+                    <input type="url" name="final_global_link" id="final_global_link" class="form-control"
+                           value="{{ $finalGlobalLink->value }}" required>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Save Link</button>
+            </form>
+        </div>
+    </div>
+    
     <!-- Search form -->
     <div class="card">
         <div class="card-body">

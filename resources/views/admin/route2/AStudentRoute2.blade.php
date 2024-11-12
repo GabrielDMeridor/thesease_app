@@ -265,7 +265,6 @@
             </div>
         </div>
     </div>
-</div>
 
                 {{-- Step 5 Content (DrPH students only) --}}
                 @elseif ($step === 5 && $isDrPH)
@@ -324,9 +323,224 @@
                             </div>
                         </div>
                     </div>
-                    
+
             <!-- Step 5 Content -->
-        @elseif ($step === 6)
+            @elseif(($isDrPH && $step === 6) || (!$isDrPH && $step === 5))
+
+    @if ($appointment->final_submission_approval === 'approved')
+    <div class="card shadow mb-4">
+    <div class="card-body text-center">
+        <h4 class="routing-heading">Admin - Submission Files Review</h4>
+
+        <!-- Display student's response status -->
+        <p>Student Response Status:
+            @if ($appointment->final_submission_files_response)
+                <span class="badge badge-success">Responded</span>
+            @else
+                <span class="badge badge-warning">Not responded yet</span>
+            @endif
+        </p>
+
+        <!-- Display admin approval status for form fee -->
+        <p>Form Fee Approval Status:
+            @if ($appointment->final_submission_approval_formfee === 'approved')
+                <span class="badge badge-success">Approved</span>
+            @elseif ($appointment->final_submission_approval_formfee === 'pending')
+                <span class="badge badge-warning">Pending Approval</span>
+            @else
+                <span class="badge badge-secondary">Not yet responded.</span>
+            @endif
+        </p>
+
+        <!-- Approve/Deny buttons for form fee approval -->
+        @if ($appointment->final_submission_approval_formfee !== 'approved')
+            <form action="{{ route('admin.approveFormFee', $appointment->id) }}" method="POST" style="display:inline;">
+                @csrf
+                <button type="submit" class="btn btn-success">Approve Form Fee</button>
+            </form>
+            <form action="{{ route('admin.denyFormFee', $appointment->id) }}" method="POST" style="display:inline;">
+                @csrf
+                <button type="submit" class="btn btn-danger">Deny Form Fee</button>
+            </form>
+        @else
+            <p class="text-muted">Form fee approval already granted.</p>
+        @endif
+    </div>
+</div>
+
+    @else
+        <p class="text-muted">No approval needed or pending submissions.</p>
+    @endif
+
+    <!-- File Uploads Section -->
+    <div class="container-fluid my-4">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h4 class="mb-4 text-center text-md-start">File Uploads</h4>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="text-center">File Type</th>
+                                <th class="text-center">Current File</th>
+                                <th class="text-center">Upload New File</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Ethics Clearance Row with Modal -->
+                            <tr>
+                                <td class="text-center">Ethics Clearance</td>
+                                <td class="text-center">
+                                    @if(!empty($appointment->ethics_clearance))
+                                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#ethicsClearanceModal">View File</button>
+                                    @else
+                                        <span class="text-muted">No file uploaded</span>
+                                    @endif
+                                </td>
+                                <td class="text-center"><span class="text-muted">Cannot be uploaded by student</span></td>
+                                <td class="text-center"><span class="text-muted">View Only</span></td>
+                            </tr>
+
+                            <!-- Manuscript Row with Upload and Modal -->
+                            <tr>
+                                <td class="text-center">Manuscript</td>
+                                <td class="text-center">
+                                    @if(!empty($appointment->final_similarity_manuscript))
+                                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#manuscriptModal">View Manuscript</button>
+                                    @else
+                                        <span class="text-muted">No file uploaded</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @if($appointment->final_submission_approval !== 'approved')
+                                        <!-- Upload form only visible if final submission not approved -->
+                                        <form action="{{ route('gsstudent.uploadManuscript', $appointment) }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="file" name="revised_manuscript" class="form-control mb-2" accept=".pdf,.doc,.docx" required>
+                                            <button type="submit" class="btn btn-primary">Upload Manuscript</button>
+                                        </form>
+                                    @else
+                                        <span class="text-muted">Upload not allowed after approval</span>
+                                    @endif
+                                </td>
+                                <td class="text-center"><span class="text-muted">View and Re-upload</span></td>
+                            </tr>
+
+                            <!-- Similarity Certificate Row with Modal -->
+                            <tr>
+                                <td class="text-center">Similarity Certificate</td>
+                                <td class="text-center">
+                                    @if(!empty($appointment->final_similarity_certificate))
+                                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#similarityCertificateModal">View Certificate</button>
+                                    @else
+                                        <span class="text-muted">No file uploaded</span>
+                                    @endif
+                                </td>
+                                <td class="text-center"><span class="text-muted">Cannot be uploaded by student</span></td>
+                                <td class="text-center"><span class="text-muted">View Only</span></td>
+                            </tr>
+
+                            <!-- Proof of Publication Row with Modal -->
+                            <tr>
+                                <td class="text-center">Proof of Publication</td>
+                                <td class="text-center">
+                                    @if(!empty($appointment->proof_of_publication_path))
+                                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#proofOfPublicationModal">{{ $appointment->proof_of_publication_original_name }}</button>
+                                    @else
+                                        <span class="text-muted">No file uploaded</span>
+                                    @endif
+                                </td>
+                                <td class="text-center"><span class="text-muted">Cannot be uploaded by student</span></td>
+                                <td class="text-center"><span class="text-muted">View Only</span></td>
+                            </tr>
+
+                            <!-- Final Video Presentation Row with Modal and Upload Option -->
+                            <tr>
+                                <td class="text-center">Final Video Presentation</td>
+                                <td class="text-center">
+                                    @if(!empty($appointment->final_video_presentation))
+                                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#videoPresentationModal">View Video</button>
+                                    @else
+                                        <span class="text-muted">No file uploaded</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @if(!$appointment->final_submission_files)
+                                        <form action="{{ route('gsstudent.uploadFinalVideoPresentation') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="file" name="final_video_presentation" class="form-control" accept=".mp4,.avi,.mov" required>
+                                            <button type="submit" class="btn btn-primary mt-2">Upload Video</button>
+                                        </form>
+                                    @else
+                                        <span class="text-muted">Upload Completed</span>
+                                    @endif
+                                </td>
+                                <td class="text-center"><span class="text-muted">{{ $appointment->final_submission_files ? 'View Only' : 'Upload Available' }}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Modals for Viewing Files -->
+<!-- Ethics Clearance Modal -->
+<div class="modal fade" id="ethicsClearanceModal" tabindex="-1" aria-labelledby="ethicsClearanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ethicsClearanceModalLabel">Ethics Clearance</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{ Storage::url($appointment->ethics_clearance) }}" width="100%" height="500px"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Similarity Certificate Modal -->
+<div class="modal fade" id="similarityCertificateModal" tabindex="-1" aria-labelledby="similarityCertificateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="similarityCertificateModalLabel">Similarity Certificate</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{ Storage::url($appointment->final_similarity_certificate) }}" width="100%" height="500px"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Final Video Presentation Modal -->
+<div class="modal fade" id="videoPresentationModal" tabindex="-1" aria-labelledby="videoPresentationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="videoPresentationModalLabel">Final Video Presentation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <video width="100%" height="500px" controls>
+                    <source src="{{ Storage::url($appointment->final_video_presentation) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+</div>
+
             <!-- Step 6 Content -->
         @elseif ($step === 7)
             <!-- Step 7 Content -->
@@ -335,6 +549,8 @@
         @elseif ($step === 9)
             <!-- Step 9 Content -->
         @endif
+    </div>
+    @endfor
     </div>
 
     <div class="card-footer"></div>

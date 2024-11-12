@@ -34,8 +34,14 @@ class ARoute2Controller extends Controller
         // Define the title
         $title = "Routing Form 2 Checking";
 
-        // Pass $title and $students to the view
-        return view('admin.route2.Aroute2', compact('students', 'title'));
+        // Retrieve the final global link or create it if it doesn't exist
+        $finalGlobalLink = Setting::firstOrCreate(
+            ['key' => 'final_global_link'],
+            ['value' => null]
+        );
+
+        // Pass $title, $students, and $finalGlobalLink to the view
+        return view('admin.route2.Aroute2', compact('students', 'title', 'finalGlobalLink'));
     }
 
     public function showRoutingForm($studentId)
@@ -51,10 +57,46 @@ class ARoute2Controller extends Controller
         $title = 'Routing Form 2 for ' . $student->name;
         $final_statisticianLink = Setting::where('key', 'final_statistician_link')->value('value');
         $final_ovpri_link = Setting::where('key', 'final_ovpri_link')->value('value');
+        $final_global_link = Setting::where('key', 'final_global_link')->value('value');
 
 
         // Pass the title and other data to the view
         return view('admin.route2.AStudentRoute2', compact('student', 'appointment', 'title', 'isDrPH', 'totalSteps', 
-        'final_ovpri_link','final_statisticianLink'));
+        'final_ovpri_link','final_statisticianLink', 'final_global_link'));
     }
+    public function storeOrUpdateFinalGlobalLink(Request $request)
+    {
+        // Validate that the input is a URL
+        $request->validate([
+            'final_global_link' => 'required|url',
+        ]);
+
+        // Update or create the final global link setting
+        Setting::updateOrCreate(
+            ['key' => 'final_global_link'],
+            ['value' => $request->input('final_global_link')]
+        );
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Final Global Link saved successfully.');
+    }
+    // AdminController.php
+public function approveFormFee($id)
+{
+    $appointment = AdviserAppointment::findOrFail($id);
+    $appointment->final_submission_approval_formfee = 'approved';
+    $appointment->save();
+
+    return redirect()->back()->with('success', 'Form fee approval marked as approved.');
+}
+
+public function denyFormFee($id)
+{
+    $appointment = AdviserAppointment::findOrFail($id);
+    $appointment->final_submission_approval_formfee = 'denied';
+    $appointment->save();
+
+    return redirect()->back()->with('error', 'Form fee approval marked as denied.');
+}
+
 }
