@@ -45,7 +45,7 @@ class GSRoute2Controller extends Controller
         $appointment = AdviserAppointment::where('student_id', $student->id)->first();
         
         $isDrPH = $student->program === 'DRPH-HPE';
-        $totalSteps = $isDrPH ? 8 : 7; // 9 steps for DrPH, 8 for others
+        $totalSteps = $isDrPH ? 9 : 8; // 9 steps for DrPH, 8 for others
 
         // Define the title for the view
         $title = 'Routing Form 2 for ' . $student->name;

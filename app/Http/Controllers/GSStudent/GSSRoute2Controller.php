@@ -27,9 +27,10 @@ class GSSRoute2Controller extends Controller
         $isDrPH = $user->program === 'DRPH-HPE';
     
         // Define the total steps based on the program
-        $totalSteps = $isDrPH ? 8 : 7;
+        $totalSteps = $isDrPH ? 9 : 8; // 9 steps for DrPH, 8 for others
     
         $final_statisticianLink = Setting::where('key', 'final_statistician_link')->value('value');
+        $final_ovpri_link = Setting::where('key', 'final_ovpri_link')->value('value');
 
         // Render the view and pass the necessary data to it
         return view('gsstudent.route2.GSSroute2', [
@@ -39,7 +40,8 @@ class GSSRoute2Controller extends Controller
             'isDrPH' => $isDrPH,
             'appointment' => $appointment,
             'final_statisticianLink' => $final_statisticianLink,
-            'program' => $user->program // Ensure this is passed to the view
+            'program' => $user->program,
+            'final_ovpri_link' => $final_ovpri_link // Ensure this is passed to the view
             // Make sure $appointment is not null
         ]);
     }
@@ -106,5 +108,87 @@ public function uploadProofOfPublication(Request $request, AdviserAppointment $a
 
     return redirect()->back()->with('success', 'Proof of Publication uploaded successfully.');
 }
+
+public function uploadFinalSimilarityManuscript(Request $request)
+{
+    // Ensure the user is authenticated
+    $user = Auth::user();
+
+    // Find or create an appointment for the student
+    $appointment = AdviserAppointment::firstOrCreate(
+        ['student_id' => $user->id],  // Ensure student_id is set
+        []  // Default values, if any
+    );
+
+    // Validate the uploaded file
+    $request->validate([
+        'final_similarity_manuscript' => 'required|file|mimes:pdf|max:2048',
+    ]);
+
+    // Handle the file upload
+    $file = $request->file('final_similarity_manuscript');
+    $path = $file->storeAs('public/final_similarity_manuscripts', $file->getClientOriginalName());
+
+    // Update the appointment record
+    $appointment->update([
+        'final_similarity_manuscript' => $path,
+        'final_similarity_manuscript_original_name' => $file->getClientOriginalName(),
+    ]);
+
+    return redirect()->route('gsstudent.route2')->with('success', 'Final Similarity Manuscript uploaded successfully!');
+}
+
+
+public function respondToCommunity(Request $request)
+{
+    $user = Auth::user();
+    $appointment = AdviserAppointment::where('student_id', $user->id)->first();
+
+    // Ensure response is only recorded if not already responded
+    if (!$appointment->final_community_response) {
+        $appointment->final_community_response = true;
+        $appointment->save();
+    }
+
+    return redirect()->route('gsstudent.route2')->with('success', 'Your community response has been recorded.');
+}
+
+public function uploadCommunityExtensionForms(Request $request)
+{
+    $user = Auth::user();
+    
+    // Retrieve or create an AdviserAppointment record for this student
+    $appointment = AdviserAppointment::firstOrCreate(
+        ['student_id' => $user->id]
+    );
+
+    // Validate the uploaded files (each file is optional)
+    $request->validate([
+        'community_extension_service_form' => 'nullable|file|mimes:pdf|max:2048',
+        'community_accomplishment_report' => 'nullable|file|mimes:pdf|max:2048',
+    ]);
+
+    // Handle the file uploads, saving them directly in the public directory
+    if ($request->hasFile('community_extension_service_form')) {
+        $serviceForm = $request->file('community_extension_service_form');
+        $serviceFormPath = 'community_extension_forms/' . $serviceForm->getClientOriginalName();
+        $serviceForm->move(public_path('community_extension_forms'), $serviceForm->getClientOriginalName());
+        $appointment->community_extension_service_form_path = $serviceFormPath;
+    }
+
+    if ($request->hasFile('community_accomplishment_report')) {
+        $accomplishmentReport = $request->file('community_accomplishment_report');
+        $accomplishmentReportPath = 'community_accomplishment_reports/' . $accomplishmentReport->getClientOriginalName();
+        $accomplishmentReport->move(public_path('community_accomplishment_reports'), $accomplishmentReport->getClientOriginalName());
+        $appointment->community_accomplishment_report_path = $accomplishmentReportPath;
+    }
+
+    // Save the updated file paths to the database
+    $appointment->save();
+
+    return redirect()->route('gsstudent.route2')->with('success', 'Community Extension forms uploaded successfully.');
+}
+
+
 
 }

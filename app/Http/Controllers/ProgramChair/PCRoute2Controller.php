@@ -18,38 +18,63 @@ class PCRoute2Controller extends Controller
 
         $programChair = auth()->user();
 
-        // Fetch students from the same program as the Program Chair who have uploaded proof of publication
-        $query = User::where('program', $programChair->program)
-                     ->where('account_type', 11) // Assuming 11 is the account_type for students
-                     ->whereHas('adviserAppointment', function ($query) {
-                         $query->whereNotNull('proof_of_publication_path');
-                     });
+        // Fetch AdviserAppointments for publication approvals
+        $publicationAppointments = AdviserAppointment::whereHas('student', function ($query) use ($programChair, $request) {
+            $query->where('program', $programChair->program)
+                  ->where('account_type', 11); // Assuming 11 is the account_type for students
 
-        // Apply search if the search query is present
-        if ($request->has('search') && !empty($request->search)) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            // Apply search filter if a search query is present
+            if ($request->has('search') && !empty($request->search)) {
+                $query->where('name', 'like', '%' . $request->search . '%');
+            }
+        })
+        ->whereNotNull('proof_of_publication_path')
+        ->paginate(10, ['*'], 'publications');
+
+        // Fetch AdviserAppointments for community uploads requiring signing
+        $communityAppointments = AdviserAppointment::whereHas('student', function ($query) use ($programChair, $request) {
+            $query->where('program', $programChair->program)
+                  ->where('account_type', 11);
+
+            // Apply search filter if a search query is present
+            if ($request->has('search') && !empty($request->search)) {
+                $query->where('name', 'like', '%' . $request->search . '%');
+            }
+        })
+        ->whereNotNull('community_extension_service_form_path')
+        ->whereNotNull('community_accomplishment_report_path')
+        ->paginate(10, ['*'], 'community_uploads');
+
+        $title = 'Program Chair Review - Publications and Community Uploads';
+
+        return view('programchair.route2.PCroute2', compact('publicationAppointments', 'communityAppointments', 'title'));
+    }
+
+    public function signProgram(Request $request, AdviserAppointment $appointment)
+    {
+        // Ensure the user is a Program Chair
+        if (auth()->user()->account_type !== 4) {
+            return redirect()->back()->with('error', 'Unauthorized access.');
         }
 
-        $students = $query->paginate(10);
+        // Set final_program_signature to true
+        $appointment->final_program_signature = true;
+        $appointment->save();
 
-        $title = 'Approve Proof of Publication Submissions';
-
-        return view('programchair.route2.PCroute2', compact('students', 'programChair', 'title'));
+        return redirect()->back()->with('success', 'Program Chair signed successfully.');
     }
 
     public function approve(Request $request, $id)
     {
-        // Ensure the user is a Program Chair
+        // Approve publication status for student
         if (!auth()->check() || auth()->user()->account_type !== 4) {
             return redirect()->route('getLogin')->with('error', 'Unauthorized access.');
         }
 
-        // Find the appointment
         $appointment = AdviserAppointment::where('student_id', $id)
                                          ->whereNotNull('proof_of_publication_path')
                                          ->firstOrFail();
 
-        // Approve the proof of publication
         $appointment->publication_status = 'approved';
         $appointment->save();
 
@@ -58,17 +83,15 @@ class PCRoute2Controller extends Controller
 
     public function deny(Request $request, $id)
     {
-        // Ensure the user is a Program Chair
+        // Deny publication status for student
         if (!auth()->check() || auth()->user()->account_type !== 4) {
             return redirect()->route('getLogin')->with('error', 'Unauthorized access.');
         }
 
-        // Find the appointment
         $appointment = AdviserAppointment::where('student_id', $id)
                                          ->whereNotNull('proof_of_publication_path')
                                          ->firstOrFail();
 
-        // Deny the proof of publication
         $appointment->publication_status = 'denied';
         $appointment->save();
 

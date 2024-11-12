@@ -77,7 +77,18 @@ class AdviserAppointment extends Model
         'proof_of_publication_path',
         'proof_of_publication_original_name',
         'publication_status',
-        'final'
+        'final_ovpri_approval',
+        'final_registration_response',
+        'final_similarity_manuscript',
+        'final_similarity_certificate',
+        'final_similarity_manuscript_original_name',
+        'final_similarity_certificate_original_name',
+        'final_community_response',
+        'final_ccfp_signature',
+        'final_program_signature',
+        'community_extension_service_form_path',
+        'community_accomplishment_report_path',
+
     ];
 
     // Casts for specific fields

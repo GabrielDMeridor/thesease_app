@@ -96,6 +96,7 @@
 
     use App\Http\Controllers\CCFP\CCFPProfileController;
     use App\Http\Controllers\CCFP\CCFPRoute1Controller;
+    use App\Http\Controllers\CCFP\CCFPRoute2Controller;
 
 
     use App\Http\Controllers\PasswordResetController;
@@ -582,3 +583,19 @@ Route::post('/gsstudent/send-data-to-aufc', [GSSRoute1Controller::class, 'sendDa
     Route::get('/ovpri/route2', [OVPRIRoute2Controller::class, 'index'])->name('ovpri.route2');
     Route::post('/ovpri/route2/approve/{id}', [OVPRIRoute2Controller::class, 'approve'])->name('ovpri.route2.approve');
     Route::post('/ovpri/route2/link', [OVPRIRoute2Controller::class, 'storeOrUpdateOVPRILink'])->name('ovpri.route2.storeOrUpdateOVPRILink');
+    Route::post('/gsstudent/route2/uploadSimilarityManuscript', [GSSRoute2Controller::class, 'uploadFinalSimilarityManuscript'])->name('gsstudent.uploadFinalSimilarityManuscript');
+    Route::post('/gsstudent/route2/uploadSimilarityCertificate', [GSSRoute2Controller::class, 'uploadSimilarityCertificate'])->name('gsstudent.uploadFinalSimilarityCertificate');
+    
+    
+    Route::get('/library/route2', [LRoute2Controller::class, 'index'])->name('library.route2');
+    Route::post('/library/route2/upload-certificate', [LRoute2Controller::class, 'uploadFinalSimilarityCertificate'])->name('library.uploadFinalSimilarityCertificate');
+    Route::post('/library/route2/deny/{appointmentId}', [LRoute2Controller::class, 'denyFinalManuscript'])->name('library.denyFinalManuscript');
+
+// Route for Program Chair to sign
+Route::post('/program-chair/sign/{appointment}', [PCRoute2Controller::class, 'signProgram'])->name('program-chair.sign');
+
+// Route for CCFP to sign
+Route::post('gsstudent/route2/respond-community', [GSSRoute2Controller::class, 'respondToCommunity'])->name('gsstudent.respondToCommunity');
+Route::get('/ccfp/route2', [CCFPRoute2Controller::class, 'index'])->name('ccfp.route2');
+    Route::post('/ccfp/route2/sign/{id}', [CCFPRoute2Controller::class, 'sign'])->name('ccfp.route2.sign');
+    Route::post('/gsstudent/uploadCommunityExtensionForms', [GSSRoute2Controller::class, 'uploadCommunityExtensionForms'])->name('gsstudent.uploadCommunityExtensionForms');

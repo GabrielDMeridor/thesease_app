@@ -248,7 +248,95 @@
                         </div>
                     <!-- Step 3 Content -->
                 @elseif ($step === 4)
+
+                <div class="container my-4">
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h4 class="routing-heading">Final Similarity Manuscript</h4>
+            
+            @if($appointment->final_similarity_manuscript)
+                <div class="form-group mt-3">
+                    <label for="uploaded_manuscript">Uploaded Manuscript:</label>
+                    <input type="text" 
+                           id="uploaded_manuscript" 
+                           class="form-control" 
+                           value="{{ $appointment->final_similarity_manuscript_original_name }}" 
+                           readonly 
+                           onclick="$('#similaritymanuscriptModal').modal('show')" 
+                           style="cursor: pointer;">
+                </div>
+            @else
+                <p>No manuscript uploaded yet.</p>
+            @endif
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h4 class="routing-heading">Final Similarity Certificate</h4>
+            
+            @if($appointment->final_similarity_certificate)
+                <div class="form-group">
+                    <label for="view_certificate"><strong>View Certificate:</strong></label>
+                    <input type="text" 
+                           id="view_certificate" 
+                           class="form-control" 
+                           value="{{ $appointment->final_similarity_certificate_original_name }}" 
+                           readonly 
+                           onclick="$('#similaritycertificateModal').modal('show')" 
+                           style="cursor: pointer;">
+                </div>
+            @else
+                <p>No certificate uploaded yet.</p>
+            @endif
+        </div>
+    </div>
+
+    <!-- Manuscript Modal -->
+    <div class="modal fade" id="similaritymanuscriptModal" tabindex="-1" aria-labelledby="similaritymanuscriptModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="similaritymanuscriptModalLabel">View Manuscript</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe src="{{ Storage::url($appointment->final_similarity_manuscript) }}" width="100%" height="600px" style="border: none;"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ Storage::url($appointment->final_similarity_manuscript) }}" target="_blank" class="btn btn-primary" download>Download Manuscript</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Certificate Modal -->
+    <div class="modal fade" id="similaritycertificateModal" tabindex="-1" aria-labelledby="similaritycertificateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="similaritycertificateModalLabel">View Certificate</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe src="{{ Storage::url($appointment->final_similarity_certificate) }}" width="100%" height="600px" style="border: none;"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ Storage::url($appointment->final_similarity_certificate) }}" target="_blank" class="btn btn-primary" download>Download Certificate</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
                     <!-- Step 4 Content -->
+                {{-- Step 5 Content (DrPH students only) --}}
                 @elseif ($step === 5)
                     <!-- Step 5 Content -->
                 @elseif ($step === 6)

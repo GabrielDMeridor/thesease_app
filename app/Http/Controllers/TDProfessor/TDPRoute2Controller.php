@@ -42,7 +42,7 @@ class TDPRoute2Controller extends Controller
 
         // Determine if the student is in the DrPH program
         $isDrPH = $student->program === 'DRPH-HPE';
-        $totalSteps = $isDrPH ? 8 : 7;
+        $totalSteps = $isDrPH ? 9 : 8; // 9 steps for DrPH, 8 for others
         $final_statisticianLink = Setting::where('key', 'final_statistician_link')->value('value');
         $final_ovpri_link = Setting::where('key', 'final_ovpri_link')->value('value');
 

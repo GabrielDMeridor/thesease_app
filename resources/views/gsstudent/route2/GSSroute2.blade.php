@@ -178,7 +178,6 @@
                 </div>
             </div>
         @endif
-    </div>
 
 <!-- Publication Modal for Viewing Uploaded Proof -->
 <div class="modal fade" id="publicationModal" tabindex="-1" aria-labelledby="publicationModalLabel" aria-hidden="true">
@@ -233,7 +232,6 @@
                                                 <span class="badge badge-secondary">Not yet responded.</span>
                                             @endif
                                         </p>
-
                                     </div>
                                 </div>
                             </div>
@@ -243,12 +241,236 @@
 
                 @elseif ($step === 4)
                     <!-- Step 4 Content -->
+    <div class="container my-4">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h4 class="routing-heading">Upload Final Similarity Manuscript</h4>
+                @if(is_null($appointment->final_similarity_certificate))
+                    <form action="{{ route('gsstudent.uploadFinalSimilarityManuscript', $appointment->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group">
+                            <label for="final_similarity_manuscript">Upload Manuscript</label>
+                            <input type="file" name="final_similarity_manuscript" class="form-control" required accept=".pdf,.doc,.docx">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            {{ is_null($appointment->final_similarity_manuscript) ? 'Upload Manuscript' : 'Update Manuscript' }}
+                        </button>
+                    </form>
+                @endif
 
-                @elseif ($step === 5)
-                    <!-- Step 5 Content -->
+                @if($appointment->final_similarity_manuscript)
+                    <div class="form-group mt-3">
+                        <label for="uploaded_manuscript">Uploaded Manuscript:</label>
+                        <input type="text" 
+                               id="uploaded_manuscript" 
+                               class="form-control" 
+                               value="{{ $appointment->final_similarity_manuscript_original_name }}" 
+                               readonly 
+                               onclick="$('#similaritymanuscriptModal').modal('show')" 
+                               style="cursor: pointer;">
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
 
-                @elseif ($step === 6)
-                    <!-- Step 6 Content -->
+    <div class="container my-4">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h4 class="routing-heading">Final Similarity Manuscript</h4>
+                
+                @if($appointment->final_similarity_manuscript)
+                    <div class="form-group mt-3">
+                        <label for="uploaded_manuscript">Uploaded Manuscript:</label>
+                        <input type="text" 
+                            id="uploaded_manuscript" 
+                            class="form-control" 
+                            value="{{ $appointment->final_similarity_manuscript_original_name }}" 
+                            readonly 
+                            onclick="$('#similaritymanuscriptModal').modal('show')" 
+                            style="cursor: pointer;">
+                    </div>
+                @else
+                    <p>No manuscript uploaded yet.</p>
+                @endif
+            </div>
+        </div>
+    </div>
+
+<!-- Manuscript Modal -->
+<div class="modal fade" id="similaritymanuscriptModal" tabindex="-1" aria-labelledby="similaritymanuscriptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="similaritymanuscriptModalLabel">View Manuscript</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{ Storage::url($appointment->final_similarity_manuscript) }}" width="100%" height="600px" style="border: none;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ Storage::url($appointment->final_similarity_manuscript) }}" target="_blank" class="btn btn-primary" download>Download Manuscript</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Certificate Modal -->
+<div class="modal fade" id="similaritycertificateModal" tabindex="-1" aria-labelledby="similaritycertificateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="similaritycertificateModalLabel">View Certificate</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{ Storage::url($appointment->final_similarity_certificate) }}" width="100%" height="600px" style="border: none;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ Storage::url($appointment->final_similarity_certificate) }}" target="_blank" class="btn btn-primary" download>Download Certificate</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+                 {{-- Step 5 Content (DrPH students only) --}}
+                 @elseif ($step === 5 && $isDrPH)
+                 <div class="container my-4">
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h4 class="routing-heading">7. Community Extension Accomplishment Report (For DrPH students only)</h4>
+            <p>Complete the following forms:</p>
+            <ul style="list-style-type: none; padding: 0;">
+                <li>
+                    <a href="https://docs.google.com/document/d/1_FXK-09OmJ306wVmi3IZNxBpgbn1pz9KOsKUnXu0zLE/edit?tab=t.0#heading=h.30j0zll" target="_blank">Community Extension Service Working Committee</a>
+                </li>
+                <li>
+                    <a href="https://docs.google.com/document/d/13PYjFojjvLNTqHqmM396YTeyQUIgDiVelLA2gZeapXA/edit?tab=t.0" target="_blank">Community Extension Service Accomplishment Report</a>
+                </li>
+            </ul>
+
+            <p>
+                Email the completed forms and attachments (e.g., program, photos) to the HSP Program Chair
+                (<a href="mailto:navarro.analyn@auf.edu.ph">navarro.analyn@auf.edu.ph</a>)
+                and the Asst. Director for Christian Praxis (<a href="mailto:adcp.ccfp@auf.edu.ph">adcp.ccfp@auf.edu.ph</a>)
+                for signing.
+            </p>
+
+            <!-- Display Signature Status -->
+            <table class="table table-bordered mt-4">
+    <thead class="table-light">
+        <tr>
+            <th>Signatories</th>
+            <th>Status</th>
+            <th>Community Uploads</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Program Chair Row -->
+        <tr>
+            <td>Program Chair</td>
+            <td>
+                @if ($appointment->final_program_chair_signature)
+                    <span class="badge badge-success">Signed</span>
+                @else
+                    <span class="badge badge-secondary">Not Signed</span>
+                @endif
+            </td>
+            <td>
+                <!-- Display link if Community Service Form is uploaded -->
+                @if($appointment->community_extension_service_form_path)
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#serviceFormModal">
+                        View Service Form
+                    </button>
+                @else
+                    <!-- Show file upload form if no file is uploaded -->
+                    <form action="{{ route('gsstudent.uploadCommunityExtensionForms') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="community_extension_service_form" class="form-control mb-2" required>
+                        <button type="submit" class="btn btn-success btn-sm">Upload Service Form</button>
+                    </form>
+                @endif
+            </td>
+        </tr>
+        
+        <!-- CCFP (Asst. Director for Christian Praxis) Row -->
+        <tr>
+            <td>CCFP (Asst. Director for Christian Praxis)</td>
+            <td>
+                @if ($appointment->final_ccfp_signature)
+                    <span class="badge badge-success">Signed</span>
+                @else
+                    <span class="badge badge-secondary">Not Signed</span>
+                @endif
+            </td>
+            <td>
+                <!-- Display link if Accomplishment Report is uploaded -->
+                @if($appointment->community_accomplishment_report_path)
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#accomplishmentReportModal">
+                        View Accomplishment Report
+                    </button>
+                @else
+                    <!-- Show file upload form if no file is uploaded -->
+                    <form action="{{ route('gsstudent.uploadCommunityExtensionForms') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="community_accomplishment_report" class="form-control mb-2" required>
+                        <button type="submit" class="btn btn-success btn-sm">Upload Accomplishment Report</button>
+                    </form>
+                @endif
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+        </div>
+    </div>
+</div>
+
+<!-- Community Extension Service Form Modal -->
+<div class="modal fade" id="serviceFormModal" tabindex="-1" aria-labelledby="serviceFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceFormModalLabel">Community Extension Service Form</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{ Storage::url($appointment->community_extension_service_form_path) }}" width="100%" height="500px"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Community Accomplishment Report Modal -->
+<div class="modal fade" id="accomplishmentReportModal" tabindex="-1" aria-labelledby="accomplishmentReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="accomplishmentReportModalLabel">Community Accomplishment Report</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{ Storage::url($appointment->community_accomplishment_report_path) }}" width="100%" height="500px"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+                @elseif(($isDrPH && $step === 6) || (!$isDrPH && $step === 5))
+
 
                 @elseif ($step === 7)
                     <!-- Step 7 Content -->
@@ -262,7 +484,6 @@
             </div>
         @endfor
     </div>
-
     <div class="card-footer"></div>
 </div>
 
@@ -286,5 +507,6 @@
         </div>
     </div>
 </div>
+
 
 @endsection

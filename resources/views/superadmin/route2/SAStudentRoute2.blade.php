@@ -248,8 +248,153 @@
                         </div>
                     <!-- Step 3 Content -->
                 @elseif ($step === 4)
+
+                <div class="container my-4">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h4 class="routing-heading">Final Similarity Manuscript</h4>
+                
+                @if($appointment->final_similarity_manuscript)
+                    <div class="form-group mt-3">
+                        <label for="uploaded_manuscript">Uploaded Manuscript:</label>
+                        <input type="text" 
+                            id="uploaded_manuscript" 
+                            class="form-control" 
+                            value="{{ $appointment->final_similarity_manuscript_original_name }}" 
+                            readonly 
+                            onclick="$('#similaritymanuscriptModal').modal('show')" 
+                            style="cursor: pointer;">
+                    </div>
+                @else
+                    <p>No manuscript uploaded yet.</p>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h4 class="routing-heading">Final Similarity Certificate</h4>
+            
+            @if($appointment->final_similarity_certificate)
+                <div class="form-group">
+                    <label for="view_certificate"><strong>View Certificate:</strong></label>
+                    <input type="text" 
+                           id="view_certificate" 
+                           class="form-control" 
+                           value="{{ $appointment->final_similarity_certificate_original_name }}" 
+                           readonly 
+                           onclick="$('#similaritycertificateModal').modal('show')" 
+                           style="cursor: pointer;">
+                </div>
+            @else
+                <p>No certificate uploaded yet.</p>
+            @endif
+        </div>
+    </div>
+
+    <!-- Manuscript Modal -->
+    <div class="modal fade" id="similaritymanuscriptModal" tabindex="-1" aria-labelledby="similaritymanuscriptModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="similaritymanuscriptModalLabel">View Manuscript</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe src="{{ Storage::url($appointment->final_similarity_manuscript) }}" width="100%" height="600px" style="border: none;"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ Storage::url($appointment->final_similarity_manuscript) }}" target="_blank" class="btn btn-primary" download>Download Manuscript</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Certificate Modal -->
+    <div class="modal fade" id="similaritycertificateModal" tabindex="-1" aria-labelledby="similaritycertificateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="similaritycertificateModalLabel">View Certificate</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe src="{{ Storage::url($appointment->final_similarity_certificate) }}" width="100%" height="600px" style="border: none;"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ Storage::url($appointment->final_similarity_certificate) }}" target="_blank" class="btn btn-primary" download>Download Certificate</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
                     <!-- Step 4 Content -->
-                @elseif ($step === 5)
+                {{-- Step 5 Content (DrPH students only) --}}
+                @elseif ($step === 5 && $isDrPH)
+                    <div class="container my-4">
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <h4 class="routing-heading">7. Community Extension Accomplishment Report (For DrPH students only)</h4>
+                                <p>Complete the following forms:</p>
+                                <ul style="list-style-type: none; padding: 0;">
+                                    <li>
+                                        <a href="https://docs.google.com/document/d/1_FXK-09OmJ306wVmi3IZNxBpgbn1pz9KOsKUnXu0zLE/edit?tab=t.0#heading=h.30j0zll" target="_blank">Community Extension Service Working Committee</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://docs.google.com/document/d/13PYjFojjvLNTqHqmM396YTeyQUIgDiVelLA2gZeapXA/edit?tab=t.0" target="_blank">Community Extension Service Accomplishment Report</a>
+                                    </li>
+                                </ul>
+
+                                <p>
+                                    Email the completed forms and attachments (e.g., program, photos) to the HSP Program Chair
+                                    (<a href="mailto:navarro.analyn@auf.edu.ph">navarro.analyn@auf.edu.ph</a>)
+                                    and the Asst. Director for Christian Praxis (<a href="mailto:adcp.ccfp@auf.edu.ph">adcp.ccfp@auf.edu.ph</a>)
+                                    for signing.
+                                </p>
+
+                                <!-- Display Signature Status -->
+                                <table class="table table-bordered mt-4">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Signatories</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Program Chair</td>
+                                            <td>
+                                                @if ($appointment->program_chair_signature)
+                                                    <span class="badge badge-success">Signed</span>
+                                                @else
+                                                    <span class="badge badge-secondary">Not Signed</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>CCFP (Asst. Director for Christian Praxis)</td>
+                                            <td>
+                                                @if ($appointment->ccfp_signature)
+                                                    <span class="badge badge-success">Signed</span>
+                                                @else
+                                                    <span class="badge badge-secondary">Not Signed</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Step 5 Content -->
                 @elseif ($step === 6)
                     <!-- Step 6 Content -->
