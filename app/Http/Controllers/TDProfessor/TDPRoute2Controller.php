@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AdviserAppointment;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\Setting;
 
 class TDPRoute2Controller extends Controller
 {
@@ -42,6 +43,8 @@ class TDPRoute2Controller extends Controller
         // Determine if the student is in the DrPH program
         $isDrPH = $student->program === 'DRPH-HPE';
         $totalSteps = $isDrPH ? 8 : 7;
+        $final_statisticianLink = Setting::where('key', 'final_statistician_link')->value('value');
+
 
 
         // Pass the appointment and student data to the Route 2 advisee view
@@ -51,7 +54,8 @@ class TDPRoute2Controller extends Controller
             'advisee' => $student,
             'title' => 'Routing Form 2 for ' . $student->name,
             'isDrPH' => $isDrPH,
-            'totalSteps' => $totalSteps
+            'totalSteps' => $totalSteps,
+            'final_statisticianLink' => $final_statisticianLink
         ]);
     }
     public function addFinalConsultationDatesAndSign(Request $request, $appointmentId)

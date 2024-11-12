@@ -49,8 +49,9 @@ class GSRoute2Controller extends Controller
 
         // Define the title for the view
         $title = 'Routing Form 2 for ' . $student->name;
+        $final_statisticianLink = Setting::where('key', 'final_statistician_link')->value('value');
 
         // Pass the title and other data to the view
-        return view('graduateschool.route2.GSStudentRoute2', compact('student', 'appointment', 'title', 'isDrPH', 'totalSteps'));
+        return view('graduateschool.route2.GSStudentRoute2', compact('student', 'appointment', 'title', 'isDrPH', 'totalSteps','final_statisticianLink'));
     }
 }

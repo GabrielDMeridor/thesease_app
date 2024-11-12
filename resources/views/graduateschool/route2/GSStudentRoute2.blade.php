@@ -106,6 +106,38 @@
                         </div>
                     </div>
                 @elseif ($step === 2)
+
+                
+                <div class="container my-4">
+                        <div class="card shadow mb-4">
+                            <div class="card-body d-flex flex-column flex-md-row align-items-center">
+                                <!-- Instructions Section -->
+                                <div class="instructions-section ml-md-4">
+                                    <h4 class="routing-heading">Consultation with Statistician</h4>
+                                    <p>
+                                        Please complete the service request form and send your manuscript to:
+                                    </p>
+                                    <ul class="mb-3" style="list-style: none; padding-left: 0;">
+                                        <li><strong>cdaic@auf.edu.ph</strong></li>
+                                        <li>cc: <strong>calibio.mylene@auf.edu.ph</strong>, <strong>ovpri@auf.edu.ph</strong></li>
+                                    </ul>
+
+                                    <!-- Display Status -->
+                                    <p><strong>Status:</strong> 
+                                        @if ($appointment->final_statistician_approval === 'approved')
+                                            <span class="badge badge-success">Approved</span>
+                                        @elseif ($appointment->final_student_statistician_response === 'responded')
+                                            <span class="badge badge-warning">Pending</span>
+                                        @else
+                                            <span class="badge badge-secondary">Not responded yet</span>
+                                        @endif
+                                    </p>
+
+                                    <!-- Respond Button for Student -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Step 2 Content -->
                 @elseif ($step === 3)
                     <!-- Step 3 Content -->

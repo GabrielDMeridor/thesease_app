@@ -225,8 +225,12 @@
     Route::post('/graduateschool/adviser_appointments/{studentId}/upload-submission-files-link', [GSRoute1Controller::class, 'uploadSubmissionFilesLink'])->name('graduateschool.uploadSubmissionFilesLink');
    Route::post('/graduateschool/route1/student/{studentId}/approve-submission-files', [GSRoute1Controller::class, 'approveSubmissionFiles'])->name('graduateschool.approveSubmissionFiles');
 
+   Route::post('/gsstudent/respond-to-final-statistician', [GSSRoute2Controller::class, 'respondToFinalStatistician'])->name('gsstudent.respondToFinalStatistician');
+   
+   Route::get('statistician/route2', [SRoute2Controller::class, 'index'])->name('statistician.route2.index');
 
-
+   Route::post('/statistician/route2/approve/{id}', [SRoute2Controller::class, 'approve'])->name('statistician.route2.approve');
+   Route::post('/statistician/route2/reject/{id}', [SRoute2Controller::class, 'reject'])->name('statistician.route2.reject');
 
 
 
@@ -564,3 +568,6 @@ Route::post('/gsstudent/send-data-to-aufc', [GSSRoute1Controller::class, 'sendDa
      Route::post('/tdprofessor/route2/appointments/{appointment}/add-final-consultation-dates-sign', [TDPRoute2Controller::class, 'addFinalConsultationDatesAndSign'])->name('route2.addFinalConsultationDatesAndSign');
      Route::post('/save-consultation-date', [TDPRoute2Controller::class, 'saveConsultationDate'])->name('professor2.saveConsultationDate');
      Route::post('/gsstudent/upload-manuscript/{appointment}', [GSSRoute2Controller::class, 'uploadManuscript'])->name('gsstudent.uploadManuscript');
+
+
+     Route::post('/statistician/route2/update-link', [SRoute2Controller::class, 'storeOrUpdateFinalStatisticianLink'])->name('statistician.route2.updateLink');
