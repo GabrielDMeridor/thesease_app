@@ -80,12 +80,7 @@
 
 
 @section('body')
-<div class="container-fluid">
-    <div class="sagreet">{{ $title }}</div>
-    <br>
 
-    <div class="container">
-    <h2>Manage Application Form Fee Link</h2>
 
     <!-- Display Success Message -->
     @if(session('success'))
@@ -105,19 +100,9 @@
         </div>
     @endif
 
-    <!-- Form for Creating or Updating the Submission Link -->
-    <form action="{{ route('graduateschool.storeOrUpdateSubmissionLink') }}" method="POST">
-        @csrf
-        <div class="form-group mb-3">
-            <label for="submission_files_link">Application Form Fee Link:</label>
-            <input type="url" name="submission_files_link" class="form-control" value="{{ $submissionFilesLink->value }}" required placeholder="Enter the application form fee link">
-        </div>
-        <button type="submit" class="btn btn-primary">{{ $submissionFilesLink->value ? 'Update' : 'Upload' }} Link</button>
-    </form>
-</div>
-
-
-
+<div class="container-fluid">
+    <div class="sagreet">{{ $title }}</div>
+    <br>
     <!-- Search form -->
     <div class="card">
         <div class="card-body">
@@ -126,6 +111,7 @@
                 <div class="row">
                     <div class="col-sm">
                         <!-- Keyword search input -->
+                        <label for="submission_files_link">Search <b>Student</b>:</label>
                         <div class="input-group mb-3">
                             <input type="text" name="search" class="form-control" placeholder="Search students by name" value="{{ request('search') }}">
                             <div class="input-group-append">
@@ -136,6 +122,26 @@
                 </div>
             </div>
         </form>
+        <br>
+        <div class="container">
+
+            <!-- Form for Creating or Updating the Submission Link -->
+            <form action="{{ route('graduateschool.storeOrUpdateSubmissionLink') }}" method="POST">
+                @csrf
+                <div class="row">
+                    <div class="col-sm">
+                        <!-- Keyword search input -->
+                        <label for="submission_files_link">Application Form Fee Link:</label>
+                        <div class="input-group mb-3">
+                        <input type="url" name="submission_files_link" class="form-control" value="{{ $submissionFilesLink->value }}" required placeholder="Enter the application form fee link">
+                            <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary">{{ $submissionFilesLink->value ? 'Update' : 'Upload' }} Link</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

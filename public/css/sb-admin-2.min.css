@@ -10215,6 +10215,14 @@ span::after {
     color: #495464;
 }
 
+.dashboard-headings{
+    font-size: 18px;
+    color: white;
+    text-align: center;
+}
+
+
+
 
 
 
