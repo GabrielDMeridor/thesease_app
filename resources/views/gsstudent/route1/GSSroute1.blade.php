@@ -379,11 +379,7 @@
                <!-- Research Registration Content -->
                <div class="card shadow mb-4">
                   <div class="card-body d-flex flex-column flex-md-row align-items-center justify-content-between">
-                     <!-- QR Code Section -->
-                     <div class="qr-code-section text-center mb-4 mb-md-0">
-                        <img src="{{ asset('img/qr_code.png') }}" alt="QR Code" class="qr-code-image rounded" style="width: 150px; border: 2px solid #ddd;">
-                        <p class="mt-2 text-muted" style="font-size: 0.9rem;">Scan for Registration Form</p>
-                     </div>
+
                      <!-- Instructions Section -->
                      <div class="instructions-section ml-md-4">
                         <h4 class="routing-heading">Research Registration</h4>
